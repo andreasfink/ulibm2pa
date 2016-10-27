@@ -1,0 +1,16 @@
+#ulib pkg-config source file
+
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Cflags: -I${includedir}
+Libs: -L${libdir} -lulibm2pa
+
+Name: ulibm2pa
+Description: universal m2pa library
+Version: @VERSION@
+Requires: ulibsctp
+
+
