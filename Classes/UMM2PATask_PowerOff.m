@@ -18,7 +18,7 @@
 - (UMM2PATask_PowerOff *)initWithReceiver:(UMLayer *)rx
                                    sender:(id<UMLayerM2PAUserProtocol>)tx;
 {
-    self = [super initWithName:[[self class]description]  receiver:rx sender:tx requiresSynchronisation:YES];
+    self = [super initWithName:[[self class]description]  receiver:rx sender:tx requiresSynchronisation:NO];
     if(self)
     {
     }

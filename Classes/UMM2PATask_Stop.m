@@ -17,7 +17,7 @@
 - (UMM2PATask_Stop *)initWithReceiver:(UMLayerM2PA *)rx
                                sender:(id<UMLayerM2PAUserProtocol>)tx
 {
-    self = [super initWithName:[[self class]description]  receiver:rx sender:tx requiresSynchronisation:YES];
+    self = [super initWithName:[[self class]description]  receiver:rx sender:tx requiresSynchronisation:NO];
     if(self)
     {
     }
