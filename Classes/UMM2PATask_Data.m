@@ -22,7 +22,7 @@
                                  data:(NSData *)d
                            ackRequest:(NSDictionary *)ack;
 {
-    self = [super initWithName:[[self class]description]  receiver:rx sender:tx requiresSynchronisation:NO];
+    self = [super initWithName:[[self class]description]  receiver:rx sender:tx requiresSynchronisation:YES];
     if(self)
     {
         self.data = d;

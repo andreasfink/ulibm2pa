@@ -15,10 +15,10 @@
 
 @interface UMM2PATask_sctpDataIndication : UMLayerTask
 {
-    id userId;
+    id          userId;
     uint16_t    streamId;
     uint32_t    protocolId;
-    NSData *data;
+    NSData      *data;
     
 }
 
