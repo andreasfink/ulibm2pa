@@ -1094,7 +1094,6 @@
 {
     @synchronized(self)
     {
-
         [t1 stop]; /* alignment ready	*/
         [t6 stop]; /* Remote congestion	*/
 
