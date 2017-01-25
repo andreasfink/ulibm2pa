@@ -12,7 +12,7 @@
 #import "UMLayerM2PA.h"
 #import <ulibsctp/ulibsctp.h>
 
-
+#import "UMLayerM2PAApplicationContextProtocol.h"
 #import "UMM2PATask_sctpStatusIndication.h"
 #import "UMM2PATask_sctpDataIndication.h"
 #import "UMM2PATask_sctpMonitorIndication.h"
@@ -40,6 +40,7 @@
 
 @implementation UMLayerM2PA
 
+@synthesize name;
 @synthesize lscState;
 @synthesize iacState;
 
@@ -77,7 +78,7 @@
 #pragma mark Initializer
 
 
-+(NSString *)statusAsString:(M2PA_Status)s
++ (NSString *)statusAsString:(M2PA_Status)s
 {
     switch(s)
     {
@@ -861,9 +862,9 @@
     [self queueFromAdmin:task];
 }
 
-- (void)adminSetConfig:(NSDictionary *)cfg
+- (void)adminSetConfig:(NSDictionary *)cfg applicationContext:(id<UMLayerM2PAApplicationContextProtocol>)appContext
 {
-    UMLayerTask *task = [[UMM2PATask_AdminSetConfig alloc]initWithReceiver:self sender:NULL config:cfg];
+    UMLayerTask *task = [[UMM2PATask_AdminSetConfig alloc]initWithReceiver:self sender:NULL config:cfg applicationContext:appContext];
     [self queueFromAdmin:task];
 }
 
@@ -992,7 +993,7 @@
     {
         [self logDebug:[NSString stringWithFormat:@"setConfig %@",task.config]];
     }
-    [self setConfig:task.config];
+    [self setConfig:task.config applicationContext:task.applicationContext];
     logLevel = self.logFeed.level;
 }
 
@@ -1708,62 +1709,80 @@
     return config;
 }
 
-- (void)setConfig:(NSDictionary *)cfg
+- (void)setConfig:(NSDictionary *)cfg spplicationContext:(id)appContext
 {
+    name = NULL;
     [self readLayerConfig:cfg];
-    if (cfg[@"attach-to"])
-    {
-        attachTo =  [cfg[@"attach-to"] stringValue];
-    }
-    if (cfg[@"autostart"])
-    {
-        autostart =  [cfg[@"autostart"] boolValue];
-    }
 
-    if (cfg[@"window-size"])
+    for(id key in [cfg allKeys])
     {
-        window_size = [cfg[@"window-size"] intValue];
+        id value = cfg[key];
+        if([key isCaseInsensitiveLike:@"name"])
+        {
+            self.name = [cfg[@"name"] stringValue];
+        }
+        else if([key isCaseInsensitiveLike:@"attach-to"])
+        {
+            attachTo =  [cfg[@"attach-to"] stringValue];
+            sctpLink = [appContext getSCTP:attachTo];
+            if(sctpLink == NULL)
+            {
+                NSString *s = [NSString stringWithFormat:@"Can not find sctp layer '%@' referred from m2pa layer '%@'",attachTo,self.name];
+                @throw([NSException exceptionWithName:[NSString stringWithFormat:@"CONFIG_ERROR FILE %s line:%ld",__FILE__,(long)__LINE__]
+                                           reason:s
+                                         userInfo:NULL]);
+            }
+        }
+        else if([key isCaseInsensitiveLike:@"autostart"])
+        {
+            autostart =  [cfg[@"autostart"] boolValue];
+        }
+        else if([key isCaseInsensitiveLike:@"window-size"])
+        {
+            window_size = [cfg[@"window-size"] intValue];
+        }
+        else if ([key isCaseInsensitiveLike:@"speed"])
+        {
+            speed = [cfg[@"speed"] doubleValue];
+        }
+        else if ([key isCaseInsensitiveLike:@"t1"])
+        {
+            t1.duration = [cfg[@"t1"] doubleValue] * 1000000.0;
+        }
+        else if ([key isCaseInsensitiveLike:@"t2"])
+        {
+            t2.duration = [cfg[@"t2"] doubleValue] * 1000000.0;
+        }
+        else if ([key isCaseInsensitiveLike:@"t3"])
+        {
+            t3.duration = [cfg[@"t3"] doubleValue] * 1000000.0;
+        }
+        else if ([key isCaseInsensitiveLike:@"t4e"])
+        {
+            t4e = [cfg[@"t4e"] doubleValue] * 1000000.0;
+        }
+        else if ([key isCaseInsensitiveLike:@"t4n"])
+        {
+            t4n = [cfg[@"t4n"] doubleValue] * 1000000.0;
+        }
+        else if ([key isCaseInsensitiveLike:@"t4r"])
+        {
+            t4r.duration = [cfg[@"t4r"] doubleValue] * 1000000.0;
+        }
+        else if ([key isCaseInsensitiveLike:@"t5"])
+        {
+            t5.duration = [cfg[@"t5"] doubleValue] *1000000.0;
+        }
+        else if ([key isCaseInsensitiveLike:@"t6"])
+        {
+            t6.duration = [cfg[@"t6"] doubleValue] *1000000.0;
+        }
+        else if ([key isCaseInsensitiveLike:@"t7"])
+        {
+            t7.duration = [cfg[@"t7"] doubleValue]*1000000.0;
+        }
     }
-    if (cfg[@"speed"])
-    {
-        speed = [cfg[@"speed"] doubleValue];
-    }
-    if (cfg[@"t1"])
-    {
-        t1.duration = [cfg[@"t1"] doubleValue] * 1000000.0;
-    }
-    if (cfg[@"t2"])
-    {
-        t1.duration = [cfg[@"t2"] doubleValue] * 1000000.0;
-    }
-    if (cfg[@"t3"])
-    {
-        t1.duration = [cfg[@"t3"] doubleValue] * 1000000.0;
-    }
-    if (cfg[@"t4e"])
-    {
-        t4e = [cfg[@"t4e"] doubleValue] * 1000000.0;
-    }
-    if (cfg[@"t4n"])
-    {
-        t4n = [cfg[@"t4n"] doubleValue] * 1000000.0;
-    }
-    if (cfg[@"t4r"])
-    {
-        t4r.duration = [cfg[@"t4r"] doubleValue] * 1000000.0;
-    }
-    if (cfg[@"t5"])
-    {
-        t5.duration = [cfg[@"t5"] doubleValue] *1000000.0;
-    }
-    if (cfg[@"t6"])
-    {
-        t6.duration = [cfg[@"t6"] doubleValue] *1000000.0;
-    }
-    if (cfg[@"t7"])
-    {
-        t7.duration = [cfg[@"t7"] doubleValue]*1000000.0;
-    }
+    [self adminAttachOrder:sctpLink];
 }
 
 

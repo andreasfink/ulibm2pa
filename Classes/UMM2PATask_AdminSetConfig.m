@@ -19,11 +19,13 @@
 - (UMM2PATask_AdminSetConfig *)initWithReceiver:(UMLayer *)rx
                                          sender:(id<UMLayerM2PAUserProtocol>)tx
                                          config:(NSDictionary *)cfg
+                             applicationContext:(id)ac
 {
     self = [super initWithName:[[self class]description]  receiver:rx sender:tx requiresSynchronisation:NO];
     if(self)
     {
         self.config = cfg;
+        appContext = ac;
     }
     return self;
 }
@@ -34,4 +36,8 @@
     [link _adminSetConfigTask:self];
 }
 
+- (id)applicationContext
+{
+    return appContext;
+}
 @end

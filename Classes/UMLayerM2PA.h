@@ -123,6 +123,7 @@ typedef enum SpeedStatus
 
 @interface UMLayerM2PA : UMLayer<UMLayerSctpUserProtocol>
 {
+    NSString *name;
     NSMutableArray *users;
     NSString *attachTo;
     UMM2PALinkStateControl_State        *lscState;
@@ -181,7 +182,7 @@ typedef enum SpeedStatus
     UMQueue *waitingMessages;
 }
 
-
+@property(readwrite,strong)     NSString *name;
 @property(readwrite,strong)     UMM2PALinkStateControl_State        *lscState;
 @property(readwrite,strong)     UMM2PAInitialAlignmentControl_State *iacState;
 
@@ -285,7 +286,6 @@ typedef enum SpeedStatus
 - (void)timerFires5;
 - (void)timerFires6;
 - (void)timerFires7;
-
 - (void)_timerFires1;
 - (void)_timerFires2;
 - (void)_timerFires3;
@@ -300,7 +300,7 @@ typedef enum SpeedStatus
 - (void)adminInit;
 - (void)adminSetConfig:(NSDictionary *)config;
 
-- (void)setConfig:(NSDictionary *)cfg;
+- (void)setConfig:(NSDictionary *)cfg applicationContext:(id)appContext;
 - (NSDictionary *)config;
 
 - (void)adminAttachFor:(id<UMLayerM2PAUserProtocol>)caller;

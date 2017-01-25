@@ -19,6 +19,7 @@
 		A634B4941A2E913900854472 /* UMLayerM2PAUserProfile.h in Headers */ = {isa = PBXBuildFile; fileRef = A634B4921A2E913900854472 /* UMLayerM2PAUserProfile.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A634B4951A2E913900854472 /* UMLayerM2PAUserProfile.m in Sources */ = {isa = PBXBuildFile; fileRef = A634B4931A2E913900854472 /* UMLayerM2PAUserProfile.m */; };
 		A634B4961A2E913900854472 /* UMLayerM2PAUserProfile.m in Sources */ = {isa = PBXBuildFile; fileRef = A634B4931A2E913900854472 /* UMLayerM2PAUserProfile.m */; };
+		A6827E0E1E37FC6B00F3048B /* UMLayerM2PAApplicationContextProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = A6827E0C1E37FC6B00F3048B /* UMLayerM2PAApplicationContextProtocol.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A689741C1A2CF3C100854472 /* ulibsctp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A689741B1A2CF3C100854472 /* ulibsctp.framework */; };
 		A689741D1A2CF49C00854472 /* ulibsctp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A689741B1A2CF3C100854472 /* ulibsctp.framework */; };
 		A68974201A2D0BB500854472 /* ulibm2pa.h in Headers */ = {isa = PBXBuildFile; fileRef = A604D06119B999400090FC94 /* ulibm2pa.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -131,6 +132,7 @@
 		A634B48E1A2E7AE900854472 /* UMLayerM2PAUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UMLayerM2PAUser.m; sourceTree = "<group>"; };
 		A634B4921A2E913900854472 /* UMLayerM2PAUserProfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMLayerM2PAUserProfile.h; sourceTree = "<group>"; };
 		A634B4931A2E913900854472 /* UMLayerM2PAUserProfile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UMLayerM2PAUserProfile.m; sourceTree = "<group>"; };
+		A6827E0C1E37FC6B00F3048B /* UMLayerM2PAApplicationContextProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMLayerM2PAApplicationContextProtocol.h; sourceTree = "<group>"; };
 		A689741B1A2CF3C100854472 /* ulibsctp.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ulibsctp.framework; path = /Library/Frameworks/ulibsctp.framework; sourceTree = "<absolute>"; };
 		A68974291A2D274100854472 /* UMM2PATask_AdminInit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMM2PATask_AdminInit.h; sourceTree = "<group>"; };
 		A689742B1A2D275600854472 /* UMM2PATask_AdminSetConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMM2PATask_AdminSetConfig.h; sourceTree = "<group>"; };
@@ -193,8 +195,8 @@
 		A6DA2B891A2E02F00090FC94 /* UMM2PATask_TimerEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMM2PATask_TimerEvent.h; sourceTree = "<group>"; };
 		A6DA2B8A1A2E02F00090FC94 /* UMM2PATask_TimerEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UMM2PATask_TimerEvent.m; sourceTree = "<group>"; };
 		A6DE3DF81A31F9400090FC94 /* UMM2PALinkStateControl_AllStates.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMM2PALinkStateControl_AllStates.h; sourceTree = "<group>"; };
-		A6E93D2D1A2CE59700854472 /* UMLayerM2PA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMLayerM2PA.h; sourceTree = "<group>"; };
-		A6E93D2E1A2CE59700854472 /* UMLayerM2PA.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UMLayerM2PA.m; sourceTree = "<group>"; };
+		A6E93D2D1A2CE59700854472 /* UMLayerM2PA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = UMLayerM2PA.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		A6E93D2E1A2CE59700854472 /* UMLayerM2PA.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = UMLayerM2PA.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A6F5424E1A2F66D10090FC94 /* UMM2PATask_AdminAttachOrder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMM2PATask_AdminAttachOrder.h; sourceTree = "<group>"; };
 		A6F5424F1A2F66D10090FC94 /* UMM2PATask_AdminAttachOrder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UMM2PATask_AdminAttachOrder.m; sourceTree = "<group>"; };
 		A6F542521A2F68BA0090FC94 /* UMM2PATask_AdminDetachOrder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMM2PATask_AdminDetachOrder.h; sourceTree = "<group>"; };
@@ -269,6 +271,7 @@
 			isa = PBXGroup;
 			children = (
 				A604D06119B999400090FC94 /* ulibm2pa.h */,
+				A6827E0C1E37FC6B00F3048B /* UMLayerM2PAApplicationContextProtocol.h */,
 				A634B48D1A2E7AE900854472 /* UMLayerM2PAUser.h */,
 				A634B48E1A2E7AE900854472 /* UMLayerM2PAUser.m */,
 				A634B4921A2E913900854472 /* UMLayerM2PAUserProfile.h */,
@@ -398,6 +401,7 @@
 				A68974511A2D328A00854472 /* UMM2PATask_Data.h in Headers */,
 				A689746F1A2D333200854472 /* UMM2PATask_EmergencyCheases.h in Headers */,
 				A6B717E21A3193DA0090FC94 /* UMM2PATask_sctpMonitorIndication.h in Headers */,
+				A6827E0E1E37FC6B00F3048B /* UMLayerM2PAApplicationContextProtocol.h in Headers */,
 				A634B4941A2E913900854472 /* UMLayerM2PAUserProfile.h in Headers */,
 				A6F542541A2F68BA0090FC94 /* UMM2PATask_AdminDetachOrder.h in Headers */,
 				A6B7180A1A31DD790090FC94 /* UMM2PAInitialAlignmentControl_NotAligned.h in Headers */,

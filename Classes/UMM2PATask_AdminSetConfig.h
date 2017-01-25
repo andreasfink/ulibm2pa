@@ -17,12 +17,15 @@
 @interface UMM2PATask_AdminSetConfig : UMLayerTask
 {
     NSDictionary *config;
+    id appContext;
 }
 @property(readwrite,strong)     NSDictionary *config;
 
 - (UMM2PATask_AdminSetConfig *)initWithReceiver:(UMLayerM2PA *)receiver
                                          sender:(id<UMLayerM2PAUserProtocol>)sender
-                                         config:(NSDictionary *)cfg;
+                                         config:(NSDictionary *)cfg
+                             applicationContext:(id)appContext;
 - (void)main;
+- (id)applicationContext;
 
 @end
