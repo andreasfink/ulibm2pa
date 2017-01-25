@@ -1734,11 +1734,11 @@
     }
     if (cfg[@"t2"])
     {
-        t1.duration = [cfg[@"t2"] doubleValue] * 1000000.0;
+        t2.duration = [cfg[@"t2"] doubleValue] * 1000000.0;
     }
     if (cfg[@"t3"])
     {
-        t1.duration = [cfg[@"t3"] doubleValue] * 1000000.0;
+        t3.duration = [cfg[@"t3"] doubleValue] * 1000000.0;
     }
     if (cfg[@"t4e"])
     {
