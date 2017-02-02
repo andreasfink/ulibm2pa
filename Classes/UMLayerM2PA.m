@@ -1709,7 +1709,7 @@
     return config;
 }
 
-- (void)setConfig:(NSDictionary *)cfg spplicationContext:(id)appContext
+- (void)setConfig:(NSDictionary *)cfg applicationContext:(id)appContext
 {
     name = NULL;
     [self readLayerConfig:cfg];
