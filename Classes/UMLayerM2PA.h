@@ -12,6 +12,7 @@
 #import <ulib/ulib.h>
 #import <ulibsctp/ulibsctp.h>
 #import "UMLayerM2PAUserProtocol.h"
+#import "UMLayerM2PAApplicationContextProtocol.h"
 
 @class UMM2PATask_sctpStatusIndication;
 @class UMM2PATask_sctpDataIndication;
@@ -298,7 +299,7 @@ typedef enum SpeedStatus
 #pragma mark -
 #pragma mark Task Creators
 - (void)adminInit;
-- (void)adminSetConfig:(NSDictionary *)config;
+- (void)adminSetConfig:(NSDictionary *)cfg applicationContext:(id<UMLayerM2PAApplicationContextProtocol>)appContext;
 
 - (void)setConfig:(NSDictionary *)cfg applicationContext:(id)appContext;
 - (NSDictionary *)config;
