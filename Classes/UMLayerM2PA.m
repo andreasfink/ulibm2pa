@@ -1717,11 +1717,11 @@
     for(id key in [cfg allKeys])
     {
         id value = cfg[key];
-        if([key isCaseInsensitiveLike:@"name"])
+        if([key isEqualToStringCaseInsensitive:@"name"])
         {
             self.name = [cfg[@"name"] stringValue];
         }
-        else if([key isCaseInsensitiveLike:@"attach-to"])
+        else if([key isEqualToStringCaseInsensitive:@"attach-to"])
         {
             attachTo =  [cfg[@"attach-to"] stringValue];
             sctpLink = [appContext getSCTP:attachTo];
@@ -1733,51 +1733,51 @@
                                          userInfo:NULL]);
             }
         }
-        else if([key isCaseInsensitiveLike:@"autostart"])
+        else if([key isEqualToStringCaseInsensitive:@"autostart"])
         {
             autostart =  [cfg[@"autostart"] boolValue];
         }
-        else if([key isCaseInsensitiveLike:@"window-size"])
+        else if([key isEqualToStringCaseInsensitive:@"window-size"])
         {
             window_size = [cfg[@"window-size"] intValue];
         }
-        else if ([key isCaseInsensitiveLike:@"speed"])
+        else if ([key isEqualToStringCaseInsensitive:@"speed"])
         {
             speed = [cfg[@"speed"] doubleValue];
         }
-        else if ([key isCaseInsensitiveLike:@"t1"])
+        else if ([key isEqualToStringCaseInsensitive:@"t1"])
         {
             t1.duration = [cfg[@"t1"] doubleValue] * 1000000.0;
         }
-        else if ([key isCaseInsensitiveLike:@"t2"])
+        else if ([key isEqualToStringCaseInsensitive:@"t2"])
         {
             t2.duration = [cfg[@"t2"] doubleValue] * 1000000.0;
         }
-        else if ([key isCaseInsensitiveLike:@"t3"])
+        else if ([key isEqualToStringCaseInsensitive:@"t3"])
         {
             t3.duration = [cfg[@"t3"] doubleValue] * 1000000.0;
         }
-        else if ([key isCaseInsensitiveLike:@"t4e"])
+        else if ([key isEqualToStringCaseInsensitive:@"t4e"])
         {
             t4e = [cfg[@"t4e"] doubleValue] * 1000000.0;
         }
-        else if ([key isCaseInsensitiveLike:@"t4n"])
+        else if ([key isEqualToStringCaseInsensitive:@"t4n"])
         {
             t4n = [cfg[@"t4n"] doubleValue] * 1000000.0;
         }
-        else if ([key isCaseInsensitiveLike:@"t4r"])
+        else if ([key isEqualToStringCaseInsensitive:@"t4r"])
         {
             t4r.duration = [cfg[@"t4r"] doubleValue] * 1000000.0;
         }
-        else if ([key isCaseInsensitiveLike:@"t5"])
+        else if ([key isEqualToStringCaseInsensitive:@"t5"])
         {
             t5.duration = [cfg[@"t5"] doubleValue] *1000000.0;
         }
-        else if ([key isCaseInsensitiveLike:@"t6"])
+        else if ([key isEqualToStringCaseInsensitive:@"t6"])
         {
             t6.duration = [cfg[@"t6"] doubleValue] *1000000.0;
         }
-        else if ([key isCaseInsensitiveLike:@"t7"])
+        else if ([key isEqualToStringCaseInsensitive:@"t7"])
         {
             t7.duration = [cfg[@"t7"] doubleValue]*1000000.0;
         }
