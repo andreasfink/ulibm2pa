@@ -12,6 +12,6 @@
 
 @protocol UMLayerM2PAApplicationContextProtocol<NSObject>
 
-- (UMLayerM2PA *)getSCTP:(NSString *)name;
+- (UMLayerSctp *)getSCTP:(NSString *)name;
 
 @end
