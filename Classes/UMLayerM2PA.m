@@ -72,7 +72,6 @@
 @synthesize t7;
 @synthesize t4n;
 @synthesize t4e;
-@synthesize m2pa_status;
 
 #pragma mark -
 #pragma mark Initializer
@@ -100,6 +99,14 @@
     return @"M2PA_STATUS_INVALID";
 }
 
+- (M2PA_Status) m2pa_status
+{
+    @synchronized(self)
+    {
+        return m2pa_status;
+    }
+}
+
 - (void)setM2pa_status:(M2PA_Status)status
 {
     @synchronized(self)
@@ -110,7 +117,7 @@
         {
             return;
         }
-        if(logLevel <= UMLOG_DEBUG)
+        if(self.logLevel <= UMLOG_DEBUG)
         {
             [self logDebug:
              [NSString stringWithFormat: @"STATUS CHANGE: %@ -> %@",
@@ -153,7 +160,7 @@
         [u.user m2paStatusIndication:self
                                  slc:slc
                               userId:u.userId
-                              status:m2pa_status];
+                              status:self.m2pa_status];
     }
 }
 
@@ -285,7 +292,7 @@
     /* cancel emergency */
     emergency = NO;
     /* status is now OOS */
-    [self setM2pa_status:M2PA_STATUS_OOS];
+    self.m2pa_status = M2PA_STATUS_OOS;
     /* FIXME: we should probably inform MTP3 ? */
     /* we now wait for MTP3 to tell us to start the link */
     [self resetSequenceNumbers];
@@ -300,7 +307,7 @@
 - (void)sctpReportsDown
 {
     [self logInfo:@"sctpReportsDown"];
-    [self setM2pa_status:M2PA_STATUS_OFF];
+    self.m2pa_status = M2PA_STATUS_OFF;
     /* we now wait for MTP3 to tell us to start the link again */
     lscState  = [lscState eventPowerOff:self];
     iacState  = [iacState eventPowerOff:self];
@@ -357,7 +364,7 @@
 {
     NSData *data;
     
-    if(logLevel <= UMLOG_DEBUG)
+    if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:@"sctpDataIndication:"];
         [self logDebug:[NSString stringWithFormat:@" data: %@",task.data.description]];
@@ -374,7 +381,7 @@
     switch(task.streamId)
     {
         case M2PA_STREAM_LINKSTATE:
-            if(logLevel <= UMLOG_DEBUG)
+            if(self.logLevel <= UMLOG_DEBUG)
             {
                 [self logDebug:@"M2PA_STREAM_LINKSTATE received"];
             }
@@ -382,7 +389,7 @@
             [self sctpIncomingLinkstateMessage:data];
             break;
         case M2PA_STREAM_USERDATA:
-            if(logLevel <= UMLOG_DEBUG)
+            if(self.logLevel <= UMLOG_DEBUG)
             {
                 [self logDebug:@"M2PA_STREAM_USERDATA received"];
             }
@@ -426,7 +433,7 @@
         
             if(data_link_buffer.length < len)
             {
-                if(logLevel <=UMLOG_DEBUG)
+                if(self.logLevel <=UMLOG_DEBUG)
                 {
                     [self logDebug:[NSString stringWithFormat:@"not enough data received yet %lu bytes in buffer, expecting %u",
                                     data_link_buffer.length,
@@ -463,9 +470,9 @@
             }
             NSData *userData = [NSData dataWithBytes:&dptr[16] length:(userDataLen)];
             
-            if (m2pa_status!=M2PA_STATUS_IS)
+            if (self.m2pa_status!=M2PA_STATUS_IS)
             {
-                [self setM2pa_status:M2PA_STATUS_IS];
+                self.m2pa_status = M2PA_STATUS_IS;
             }
             @synchronized(users)
             {
@@ -496,7 +503,7 @@
     uint32_t len;
     const char *dptr;
     
-    if(logLevel <= UMLOG_DEBUG)
+    if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:[NSString stringWithFormat:@" %ld bytes of linkstatus data received",data.length]];
     }
@@ -515,14 +522,14 @@
         linkstatus = ntohl(*(u_int32_t *)&dptr[16]);
     
         NSString *ls = [self linkStatusString:linkstatus];
-        NSString *ms = [self m2paStatusString:m2pa_status];
-        if(logLevel <= UMLOG_DEBUG)
+        NSString *ms = [self m2paStatusString:self.m2pa_status];
+        if(self.logLevel <= UMLOG_DEBUG)
         {
             [self logDebug:[NSString stringWithFormat:@" %d (%@) event -> %d (%@) status",
-                            linkstatus,ls,m2pa_status,ms]];
+                            linkstatus,ls,self.m2pa_status,ms]];
         }
 
-        if(logLevel <= UMLOG_DEBUG)
+        if(self.logLevel <= UMLOG_DEBUG)
         {
             [self logDebug:[NSString stringWithFormat:@"Received %@",[self linkStatusString:linkstatus]]];
         }
@@ -568,7 +575,7 @@
 
 - (void) _oos_received
 {
-    if(logLevel <= UMLOG_DEBUG)
+    if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:@"Received M2PA_LINKSTATE_OUT_OF_SERVICE"];
     }
@@ -678,7 +685,7 @@
 - (void) adminAttachConfirm:(UMLayer *)attachedLayer
                      userId:(id)uid
 {
-    if(logLevel <= UMLOG_DEBUG)
+    if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:@"adminAttachConfirm"];
     }
@@ -697,7 +704,7 @@
 - (void) adminDetachConfirm:(UMLayer *)attachedLayer
                      userId:(id)uid
 {
-    if(logLevel <= UMLOG_DEBUG)
+    if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:@"adminDetachConfirm"];
     }
@@ -792,7 +799,7 @@
 {
     [t4 stop];
     [t4r stop];
-    if(m2pa_status == M2PA_LINKSTATE_READY)
+    if(self.m2pa_status == M2PA_LINKSTATE_READY)
     {
         /* we are in service already so this is a old timer which got forgotton to stop */
         [t1 stop];
@@ -804,13 +811,13 @@
         [t1 start];
         [self sendLinkstatus:M2PA_LINKSTATE_READY];
         [t4r start];
-        [self setM2pa_status:M2PA_STATUS_ALIGNED_READY];
+        self.m2pa_status = M2PA_STATUS_ALIGNED_READY;
     }
 }
 
 - (void)_timerFires4r
 {
-    if(m2pa_status == M2PA_STATUS_ALIGNED_NOT_READY)
+    if(self.m2pa_status == M2PA_STATUS_ALIGNED_NOT_READY)
     {
         if(emergency==NO)
         {
@@ -822,7 +829,7 @@
         }
         [t4r start];
     }
-    else if(m2pa_status == M2PA_STATUS_ALIGNED_READY)
+    else if(self.m2pa_status == M2PA_STATUS_ALIGNED_READY)
     {
         [self sendLinkstatus:M2PA_LINKSTATE_READY];
         [t3 stop];
@@ -837,10 +844,10 @@
 
 - (void)_timerFires6
 {
-    if((m2pa_status == M2PA_STATUS_IS) && (congested==1))
+    if((self.m2pa_status == M2PA_STATUS_IS) && (congested==1))
     {
         [self sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE];
-        [self setM2pa_status:M2PA_STATUS_OOS];
+        self.m2pa_status = M2PA_STATUS_OOS;
     }
 }
 - (void)_timerFires7
@@ -956,8 +963,8 @@
 
 - (void)_adminInitTask:(UMM2PATask_AdminInit *)task
 {
-    logLevel = self.logFeed.level;
-    if(logLevel <= UMLOG_DEBUG)
+    self.logLevel = self.logFeed.level;
+    if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:[NSString stringWithFormat:@"adminInit"]];
     }
@@ -965,7 +972,7 @@
 
 - (void) _adminAttachOrderTask:(UMM2PATask_AdminAttachOrder *)task
 {
-    if(logLevel <= UMLOG_DEBUG)
+    if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:@"adminAttachOrder"];
     }
@@ -978,7 +985,7 @@
 
 - (void) _adminDetachOrderTask:(UMM2PATask_AdminDetachOrder *)task
 {
-    if(logLevel <= UMLOG_DEBUG)
+    if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:@"adminAttachOrder"];
     }
@@ -988,19 +995,19 @@
 
 - (void)_adminSetConfigTask:(UMM2PATask_AdminSetConfig *)task
 {
-    logLevel = self.logFeed.level;
-    if(logLevel <= UMLOG_DEBUG)
+    self.logLevel = self.logFeed.level;
+    if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:[NSString stringWithFormat:@"setConfig %@",task.config]];
     }
     [self setConfig:task.config applicationContext:task.applicationContext];
-    logLevel = self.logFeed.level;
+    self.logLevel = self.logFeed.level;
 }
 
 - (void)_adminAttachTask:(UMM2PATask_AdminAttach *)task
 {
     id<UMLayerM2PAUserProtocol> user = (id<UMLayerM2PAUserProtocol>)task.sender;
-    logLevel = self.logFeed.level;
+    self.logLevel = self.logFeed.level;
     
     UMLayerM2PAUser *u = [[UMLayerM2PAUser alloc]init];
     u.userId = task.userId;
@@ -1013,7 +1020,7 @@
     {
         [users addObject:u];
     }
-    if(logLevel <= UMLOG_DEBUG)
+    if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:[NSString stringWithFormat:@"attachedFrom %@",user.layerName]];
     }
@@ -1177,7 +1184,7 @@
 - (void)_powerOnTask:(UMM2PATask_PowerOn *)task
 {
     [self resetSequenceNumbers];
-    if(logLevel <= UMLOG_DEBUG)
+    if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:@"powerOn"];
     }
@@ -1187,7 +1194,7 @@
 
 - (void)_powerOffTask:(UMM2PATask_PowerOff *)task
 {
-    if(logLevel <= UMLOG_DEBUG)
+    if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:@"powerOff"];
     }
@@ -1196,7 +1203,7 @@
 
 - (void)_startTask:(UMM2PATask_Start *)task
 {
-    if(logLevel <= UMLOG_DEBUG)
+    if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:@"start"];
     }
@@ -1206,8 +1213,8 @@
 
 - (void)_stopTask:(UMM2PATask_Stop *)task
 {
-    logLevel = self.logFeed.level;
-    if(logLevel <= UMLOG_DEBUG)
+    self.logLevel = self.logFeed.level;
+    if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:@"stop"];
     }
@@ -1216,8 +1223,8 @@
 
 - (void)_emergencyTask:(UMM2PATask_Emergency *)task
 {
-    logLevel = self.logFeed.level;
-    if(logLevel <= UMLOG_DEBUG)
+    self.logLevel = self.logFeed.level;
+    if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:@"emergency"];
     }
@@ -1225,8 +1232,8 @@
 }
 - (void)_emergencyCheasesTask:(UMM2PATask_EmergencyCheases *)task
 {
-    logLevel = self.logFeed.level;
-    if(logLevel <= UMLOG_DEBUG)
+    self.logLevel = self.logFeed.level;
+    if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:@"emergencyCheases"];
     }
@@ -1235,8 +1242,8 @@
 
 - (void)_setSlcTask:(UMM2PATask_SetSlc *)task
 {
-    logLevel = self.logFeed.level;
-    if(logLevel <= UMLOG_DEBUG)
+    self.logLevel = self.logFeed.level;
+    if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:[NSString stringWithFormat:@"settingSLC to %d",task.slc]];
     }
@@ -1280,7 +1287,7 @@
 
 - (void)powerOn
 {
-    [self setM2pa_status:M2PA_STATUS_OFF];
+    self.m2pa_status = M2PA_STATUS_OFF;
     
     local_processor_outage = NO;
     remote_processor_outage = NO;
@@ -1293,7 +1300,7 @@
     [speedometer clear];
     [submission_speed clear];
 
-   // [self setM2pa_status:M2PA_STATUS_OOS]; // this is being set once SCTP is established
+   // self.m2pa_status = M2PA_STATUS_OOS; // this is being set once SCTP is established
     [sctpLink openFor:self];
 
     /* we do additinoal stuff for power on in sctpReportsUp */
@@ -1301,11 +1308,11 @@
 
 - (void)powerOff
 {
-    if(m2pa_status != M2PA_STATUS_OFF)
+    if(self.m2pa_status != M2PA_STATUS_OFF)
     {
         [self stop];
     }
-    [self setM2pa_status:M2PA_STATUS_OFF];
+    self.m2pa_status = M2PA_STATUS_OFF;
     [sctpLink closeFor:self];
 
     [self resetSequenceNumbers];
@@ -1317,20 +1324,20 @@
 
 - (void)start
 {
-    logLevel = self.logFeed.level;
-    if(logLevel <= UMLOG_DEBUG)
+    self.logLevel = self.logFeed.level;
+    if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:@"start"];
     }
 
-    if(m2pa_status != M2PA_STATUS_OOS)
+    if(self.m2pa_status != M2PA_STATUS_OOS)
     {
         [self logMajorError:@"can not start if link is not in status OOS. Going to OFF state"];
-        [self setM2pa_status:M2PA_STATUS_OFF];
+        self.m2pa_status =M2PA_STATUS_OFF;
         return;
     }
     
-    if(logLevel <= UMLOG_DEBUG)
+    if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:@"Sending LINKSTATE_ALIGNMENT"];
     }
@@ -1339,20 +1346,20 @@
     [t2 start];
     [t4 start];
     [t4r start];
-    [self setM2pa_status:M2PA_STATUS_INITIAL_ALIGNMENT];
+    self.m2pa_status = M2PA_STATUS_INITIAL_ALIGNMENT;
 }
 
 - (void)stop
 {
-    logLevel = self.logFeed.level;
-    if(logLevel <= UMLOG_DEBUG)
+    self.logLevel = self.logFeed.level;
+    if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:@"stop"];
         [self logDebug:@"Sending M2PA_LINKSTATE_OUT_OF_SERVICE"];
 
     }
     [self sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE];
-    [self setM2pa_status:M2PA_STATUS_OOS];
+    self.m2pa_status = M2PA_STATUS_OOS;
 }
 
     
@@ -1464,7 +1471,7 @@
         
     NSData *data = [NSData dataWithBytes:m2pa_header length:M2PA_LINKSTATE_PACKETLEN];
     
-    if(logLevel <= UMLOG_DEBUG)
+    if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:[NSString stringWithFormat:@"Sending %@",ls]];
         //mm_m2pa_header_dump13(link,data);

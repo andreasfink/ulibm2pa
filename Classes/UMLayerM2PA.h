@@ -215,7 +215,7 @@ typedef enum SpeedStatus
 @property(readwrite,strong)     UMTimer  *t7;
 @property(readwrite,assign)     UMMicroSec      t4n;
 @property(readwrite,assign)     UMMicroSec      t4e;
-@property(readonly)             M2PA_Status m2pa_status;
+@property(readwrite,assign,atomic) M2PA_Status m2pa_status;
 
 - (UMLayerM2PA *)initWithTaskQueueMulti:(UMTaskQueueMulti *)tq;
 
