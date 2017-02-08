@@ -421,11 +421,7 @@
     
     @synchronized(self)
     {
-        NSLog(@"incoming data size %lu",data.length);
-
         [data_link_buffer appendData:data];
-        NSLog(@"DataLink_bufferSize increased to %lu",data_link_buffer.length);
-
         while([data_link_buffer length] >= 16)
         {
             dptr = data_link_buffer.bytes;
@@ -492,7 +488,6 @@
                 }
             }
             [data_link_buffer replaceBytesInRange: NSMakeRange(0,len) withBytes:"" length:0];
-            NSLog(@"DataLink_bufferSize reduced to %lu",data_link_buffer.length);
         }
     }
 }
