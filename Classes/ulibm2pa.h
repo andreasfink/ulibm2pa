@@ -3,7 +3,7 @@
 //  ulibm2pa
 //
 //  Created by Andreas Fink on 05/09/14.
-//  Copyright (c) 2016 Andreas Fink
+//  Copyright © 2017 Andreas Fink (andreas@fink.org). All rights reserved.
 //
 // This source is dual licensed either under the GNU GENERAL PUBLIC LICENSE
 // Version 3 from 29 June 2007 and other commercial licenses available by
@@ -11,6 +11,8 @@
 
 #import <ulib/ulib.h>
 #import <ulibsctp/ulibsctp.h>
+
+#import "UMLayerM2PAApplicationContextProtocol.h"
 
 #import "UMLayerM2PA.h"
 #import "UMLayerM2PAStatus.h"

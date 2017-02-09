@@ -3,7 +3,7 @@
 //  ulibm2pa
 //
 //  Created by Andreas Fink on 01.12.14.
-//  Copyright (c) 2016 Andreas Fink
+//  Copyright © 2017 Andreas Fink (andreas@fink.org). All rights reserved.
 //
 // This source is dual licensed either under the GNU GENERAL PUBLIC LICENSE
 // Version 3 from 29 June 2007 and other commercial licenses available by
@@ -12,6 +12,7 @@
 #import <ulib/ulib.h>
 #import <ulibsctp/ulibsctp.h>
 #import "UMLayerM2PAUserProtocol.h"
+#import "UMLayerM2PAApplicationContextProtocol.h"
 
 @class UMM2PATask_sctpStatusIndication;
 @class UMM2PATask_sctpDataIndication;
@@ -123,6 +124,7 @@ typedef enum SpeedStatus
 
 @interface UMLayerM2PA : UMLayer<UMLayerSctpUserProtocol>
 {
+    NSString *name;
     NSMutableArray *users;
     NSString *attachTo;
     UMM2PALinkStateControl_State        *lscState;
@@ -181,7 +183,7 @@ typedef enum SpeedStatus
     UMQueue *waitingMessages;
 }
 
-
+@property(readwrite,strong)     NSString *name;
 @property(readwrite,strong)     UMM2PALinkStateControl_State        *lscState;
 @property(readwrite,strong)     UMM2PAInitialAlignmentControl_State *iacState;
 
@@ -213,7 +215,7 @@ typedef enum SpeedStatus
 @property(readwrite,strong)     UMTimer  *t7;
 @property(readwrite,assign)     UMMicroSec      t4n;
 @property(readwrite,assign)     UMMicroSec      t4e;
-@property(readonly)             M2PA_Status m2pa_status;
+@property(readwrite,assign,atomic) M2PA_Status m2pa_status;
 
 - (UMLayerM2PA *)initWithTaskQueueMulti:(UMTaskQueueMulti *)tq;
 
@@ -285,7 +287,6 @@ typedef enum SpeedStatus
 - (void)timerFires5;
 - (void)timerFires6;
 - (void)timerFires7;
-
 - (void)_timerFires1;
 - (void)_timerFires2;
 - (void)_timerFires3;
@@ -298,9 +299,9 @@ typedef enum SpeedStatus
 #pragma mark -
 #pragma mark Task Creators
 - (void)adminInit;
-- (void)adminSetConfig:(NSDictionary *)config;
+- (void)adminSetConfig:(NSDictionary *)cfg applicationContext:(id<UMLayerM2PAApplicationContextProtocol>)appContext;
 
-- (void)setConfig:(NSDictionary *)cfg;
+- (void)setConfig:(NSDictionary *)cfg applicationContext:(id)appContext;
 - (NSDictionary *)config;
 
 - (void)adminAttachFor:(id<UMLayerM2PAUserProtocol>)caller;
