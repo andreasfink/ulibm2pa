@@ -3,7 +3,7 @@
 //  ulibm2pa
 //
 //  Created by Andreas Fink on 24.01.17.
-//  Copyright © 2017 Andreas Fink. All rights reserved.
+//  Copyright © 2017 Andreas Fink (andreas@fink.org). All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
