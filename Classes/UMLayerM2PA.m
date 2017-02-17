@@ -500,7 +500,7 @@
     
     if(self.logLevel <= UMLOG_DEBUG)
     {
-        [self logDebug:[NSString stringWithFormat:@" %ld bytes of linkstatus data received",data.length]];
+        [self logDebug:[NSString stringWithFormat:@" %d bytes of linkstatus data received",(int)data.length]];
     }
     
     @synchronized(control_link_buffer)
