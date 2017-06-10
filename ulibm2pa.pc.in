@@ -6,7 +6,7 @@ libdir=${exec_prefix}/lib
 includedir=${prefix}/include
 
 Cflags: -I${includedir}
-Libs: -L${libdir} -lulibm2pa
+Libs: -L${libdir} -l:libulibm2pa.@SHARED_LIBRARY_EXTENSION@.@MAJORVER@.@MINORVER@
 
 Name: ulibm2pa
 Description: universal m2pa library
