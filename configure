@@ -585,6 +585,10 @@ PACKAGE_URL=''
 
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
+SHARED_LIBRARY_EXTENSION
+REVISION
+MINORVER
+MAJORVER
 CONFIGURATION
 INSTALL_DATA
 INSTALL_SCRIPT
@@ -1812,11 +1816,14 @@ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
-COPYRIGHT="Copyright 2016 Andreas Fink"
+COPYRIGHT="Copyright © 2017 Andreas Fink (andreas@fink.org). All rights reserved."
 PROJECT_NAME="ulibm2pa"
 AUTHOR="Andreas Fink <andreas@fink.org>"
 CONFIG_DEFINE="ULIBM2PA_CONFIG"
 VERSION=`head -n 1 VERSION`
+MAJORVER=`echo $VERSION | cut -f1 -d.`
+MINORVER=`echo $VERSION | cut -f2 -d.`
+REVISION=`echo $VERSION | cut -f3 -d.`
 CONFIG_HEADER=ulibm2pa_config.h
 DEPENDENT_PKGCONFIGS="ulibsctp"
 PKG_CONFIG_PATH="/usr/local/lib/pkgconfig"
@@ -1878,7 +1885,6 @@ ac_config_headers="$ac_config_headers ${CONFIG_HEADER}"
 
 
 CUSER=`id -un`
-
 
 
 
@@ -1981,6 +1987,7 @@ case "$host" in
 	CFLAGS="$CFLAGS -D_REENTRANT=1 -DDARWIN=1 ${ARCH}"
 	LDFLAGS="-framework CoreFoundation -framework IOKit -framework Security  -F /Library/Frameworks ${FRAMEWORK}"
 	LIBTOOL="libtool -static -o"
+	SHARED_LIBRARY_EXTENSION=dylib
     ;;
 
   *-linux-*)
@@ -3083,6 +3090,11 @@ fi
   nl='
 '
   echo "${nl}${T_MD}Generating output files ...${T_ME}"
+
+
+
+
+
 
 
 
