@@ -958,7 +958,6 @@
 
 - (void)_adminInitTask:(UMM2PATask_AdminInit *)task
 {
-    self.logLevel = self.logFeed.level;
     if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:[NSString stringWithFormat:@"adminInit"]];
@@ -990,20 +989,17 @@
 
 - (void)_adminSetConfigTask:(UMM2PATask_AdminSetConfig *)task
 {
-    self.logLevel = self.logFeed.level;
     if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:[NSString stringWithFormat:@"setConfig %@",task.config]];
     }
     [self setConfig:task.config applicationContext:task.applicationContext];
-    self.logLevel = self.logFeed.level;
 }
 
 - (void)_adminAttachTask:(UMM2PATask_AdminAttach *)task
 {
     id<UMLayerM2PAUserProtocol> user = (id<UMLayerM2PAUserProtocol>)task.sender;
-    self.logLevel = self.logFeed.level;
-    
+
     UMLayerM2PAUser *u = [[UMLayerM2PAUser alloc]init];
     u.userId = task.userId;
     u.user = user;
@@ -1208,7 +1204,6 @@
 
 - (void)_stopTask:(UMM2PATask_Stop *)task
 {
-    self.logLevel = self.logFeed.level;
     if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:@"stop"];
@@ -1218,7 +1213,6 @@
 
 - (void)_emergencyTask:(UMM2PATask_Emergency *)task
 {
-    self.logLevel = self.logFeed.level;
     if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:@"emergency"];
@@ -1227,7 +1221,6 @@
 }
 - (void)_emergencyCheasesTask:(UMM2PATask_EmergencyCheases *)task
 {
-    self.logLevel = self.logFeed.level;
     if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:@"emergencyCheases"];
@@ -1237,7 +1230,6 @@
 
 - (void)_setSlcTask:(UMM2PATask_SetSlc *)task
 {
-    self.logLevel = self.logFeed.level;
     if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:[NSString stringWithFormat:@"settingSLC to %d",task.slc]];
@@ -1319,7 +1311,6 @@
 
 - (void)start
 {
-    self.logLevel = self.logFeed.level;
     if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:@"start"];
@@ -1346,7 +1337,6 @@
 
 - (void)stop
 {
-    self.logLevel = self.logFeed.level;
     if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:@"stop"];
