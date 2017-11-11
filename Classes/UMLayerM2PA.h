@@ -125,10 +125,13 @@ typedef enum SpeedStatus
 @interface UMLayerM2PA : UMLayer<UMLayerSctpUserProtocol>
 {
     NSString *name;
-    NSMutableArray *users;
+    UMSynchronizedArray *_users;
     NSString *attachTo;
     UMM2PALinkStateControl_State        *lscState;
     UMM2PAInitialAlignmentControl_State *iacState;
+    UMMutex *_seqNumLock;
+    UMMutex *_dataLock;
+    UMMutex *_incomingDataBufferLock;
 
     BOOL    local_processor_outage;
     BOOL    remote_processor_outage;
@@ -153,9 +156,8 @@ typedef enum SpeedStatus
     UMTimer    *t6;
     UMTimer    *t7;
     
-    SCTP_Status sctp_status;
-    M2PA_Status m2pa_status;
-//  M2PA_LinkStatus	m2pa_status;
+    SCTP_Status _sctp_status;
+    M2PA_Status _m2pa_status;
 
     BOOL    congested;
     BOOL    emergency;
@@ -216,6 +218,7 @@ typedef enum SpeedStatus
 @property(readwrite,assign)     UMMicroSec      t4n;
 @property(readwrite,assign)     UMMicroSec      t4e;
 @property(readwrite,assign,atomic) M2PA_Status m2pa_status;
+@property(readwrite,assign,atomic) SCTP_Status sctp_status;
 
 - (UMLayerM2PA *)initWithTaskQueueMulti:(UMTaskQueueMulti *)tq;
 

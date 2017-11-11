@@ -99,59 +99,52 @@
     return @"M2PA_STATUS_INVALID";
 }
 
-- (M2PA_Status) m2pa_status
+-(M2PA_Status)m2pa_status
 {
-    @synchronized(self)
-    {
-        return m2pa_status;
-    }
+    return _m2pa_status;
 }
 
 - (void)setM2pa_status:(M2PA_Status)status
 {
-    @synchronized(self)
+    M2PA_Status old_status = _m2pa_status;
+
+    if(old_status == status)
     {
-        M2PA_Status old_status = m2pa_status;
-
-        if(old_status == status)
-        {
-            return;
-        }
-        if(self.logLevel <= UMLOG_DEBUG)
-        {
-            [self logDebug:
-             [NSString stringWithFormat: @"STATUS CHANGE: %@ -> %@",
-              [UMLayerM2PA statusAsString:old_status],
-              [UMLayerM2PA statusAsString:status]]];
-
-        }
-        m2pa_status = status;
-
-        if((old_status != M2PA_STATUS_IS)
-           && (status == M2PA_STATUS_IS))
-        {
-            link_restarts++;
-            link_down_time = 0;
-            link_up_time = time(NULL);
-        }
-
-        if((old_status == M2PA_STATUS_IS)
-           && (status != M2PA_STATUS_IS))
-        {
-            link_up_time = 0;
-            link_down_time = time(NULL);
-        }
+        return;
     }
-    NSMutableArray *a = [[NSMutableArray alloc]init];
-    @synchronized(users)
+    if(self.logLevel <= UMLOG_DEBUG)
     {
-        /* we should pass service indicator /network indicator /user info back too? */
-        for(UMLayerM2PAUser *u in users)
+        [self logDebug:
+         [NSString stringWithFormat: @"STATUS CHANGE: %@ -> %@",
+          [UMLayerM2PA statusAsString:old_status],
+          [UMLayerM2PA statusAsString:status]]];
+    }
+    _m2pa_status = status;
+
+    if((old_status != M2PA_STATUS_IS)
+       && (status == M2PA_STATUS_IS))
+    {
+        link_restarts++;
+        link_down_time = 0;
+        link_up_time = time(NULL);
+    }
+
+    if((old_status == M2PA_STATUS_IS)
+       && (status != M2PA_STATUS_IS))
+    {
+        link_up_time = 0;
+        link_down_time = time(NULL);
+    }
+
+    NSMutableArray *a = [[NSMutableArray alloc]init];
+    NSArray *usrs = [_users copy];
+
+    /* we should pass service indicator /network indicator /user info back too? */
+    for(UMLayerM2PAUser *u in usrs)
+    {
+        if([u.profile wantsM2PALinkstateMessages])
         {
-            if([u.profile wantsM2PALinkstateMessages])
-            {
-                [a addObject:u];
-            }
+            [a addObject:u];
         }
     }
 
@@ -160,17 +153,13 @@
         [u.user m2paStatusIndication:self
                                  slc:slc
                               userId:u.userId
-                              status:self.m2pa_status];
+                              status:_m2pa_status];
     }
 }
 
 - (UMLayerM2PA *)init
 {
-    self = [super init];
-    if(self)
-    {
-    }
-    return self;
+    @throw([NSException exceptionWithName:@"INVALID_INIT" reason:@"UMLayerM2PA must be initialized via initWithTaskQueueMulti" userInfo:NULL]);
 }
 
 
@@ -179,7 +168,9 @@
     self = [super initWithTaskQueueMulti:tq];
     if(self)
     {
-        users = [[NSMutableArray alloc] init];
+        _users = [[UMSynchronizedArray alloc] init];
+        _seqNumLock = [[UMMutex alloc]init];
+        _dataLock = [[UMMutex alloc]init];
         lscState = [[UMM2PALinkStateControl_PowerOff alloc]initWithLink:self];
         iacState = [[UMM2PAInitialAlignmentControl_Idle alloc] initWithLink:self];
         slc = 0;
@@ -187,7 +178,8 @@
         congested = NO;
         local_processor_outage = NO;
         remote_processor_outage = NO;
-        sctp_status = SCTP_STATUS_OOS;
+        _sctp_status = SCTP_STATUS_OOS;
+        _m2pa_status = M2PA_STATUS_OFF;
 
         autostart = NO;
         link_restarts = NO;
@@ -315,35 +307,39 @@
 
 - (void) _sctpStatusIndicationTask:(UMM2PATask_sctpStatusIndication *)task
 {
+    self.sctp_status = task.status;
+}
+
+- (void)setSctp_status:(SCTP_Status )newStatus;
+{
+    int old_sctp_status = _sctp_status;
+    _sctp_status = newStatus;
     
-    int old_sctp_status = sctp_status;
-    sctp_status = task.status;
-    
-    if(old_sctp_status == sctp_status)
+    if(old_sctp_status == _sctp_status)
     {
         /* nothing happened we can ignore */
         return;
     }
 
-    @synchronized(users)
+    NSArray *usrs = [_users copy];
     {
         /* we should pass service indicator /network indicator /user info back too? */
-        for(UMLayerM2PAUser *u in users)
+        for(UMLayerM2PAUser *u in usrs)
         {
             if([u.profile wantsSctpLinkstateMessages])
             {
                 [u.user m2paSctpStatusIndication:self
                                              slc:slc
                                           userId:u.userId
-                                          status:sctp_status];
+                                          status:_sctp_status];
             }
         }
     }
 
     
     if(	(old_sctp_status == SCTP_STATUS_IS)
-       && ((sctp_status == SCTP_STATUS_OFF)
-           || (sctp_status == SCTP_STATUS_OOS)) )
+       && ((_sctp_status == SCTP_STATUS_OFF)
+           || (_sctp_status == SCTP_STATUS_OOS)) )
     {
         /* SCTP Link has died */
         [self sctpReportsDown];
@@ -352,12 +348,11 @@
     
     if(((old_sctp_status == SCTP_STATUS_OOS)
         || (old_sctp_status == SCTP_STATUS_OFF))
-       && (sctp_status == SCTP_STATUS_IS))
+       && (_sctp_status == SCTP_STATUS_IS))
     {
         /* SCTP link came up properly. Lets start M2PA now on it */
         [self sctpReportsUp];
     }
-
 }
 
 - (void) _sctpDataIndicationTask:(UMM2PATask_sctpDataIndication *)task
@@ -418,8 +413,9 @@
     u_int32_t len;
     
     const char *dptr;
-    
-    @synchronized(self)
+
+    [_incomingDataBufferLock lock];
+    @try
     {
         [data_link_buffer appendData:data];
         while([data_link_buffer length] >= 16)
@@ -470,25 +466,27 @@
             {
                 self.m2pa_status = M2PA_STATUS_IS;
             }
-            @synchronized(users)
+            NSArray *usrs = [_users copy];
+            for(UMLayerM2PAUser *u in usrs)
             {
-                for(UMLayerM2PAUser *u in users)
+                UMLayerM2PAUserProfile *profile = u.profile;
+                if([profile wantsDataMessages])
                 {
-                    UMLayerM2PAUserProfile *profile = u.profile;
-                    if([profile wantsDataMessages])
-                    {
-                        id user = u.user;
-                        NSString *uid = u.userId;
-                        [user m2paDataIndication:self
-                                             slc:slc
-                                          userId:uid
-                                            data:userData];
+                    id user = u.user;
+                    NSString *uid = u.userId;
+                    [user m2paDataIndication:self
+                                         slc:slc
+                                      userId:uid
+                                        data:userData];
 
-                    }
                 }
             }
             [data_link_buffer replaceBytesInRange: NSMakeRange(0,len) withBytes:"" length:0];
         }
+    }
+    @finally
+    {
+        [_incomingDataBufferLock unlock];
     }
 }
 
@@ -645,35 +643,30 @@
 
 - (void) sendCongestionClearedIndication
 {
-    @synchronized(users)
+    NSArray *usrs = [_users copy];
+    for(UMLayerM2PAUser *u in usrs)
     {
-        for(UMLayerM2PAUser *u in users)
+        if([u.profile wantsM2PALinkstateMessages])
         {
-            if([u.profile wantsM2PALinkstateMessages])
-            {
-                [u.user m2paCongestionCleared:self
-                                   slc:slc
-                                userId:u.userId];
-            }
+            [u.user m2paCongestionCleared:self
+                               slc:slc
+                            userId:u.userId];
         }
     }
 }
 
 - (void) sendCongestionIndication
 {
-    @synchronized(users)
+    NSArray *usrs = [_users copy];
+    for(UMLayerM2PAUser *u in usrs)
     {
-        for(UMLayerM2PAUser *u in users)
+        if([u.profile wantsM2PALinkstateMessages])
         {
-            if([u.profile wantsM2PALinkstateMessages])
-            {
-                [u.user m2paCongestion:self
-                                   slc:slc
-                                userId:u.userId];
-            }
+            [u.user m2paCongestion:self
+                               slc:slc
+                            userId:u.userId];
         }
     }
-    
 }
 
 
@@ -1007,10 +1000,7 @@
     slc = task.slc;
     networkIndicator = task.ni;
 
-    @synchronized(users)
-    {
-        [users addObject:u];
-    }
+    [_users addObject:u];
     if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:[NSString stringWithFormat:@"attachedFrom %@",user.layerName]];
@@ -1039,51 +1029,48 @@
 }
 - (void)checkSpeed
 {
-    @synchronized (self)
+    int last_speed_status;
+    double	current_speed;
+
+    [_seqNumLock lock];
+    outstanding = ((long)fsn - (long)bsn2) % FSN_BSN_SIZE;
+    if((fsn == 0) || (bsn2== 0) || (fsn >=FSN_BSN_MASK) || (bsn2 >=FSN_BSN_MASK))
     {
-        int last_speed_status;
-        double	current_speed;
+        outstanding = 0;
+    }
+    [_seqNumLock unlock];
 
-        @synchronized(self)
+    last_speed_status = speed_status;
+
+    //	error(0,"fsn: %u, bsn: %u, outstanding %u",link->fsn,link->bsn2,link->outstanding);
+
+    if (outstanding > window_size)
+    {
+        speed_status = SPEED_EXCEEDED;
+    }
+    else
+    {
+        speed_status = SPEED_WITHIN_LIMIT;
+        current_speed = [speedometer getSpeedForSeconds:3];
+        if (current_speed > speed)
         {
-            outstanding = ((long)fsn - (long)bsn2) % FSN_BSN_SIZE;
-            if((fsn == 0) || (bsn2== 0) || (fsn >=FSN_BSN_MASK) || (bsn2 >=FSN_BSN_MASK))
-            {
-                outstanding = 0;
-            }
-            last_speed_status = speed_status;
-
-            //	error(0,"fsn: %u, bsn: %u, outstanding %u",link->fsn,link->bsn2,link->outstanding);
-
-            if (outstanding > window_size)
-            {
-                speed_status = SPEED_EXCEEDED;
-            }
-            else
-            {
-                speed_status = SPEED_WITHIN_LIMIT;
-                current_speed = [speedometer getSpeedForSeconds:3];
-                if (current_speed > speed)
-                {
-                    speed_status = SPEED_EXCEEDED;
-                }
-                else
-                {
-                    speed_status = SPEED_WITHIN_LIMIT;
-                }
-            }
-            if((last_speed_status == SPEED_WITHIN_LIMIT)
-               && (speed_status == SPEED_EXCEEDED))
-            {
-                [self notifySpeedExceeded];
-            }
-            else if((last_speed_status == SPEED_EXCEEDED)
-                    && (speed_status == SPEED_WITHIN_LIMIT)
-                    && (congested == 0))
-            {
-                [self notifySpeedExceededCleared];
-            }
+            speed_status = SPEED_EXCEEDED;
         }
+        else
+        {
+            speed_status = SPEED_WITHIN_LIMIT;
+        }
+    }
+    if((last_speed_status == SPEED_WITHIN_LIMIT)
+       && (speed_status == SPEED_EXCEEDED))
+    {
+        [self notifySpeedExceeded];
+    }
+    else if((last_speed_status == SPEED_EXCEEDED)
+            && (speed_status == SPEED_WITHIN_LIMIT)
+            && (congested == 0))
+    {
+        [self notifySpeedExceededCleared];
     }
 }
 
@@ -1091,85 +1078,82 @@
           stream:(uint16_t)streamId
       ackRequest:(NSDictionary *)ackRequest
 {
-    @synchronized(self)
+    [_dataLock lock];
+    [t1 stop]; /* alignment ready	*/
+    [t6 stop]; /* Remote congestion	*/
+
+    size_t headerlen = 16;
+    size_t totallen =  headerlen + data.length;
+
+    unsigned char *m2pa_header = malloc(totallen);
+    memset(m2pa_header,0,totallen);
+
+    m2pa_header[0] = M2PA_VERSION1; /* version field */
+    m2pa_header[1] = 0; /* spare field */
+    m2pa_header[2] = M2PA_CLASS_RFC4165; /* m2pa_message_class = draft13;*/
+    m2pa_header[3] = M2PA_TYPE_USER_DATA; /*m2pa_message_type;*/
+    *((unsigned long *)&m2pa_header[4]) = htonl(totallen);
+
+    [_seqNumLock lock];
+    fsn = (fsn+1) % FSN_BSN_SIZE;
+    /* The FSN and BSN values range from 0 to 16,777,215 */
+    if((fsn == FSN_BSN_MASK) || (bsn2 == FSN_BSN_MASK))
     {
-        [t1 stop]; /* alignment ready	*/
-        [t6 stop]; /* Remote congestion	*/
-
-        size_t headerlen = 16;
-        size_t totallen =  headerlen + data.length;
-
-        unsigned char *m2pa_header = malloc(totallen);
-        memset(m2pa_header,0,totallen);
-
-        m2pa_header[0] = M2PA_VERSION1; /* version field */
-        m2pa_header[1] = 0; /* spare field */
-        m2pa_header[2] = M2PA_CLASS_RFC4165; /* m2pa_message_class = draft13;*/
-        m2pa_header[3] = M2PA_TYPE_USER_DATA; /*m2pa_message_type;*/
-        *((unsigned long *)&m2pa_header[4]) = htonl(totallen);
-
-        fsn = (fsn+1) % FSN_BSN_SIZE;
-        /* The FSN and BSN values range from 0 to 16,777,215 */
-        if((fsn == FSN_BSN_MASK) || (bsn2 == FSN_BSN_MASK))
-        {
-            outstanding = 0;
-            bsn2 = fsn;
-            //mm_layer_log_debug((mm_generic_layer *)link,PLACE_M2PA_GENERAL,"TX Outstanding set to 0");
-        }
-        else
-        {
-            outstanding = ((long)fsn - (long)bsn2 ) % FSN_BSN_SIZE;
-            //mm_layer_log_debug((mm_generic_layer *)link,PLACE_M2PA_GENERAL,"TX Outstanding=%u",link->outstanding);
-        }
-        *((uint32_t *)&m2pa_header[8]) = htonl(bsn);
-        *((uint32_t *)&m2pa_header[12]) = htonl(fsn);
-        memcpy(&m2pa_header[16],data.bytes,data.length);
-        NSData *sctpData = [NSData dataWithBytes:m2pa_header length:totallen];
-        free(m2pa_header);
-
-        [sctpLink dataFor:self
-                     data:sctpData
-                 streamId:streamId
-               protocolId:SCTP_PROTOCOL_IDENTIFIER_M2PA
-               ackRequest:ackRequest];
-        [speedometer increase];
+        outstanding = 0;
+        bsn2 = fsn;
+        //mm_layer_log_debug((mm_generic_layer *)link,PLACE_M2PA_GENERAL,"TX Outstanding set to 0");
     }
+    else
+    {
+        outstanding = ((long)fsn - (long)bsn2 ) % FSN_BSN_SIZE;
+        //mm_layer_log_debug((mm_generic_layer *)link,PLACE_M2PA_GENERAL,"TX Outstanding=%u",link->outstanding);
+    }
+    [_seqNumLock unlock];
+
+    *((uint32_t *)&m2pa_header[8]) = htonl(bsn);
+    *((uint32_t *)&m2pa_header[12]) = htonl(fsn);
+    memcpy(&m2pa_header[16],data.bytes,data.length);
+    NSData *sctpData = [NSData dataWithBytes:m2pa_header length:totallen];
+    free(m2pa_header);
+
+    [sctpLink dataFor:self
+                 data:sctpData
+             streamId:streamId
+           protocolId:SCTP_PROTOCOL_IDENTIFIER_M2PA
+           ackRequest:ackRequest];
+    [speedometer increase];
+    [_dataLock unlock];
 }
 
 - (void)_dataTask:(UMM2PATask_Data *)task
 {
-    @synchronized(self)
+    NSData *mtp3_data = task.data;
+    if(mtp3_data == NULL)
     {
-        NSData *mtp3_data = task.data;
+        return;
+    }
+    [submission_speed increase];
+    [self checkSpeed];
 
-        if(mtp3_data == NULL)
-        {
-            return;
-        }
-        [submission_speed increase];
-        [self checkSpeed];
-
-        if(congested)
-        {
-            [waitingMessages append:task];
-        }
-        else
-        {
-            [self sendData:mtp3_data
-                    stream:M2PA_STREAM_USERDATA
-                ackRequest:task.ackRequest];
-        }
+    if(congested)
+    {
+        [waitingMessages append:task];
+    }
+    else
+    {
+        [self sendData:mtp3_data
+                stream:M2PA_STREAM_USERDATA
+            ackRequest:task.ackRequest];
     }
 }
 
 - (void) resetSequenceNumbers
 {
-    @synchronized(self)
-    {
-        fsn = 0x00FFFFFF; /* last sent FSN */
-        bsn = 0x00FFFFFF; /* last received FSN, next BSN to send. */
-        bsn2 = 0x00FFFFFF; /* last received bsn*/
-    }
+    [_seqNumLock lock];
+    fsn = 0x00FFFFFF; /* last sent FSN */
+    bsn = 0x00FFFFFF; /* last received FSN, next BSN to send. */
+    bsn2 = 0x00FFFFFF; /* last received bsn*/
+    [_seqNumLock unlock];
 }
 
 - (void)_powerOnTask:(UMM2PATask_PowerOn *)task
@@ -1421,7 +1405,7 @@
 {
     NSString *ls = [self linkStatusString:linkstate];
 
-    switch(sctp_status)
+    switch(self.sctp_status)
     {
         case SCTP_STATUS_OFF:
             [self logDebug:[NSString stringWithFormat:@"Can not send %@ due to SCTP_STATUS_OFF",ls ]];
