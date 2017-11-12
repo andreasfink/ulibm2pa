@@ -310,6 +310,11 @@
     self.sctp_status = task.status;
 }
 
+- (SCTP_Status)sctp_status
+{
+    return _sctp_status;
+}
+
 - (void)setSctp_status:(SCTP_Status )newStatus;
 {
     int old_sctp_status = _sctp_status;
