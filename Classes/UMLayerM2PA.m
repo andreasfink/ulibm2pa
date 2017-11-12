@@ -137,7 +137,7 @@
     }
 
     NSMutableArray *a = [[NSMutableArray alloc]init];
-    NSArray *usrs = [_users copy];
+    NSArray *usrs = [_users arrayCopy];
 
     /* we should pass service indicator /network indicator /user info back too? */
     for(UMLayerM2PAUser *u in usrs)
@@ -326,7 +326,7 @@
         return;
     }
 
-    NSArray *usrs = [_users copy];
+    NSArray *usrs = [_users arrayCopy];
     {
         /* we should pass service indicator /network indicator /user info back too? */
         for(UMLayerM2PAUser *u in usrs)
@@ -471,7 +471,7 @@
             {
                 self.m2pa_status = M2PA_STATUS_IS;
             }
-            NSArray *usrs = [_users copy];
+            NSArray *usrs = [_users arrayCopy];
             for(UMLayerM2PAUser *u in usrs)
             {
                 UMLayerM2PAUserProfile *profile = u.profile;
@@ -648,7 +648,7 @@
 
 - (void) sendCongestionClearedIndication
 {
-    NSArray *usrs = [_users copy];
+    NSArray *usrs = [_users arrayCopy];
     for(UMLayerM2PAUser *u in usrs)
     {
         if([u.profile wantsM2PALinkstateMessages])
@@ -662,7 +662,7 @@
 
 - (void) sendCongestionIndication
 {
-    NSArray *usrs = [_users copy];
+    NSArray *usrs = [_users arrayCopy];
     for(UMLayerM2PAUser *u in usrs)
     {
         if([u.profile wantsM2PALinkstateMessages])
