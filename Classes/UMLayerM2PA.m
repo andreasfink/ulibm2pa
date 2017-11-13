@@ -1695,73 +1695,69 @@
     name = NULL;
     [self readLayerConfig:cfg];
 
-    for(id key in [cfg allKeys])
+    if(cfg[@"name"])
     {
-        id value = cfg[key];
-        if([key isEqualToStringCaseInsensitive:@"name"])
+        self.name = [cfg[@"name"] stringValue];
+    }
+    if(cfg[@"attach-to"])
+    {
+        attachTo =  [cfg[@"attach-to"] stringValue];
+        sctpLink = [appContext getSCTP:attachTo];
+        if(sctpLink == NULL)
         {
-            self.name = [value stringValue];
-        }
-        else if([key isEqualToStringCaseInsensitive:@"attach-to"])
-        {
-            attachTo =  [value stringValue];
-            sctpLink = [appContext getSCTP:attachTo];
-            if(sctpLink == NULL)
-            {
-                NSString *s = [NSString stringWithFormat:@"Can not find sctp layer '%@' referred from m2pa layer '%@'",attachTo,self.name];
-                @throw([NSException exceptionWithName:[NSString stringWithFormat:@"CONFIG_ERROR FILE %s line:%ld",__FILE__,(long)__LINE__]
+            NSString *s = [NSString stringWithFormat:@"Can not find sctp layer '%@' referred from m2pa layer '%@'",attachTo,self.name];
+            @throw([NSException exceptionWithName:[NSString stringWithFormat:@"CONFIG_ERROR FILE %s line:%ld",__FILE__,(long)__LINE__]
                                            reason:s
                                          userInfo:NULL]);
-            }
         }
-        else if([key isEqualToStringCaseInsensitive:@"autostart"])
-        {
-            autostart =  [value boolValue];
-        }
-        else if([key isEqualToStringCaseInsensitive:@"window-size"])
-        {
-            window_size = [value intValue];
-        }
-        else if ([key isEqualToStringCaseInsensitive:@"speed"])
-        {
-            speed = [value doubleValue];
-        }
-        else if ([key isEqualToStringCaseInsensitive:@"t1"])
-        {
-            t1.duration = [value doubleValue] * 1000000.0;
-        }
-        else if ([key isEqualToStringCaseInsensitive:@"t2"])
-        {
-            t2.duration = [value doubleValue] * 1000000.0;
-        }
-        else if ([key isEqualToStringCaseInsensitive:@"t3"])
-        {
-            t3.duration = [value doubleValue] * 1000000.0;
-        }
-        else if ([key isEqualToStringCaseInsensitive:@"t4e"])
-        {
-            t4e = [value doubleValue] * 1000000.0;
-        }
-        else if ([key isEqualToStringCaseInsensitive:@"t4n"])
-        {
-            t4n = [value doubleValue] * 1000000.0;
-        }
-        else if ([key isEqualToStringCaseInsensitive:@"t4r"])
-        {
-            t4r.duration = [value doubleValue] * 1000000.0;
-        }
-        else if ([key isEqualToStringCaseInsensitive:@"t5"])
-        {
-            t5.duration = [value doubleValue] *1000000.0;
-        }
-        else if ([key isEqualToStringCaseInsensitive:@"t6"])
-        {
-            t6.duration = [value doubleValue] *1000000.0;
-        }
-        else if ([key isEqualToStringCaseInsensitive:@"t7"])
-        {
-            t7.duration = [value doubleValue]*1000000.0;
-        }
+    }
+    if(cfg[@"autostart"])
+    {
+        autostart =  [cfg[@"autostart"] boolValue];
+    }
+    if(cfg[@"window-size"])
+    {
+        window_size = [cfg[@"window-size"] intValue];
+    }
+    if (cfg[@"speed"])
+    {
+        speed = [cfg[@"speed"] doubleValue];
+    }
+    if (cfg[@"t1"])
+    {
+        t1.duration = [cfg[@"t1"] doubleValue] * 1000000.0;
+    }
+    if (cfg[@"t2"])
+    {
+        t2.duration = [cfg[@"t2"] doubleValue] * 1000000.0;
+    }
+    if (cfg[@"t3"])
+    {
+        t3.duration = [cfg[@"t3"] doubleValue] * 1000000.0;
+    }
+    if (cfg[@"t4e"])
+    {
+        t4e = [cfg[@"t4e"] doubleValue] * 1000000.0;
+    }
+    if (cfg[@"t4n"])
+    {
+        t4n = [cfg[@"t4n"] doubleValue] * 1000000.0;
+    }
+    if (cfg[@"t4r"])
+    {
+        t4r.duration = [cfg[@"t4r"] doubleValue] * 1000000.0;
+    }
+    if (cfg[@"t5"])
+    {
+        t5.duration = [cfg[@"t5"] doubleValue] *1000000.0;
+    }
+    if (cfg[@"t6"])
+    {
+        t6.duration = [cfg[@"t6"] doubleValue] *1000000.0;
+    }
+    if (cfg[@"t7"])
+    {
+        t7.duration = [cfg[@"t7"] doubleValue]*1000000.0;
     }
     [self adminAttachOrder:sctpLink];
 }
