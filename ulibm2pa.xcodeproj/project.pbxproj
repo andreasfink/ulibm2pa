@@ -96,6 +96,16 @@
 		A6DA2B8C1A2E02F00090FC94 /* UMM2PATask_TimerEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = A6DA2B8A1A2E02F00090FC94 /* UMM2PATask_TimerEvent.m */; };
 		A6DA2B8D1A2E02F00090FC94 /* UMM2PATask_TimerEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = A6DA2B8A1A2E02F00090FC94 /* UMM2PATask_TimerEvent.m */; };
 		A6DE3DF91A31F9400090FC94 /* UMM2PALinkStateControl_AllStates.h in Headers */ = {isa = PBXBuildFile; fileRef = A6DE3DF81A31F9400090FC94 /* UMM2PALinkStateControl_AllStates.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A6E7BF3C1FBECE2100C53765 /* Q-704 (Signalling Network Functions and Messages).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A6E7BF321FBECE2000C53765 /* Q-704 (Signalling Network Functions and Messages).PDF */; };
+		A6E7BF3D1FBECE2100C53765 /* Q-701 (Functional Description MTP).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A6E7BF331FBECE2000C53765 /* Q-701 (Functional Description MTP).PDF */; };
+		A6E7BF3E1FBECE2100C53765 /* Q-706 (MTP Performance).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A6E7BF341FBECE2000C53765 /* Q-706 (MTP Performance).PDF */; };
+		A6E7BF3F1FBECE2100C53765 /* Q-703 (Signalling Link).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A6E7BF351FBECE2000C53765 /* Q-703 (Signalling Link).PDF */; };
+		A6E7BF401FBECE2100C53765 /* Q-707 (testing and maintenance).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A6E7BF361FBECE2100C53765 /* Q-707 (testing and maintenance).PDF */; };
+		A6E7BF411FBECE2100C53765 /* Q-705 (Signalling Network Structure).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A6E7BF371FBECE2100C53765 /* Q-705 (Signalling Network Structure).PDF */; };
+		A6E7BF421FBECE2100C53765 /* Q-708 (Numbering of int. SPCs).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A6E7BF381FBECE2100C53765 /* Q-708 (Numbering of int. SPCs).PDF */; };
+		A6E7BF431FBECE2100C53765 /* Q-700 (SS7 Introduction).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A6E7BF391FBECE2100C53765 /* Q-700 (SS7 Introduction).PDF */; };
+		A6E7BF441FBECE2100C53765 /* Q-702 (Signalling Data Link).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A6E7BF3A1FBECE2100C53765 /* Q-702 (Signalling Data Link).PDF */; };
+		A6E7BF451FBECE2100C53765 /* rfc4165-m2pa.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A6E7BF3B1FBECE2100C53765 /* rfc4165-m2pa.pdf */; };
 		A6E93D2F1A2CE59700854472 /* UMLayerM2PA.h in Headers */ = {isa = PBXBuildFile; fileRef = A6E93D2D1A2CE59700854472 /* UMLayerM2PA.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A6E93D301A2CE59700854472 /* UMLayerM2PA.m in Sources */ = {isa = PBXBuildFile; fileRef = A6E93D2E1A2CE59700854472 /* UMLayerM2PA.m */; };
 		A6E93D311A2CE59700854472 /* UMLayerM2PA.m in Sources */ = {isa = PBXBuildFile; fileRef = A6E93D2E1A2CE59700854472 /* UMLayerM2PA.m */; };
@@ -195,6 +205,16 @@
 		A6DA2B891A2E02F00090FC94 /* UMM2PATask_TimerEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMM2PATask_TimerEvent.h; sourceTree = "<group>"; };
 		A6DA2B8A1A2E02F00090FC94 /* UMM2PATask_TimerEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UMM2PATask_TimerEvent.m; sourceTree = "<group>"; };
 		A6DE3DF81A31F9400090FC94 /* UMM2PALinkStateControl_AllStates.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMM2PALinkStateControl_AllStates.h; sourceTree = "<group>"; };
+		A6E7BF321FBECE2000C53765 /* Q-704 (Signalling Network Functions and Messages).PDF */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Q-704 (Signalling Network Functions and Messages).PDF"; sourceTree = "<group>"; };
+		A6E7BF331FBECE2000C53765 /* Q-701 (Functional Description MTP).PDF */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Q-701 (Functional Description MTP).PDF"; sourceTree = "<group>"; };
+		A6E7BF341FBECE2000C53765 /* Q-706 (MTP Performance).PDF */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Q-706 (MTP Performance).PDF"; sourceTree = "<group>"; };
+		A6E7BF351FBECE2000C53765 /* Q-703 (Signalling Link).PDF */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Q-703 (Signalling Link).PDF"; sourceTree = "<group>"; };
+		A6E7BF361FBECE2100C53765 /* Q-707 (testing and maintenance).PDF */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Q-707 (testing and maintenance).PDF"; sourceTree = "<group>"; };
+		A6E7BF371FBECE2100C53765 /* Q-705 (Signalling Network Structure).PDF */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Q-705 (Signalling Network Structure).PDF"; sourceTree = "<group>"; };
+		A6E7BF381FBECE2100C53765 /* Q-708 (Numbering of int. SPCs).PDF */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Q-708 (Numbering of int. SPCs).PDF"; sourceTree = "<group>"; };
+		A6E7BF391FBECE2100C53765 /* Q-700 (SS7 Introduction).PDF */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Q-700 (SS7 Introduction).PDF"; sourceTree = "<group>"; };
+		A6E7BF3A1FBECE2100C53765 /* Q-702 (Signalling Data Link).PDF */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Q-702 (Signalling Data Link).PDF"; sourceTree = "<group>"; };
+		A6E7BF3B1FBECE2100C53765 /* rfc4165-m2pa.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "rfc4165-m2pa.pdf"; sourceTree = "<group>"; };
 		A6E93D2D1A2CE59700854472 /* UMLayerM2PA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = UMLayerM2PA.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		A6E93D2E1A2CE59700854472 /* UMLayerM2PA.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = UMLayerM2PA.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A6F5424E1A2F66D10090FC94 /* UMM2PATask_AdminAttachOrder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMM2PATask_AdminAttachOrder.h; sourceTree = "<group>"; };
@@ -245,6 +265,7 @@
 				A604D06F19B999400090FC94 /* ulibm2paTests */,
 				A604D05219B999400090FC94 /* Products */,
 				A604D05319B999400090FC94 /* Frameworks */,
+				A6E7BF311FBECDFE00C53765 /* doc */,
 			);
 			sourceTree = "<group>";
 		};
@@ -372,6 +393,23 @@
 				A604D07219B999400090FC94 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		A6E7BF311FBECDFE00C53765 /* doc */ = {
+			isa = PBXGroup;
+			children = (
+				A6E7BF391FBECE2100C53765 /* Q-700 (SS7 Introduction).PDF */,
+				A6E7BF331FBECE2000C53765 /* Q-701 (Functional Description MTP).PDF */,
+				A6E7BF3A1FBECE2100C53765 /* Q-702 (Signalling Data Link).PDF */,
+				A6E7BF351FBECE2000C53765 /* Q-703 (Signalling Link).PDF */,
+				A6E7BF321FBECE2000C53765 /* Q-704 (Signalling Network Functions and Messages).PDF */,
+				A6E7BF371FBECE2100C53765 /* Q-705 (Signalling Network Structure).PDF */,
+				A6E7BF341FBECE2000C53765 /* Q-706 (MTP Performance).PDF */,
+				A6E7BF361FBECE2100C53765 /* Q-707 (testing and maintenance).PDF */,
+				A6E7BF381FBECE2100C53765 /* Q-708 (Numbering of int. SPCs).PDF */,
+				A6E7BF3B1FBECE2100C53765 /* rfc4165-m2pa.pdf */,
+			);
+			path = doc;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -503,8 +541,18 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A6E7BF411FBECE2100C53765 /* Q-705 (Signalling Network Structure).PDF in Resources */,
 				A6BD07651DC2B4F80048E807 /* LICENSE in Resources */,
+				A6E7BF3C1FBECE2100C53765 /* Q-704 (Signalling Network Functions and Messages).PDF in Resources */,
+				A6E7BF3E1FBECE2100C53765 /* Q-706 (MTP Performance).PDF in Resources */,
+				A6E7BF451FBECE2100C53765 /* rfc4165-m2pa.pdf in Resources */,
+				A6E7BF3D1FBECE2100C53765 /* Q-701 (Functional Description MTP).PDF in Resources */,
+				A6E7BF401FBECE2100C53765 /* Q-707 (testing and maintenance).PDF in Resources */,
+				A6E7BF431FBECE2100C53765 /* Q-700 (SS7 Introduction).PDF in Resources */,
 				A604D05F19B999400090FC94 /* InfoPlist.strings in Resources */,
+				A6E7BF441FBECE2100C53765 /* Q-702 (Signalling Data Link).PDF in Resources */,
+				A6E7BF3F1FBECE2100C53765 /* Q-703 (Signalling Link).PDF in Resources */,
+				A6E7BF421FBECE2100C53765 /* Q-708 (Numbering of int. SPCs).PDF in Resources */,
 				A6F693F71B4E83CD0090FC94 /* VERSION in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
