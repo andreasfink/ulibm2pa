@@ -131,6 +131,7 @@ typedef enum SpeedStatus
     UMM2PAInitialAlignmentControl_State *iacState;
     UMMutex *_seqNumLock;
     UMMutex *_dataLock;
+    UMMutex *_controlLock;
     UMMutex *_incomingDataBufferLock;
 
     BOOL    local_processor_outage;

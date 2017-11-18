@@ -171,6 +171,9 @@
         _users = [[UMSynchronizedArray alloc] init];
         _seqNumLock = [[UMMutex alloc]init];
         _dataLock = [[UMMutex alloc]init];
+        _controlLock = [[UMMutex alloc]init];
+        _incomingDataBufferLock = [[UMMutex alloc]init];
+
         lscState = [[UMM2PALinkStateControl_PowerOff alloc]initWithLink:self];
         iacState = [[UMM2PAInitialAlignmentControl_Idle alloc] initWithLink:self];
         slc = 0;
@@ -506,7 +509,8 @@
         [self logDebug:[NSString stringWithFormat:@" %d bytes of linkstatus data received",(int)data.length]];
     }
     
-    @synchronized(control_link_buffer)
+    [_controlLock lock];
+    @try
     {
         [control_link_buffer appendData:data];
         if(control_link_buffer.length < 20)
@@ -568,6 +572,10 @@
         }
         /* according to RFC 4165, the additional stuff are filler bytes */
         [control_link_buffer replaceBytesInRange: NSMakeRange(0,len) withBytes:"" length:0];
+    }
+    @finally
+    {
+        [_controlLock unlock];
     }
 }
 
