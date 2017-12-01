@@ -208,7 +208,7 @@
         t4n = M2PA_DEFAULT_T4_N;
         t4e = M2PA_DEFAULT_T4_E;
         t4r.duration = M2PA_DEFAULT_T4_R;
-        speedometer = [[UMThroughputCounter alloc]init];
+        speedometer = [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
         control_link_buffer = [[NSMutableData alloc] init];
         data_link_buffer = [[NSMutableData alloc] init];
         waitingMessages = [[UMQueue alloc]init];
