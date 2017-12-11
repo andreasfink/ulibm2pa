@@ -14,7 +14,7 @@
 
 @interface UMM2PAInitialAlignmentControl_State : UMObject
 {
-    UMLayerM2PA __weak *_link;
+    UMLayerM2PA  *_link;
 }
 
 - (NSString *)description;

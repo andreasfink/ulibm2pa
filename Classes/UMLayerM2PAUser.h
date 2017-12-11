@@ -16,12 +16,12 @@
 
 @interface UMLayerM2PAUser : UMObject
 {
-    id<UMLayerM2PAUserProtocol> __weak user;
+    id<UMLayerM2PAUserProtocol>  user;
     UMLayerM2PAUserProfile  *profile;
     id                      userId;
 }
 
-@property(readwrite,weak)   id<UMLayerM2PAUserProtocol> user;
+@property(readwrite,strong)   id<UMLayerM2PAUserProtocol> user;
 @property(readwrite,strong) UMLayerM2PAUserProfile *profile;
 @property(readwrite,strong) id userId;
 

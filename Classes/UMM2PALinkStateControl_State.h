@@ -14,7 +14,7 @@
 
 @interface UMM2PALinkStateControl_State : UMObject
 {
-    UMLayerM2PA __weak *_link;
+    UMLayerM2PA  *_link;
 }
 
 - (UMM2PALinkStateControl_State *)initWithLink:(UMLayerM2PA *)link;
