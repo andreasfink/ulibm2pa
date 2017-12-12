@@ -1099,7 +1099,7 @@
     size_t totallen =  headerlen + data.length;
 
     unsigned char *m2pa_header = malloc(totallen);
-    memset(m2pa_header,0,totallen);
+    memset(m2pa_header,0x00,totallen);
 
     m2pa_header[0] = M2PA_VERSION1; /* version field */
     m2pa_header[1] = 0; /* spare field */
