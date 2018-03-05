@@ -169,10 +169,10 @@
     if(self)
     {
         _users = [[UMSynchronizedArray alloc] init];
-        _seqNumLock = [[UMMutex alloc]init];
-        _dataLock = [[UMMutex alloc]init];
-        _controlLock = [[UMMutex alloc]init];
-        _incomingDataBufferLock = [[UMMutex alloc]init];
+        _seqNumLock = [[UMMutex alloc]initWithName:@"m2pa-seq-num-mutex"];
+        _dataLock = [[UMMutex alloc]initWithName:@"m2pa-data-mutex"];
+        _controlLock = [[UMMutex alloc]initWithName:@"m2pa-control-mutex"];
+        _incomingDataBufferLock = [[UMMutex alloc]initWithName:@"m2pa-incoming-data-mutex"];
 
         lscState = [[UMM2PALinkStateControl_PowerOff alloc]initWithLink:self];
         iacState = [[UMM2PAInitialAlignmentControl_Idle alloc] initWithLink:self];
