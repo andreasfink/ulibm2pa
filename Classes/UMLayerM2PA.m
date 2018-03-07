@@ -162,10 +162,14 @@
     @throw([NSException exceptionWithName:@"INVALID_INIT" reason:@"UMLayerM2PA must be initialized via initWithTaskQueueMulti" userInfo:NULL]);
 }
 
-
 - (UMLayerM2PA *)initWithTaskQueueMulti:(UMTaskQueueMulti *)tq
 {
-    self = [super initWithTaskQueueMulti:tq];
+    return [self initWithTaskQueueMulti:tq name:@""];
+}
+
+- (UMLayerM2PA *)initWithTaskQueueMulti:(UMTaskQueueMulti *)tq name:(NSString *)name
+{
+    self = [super initWithTaskQueueMulti:tq name:name];
     if(self)
     {
         _users = [[UMSynchronizedArray alloc] init];

@@ -222,6 +222,7 @@ typedef enum SpeedStatus
 @property(readwrite,assign,atomic) SCTP_Status sctp_status;
 
 - (UMLayerM2PA *)initWithTaskQueueMulti:(UMTaskQueueMulti *)tq;
+- (UMLayerM2PA *)initWithTaskQueueMulti:(UMTaskQueueMulti *)tq name:(NSString *)name;
 
 #pragma mark -
 #pragma mark SCTP Callbacks
