@@ -1774,6 +1774,109 @@
     [self adminAttachOrder:sctpLink];
 }
 
+- (NSDictionary *)apiStatus
+{
+    NSMutableDictionary *d = [[NSMutableDictionary alloc]init];
+    
+    d[@"name"] = self.layerName;
+    d[@"link-state-control"] = [lscState description];
+    d[@"initial-alignment-control-state"] = [iacState description];
+    d[@"attach-to"] = attachTo;
+    d[@"local-processor-outage"] = local_processor_outage ? @(YES) : @(NO);
+    d[@"remote-processor-outage"] = remote_processor_outage ? @(YES) : @(NO);
+    d[@"level3-indication"] = level3Indication ? @(YES) : @(NO);
+    d[@"slc"] = @(slc);
+    d[@"network-indicator"] = @(networkIndicator);
+    d[@"bsn"] = @(bsn);
+    d[@"fsn"] = @(fsn);
+    d[@"bsn2"] = @(bsn2);
+    d[@"outstanding"] = @(outstanding);
+    
+    switch(_m2pa_status)
+    {
+            
+        case M2PA_STATUS_UNUSED:
+            d[@"m2pa-status"] = @"unused";
+            break;
+        case M2PA_STATUS_OFF:
+            d[@"m2pa-status"] = @"off";
+            break;
+        case M2PA_STATUS_OOS:
+            d[@"m2pa-status"] = @"out-of-service";
+            break;
+        case M2PA_STATUS_INITIAL_ALIGNMENT:
+            d[@"m2pa-status"] = @"initial-alignment";
+            break;
+        case M2PA_STATUS_ALIGNED_NOT_READY:
+            d[@"m2pa-status"] = @"not-ready";
+            break;
+        case M2PA_STATUS_ALIGNED_READY :
+            d[@"m2pa-status"] = @"ready";
+            break;
+        case M2PA_STATUS_IS:
+            d[@"m2pa-status"] = @"in-service";
+            break;
+        default:
+            d[@"m2pa-status"] = [NSString stringWithFormat:@"unknown(%d)",_m2pa_status];
+    }
+    d[@"congested"] = congested ? @(YES) : @(NO);
+    d[@"emergency"] = emergency ? @(YES) : @(NO);
+    d[@"autostart"] = autostart ? @(YES) : @(NO);
+    d[@"paused"] = paused ? @(YES) : @(NO);
+    d[@"link-restarts"] = link_restarts ? @(YES) : @(NO);
+    d[@"ready-received"] = @(ready_received);
+    d[@"ready-sent"] = @(ready_sent);
+    d[@"reception-enabled"] = receptionEnabled ? @(YES) : @(NO);
+    d[@"configured-speed"] = @(speed);
+    d[@"window-size"] = @(window_size);
+    d[@"current-speed"] =   [speedometer getSpeedTripleJson];
+    d[@"submission-speed"] =   [submission_speed getSpeedTripleJson];
 
+
+    static NSDateFormatter *dateFormatter = NULL;
+    
+    if(dateFormatter==NULL)
+    {
+        dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
+        [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss.SSS"];
+    }
+    if(link_up_time)
+    {
+        d[@"link-up-time"] =  [dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:link_up_time]];
+    }
+    if(link_down_time)
+    {
+        d[@"link-down-time"] =  [dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:link_down_time]];
+    }
+    if(link_congestion_time)
+    {
+        d[@"link-congestion-time"] =  [dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:link_congestion_time]];
+    }
+    if(link_congestion_cleared_time)
+    {
+        d[@"link-congestion-cleared-time"] =  [dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:link_congestion_cleared_time]];
+    }
+    if(link_speed_excess_time)
+    {
+        d[@"link-speed-excess-time"] =  [dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:link_speed_excess_time]];
+    }
+    if(link_speed_excess_cleared_time)
+    {
+        d[@"link-speed-excess-cleared-time"] =  [dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:link_speed_excess_cleared_time]];
+    }
+    if(speed_status == SPEED_WITHIN_LIMIT)
+    {
+        d[@"speed-status"] = @"within-limit";
+    }
+    else
+    {
+        d[@"speed-status"] = @"speed-exceeded";
+    }
+    d[@"waiting-messages-count"] = @(waitingMessages.count);
+
+    return d;
+}
 
 @end

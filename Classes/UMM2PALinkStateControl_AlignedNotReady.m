@@ -33,7 +33,7 @@
 
 -(NSString *)description
 {
-    return @"UMM2PALinkStateControl_AlignedNotReady";
+    return @"aligned-not-ready";
 }
 
 - (UMM2PALinkStateControl_State *)eventLocalProcessorRecovered:(UMLayerM2PA *)link

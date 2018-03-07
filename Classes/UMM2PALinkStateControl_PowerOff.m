@@ -17,7 +17,7 @@
 
 -(NSString *)description
 {
-    return @"UMM2PALinkStateControl_PowerOff";
+    return @"off";
 }
 
 

@@ -33,7 +33,7 @@
 
 -(NSString *)description
 {
-    return @"UMM2PALinkStateControl_InService";
+    return @"in-service";
 }
 
 

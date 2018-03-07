@@ -32,7 +32,7 @@
 
 -(NSString *)description
 {
-    return @"UMM2PALinkStateControl_ProcessorOutage";
+    return @"processor-outage";
 }
 
 

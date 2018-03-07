@@ -33,7 +33,7 @@
 
 -(NSString *)description
 {
-    return @"UMM2PALinkStateControl_InitialAlignment";
+    return @"initial-alignment";
 }
 
 - (UMM2PALinkStateControl_State *)eventLocalProcessorOutage:(UMLayerM2PA *)link

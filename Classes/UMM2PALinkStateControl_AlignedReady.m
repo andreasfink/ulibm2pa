@@ -32,7 +32,7 @@
 
 -(NSString *)description
 {
-    return @"UMM2PALinkStateControl_AlignedReady";
+    return @"ready";
 }
 
 - (UMM2PALinkStateControl_State *)eventSIPO:(UMLayerM2PA *)link

@@ -124,7 +124,7 @@ typedef enum SpeedStatus
 
 @interface UMLayerM2PA : UMLayer<UMLayerSctpUserProtocol>
 {
-    NSString *name;
+    //NSString *name;
     UMSynchronizedArray *_users;
     NSString *attachTo;
     UMM2PALinkStateControl_State        *lscState;
@@ -407,5 +407,6 @@ typedef enum SpeedStatus
 -(void)protocolViolation;
 -(void)setM2pa_status:(M2PA_Status)status;
 - (void)resetSequenceNumbers;
+- (NSDictionary *)apiStatus;
 
 @end

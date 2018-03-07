@@ -34,7 +34,7 @@
 
 -(NSString *)description
 {
-    return @"UMM2PALinkStateControl_OutOfService";
+    return @"oos";
 }
 
 - (UMM2PALinkStateControl_State *)eventSIO:(UMLayerM2PA *)link
