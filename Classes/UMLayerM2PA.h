@@ -173,6 +173,12 @@ typedef enum SpeedStatus
     int     window_size;
     UMThroughputCounter	*speedometer;
     UMThroughputCounter	*submission_speed;
+
+    UMThroughputCounter *_inboundThroughputPackets;
+    UMThroughputCounter *_outboundThroughputPackets;
+    UMThroughputCounter *_inboundThroughputBytes;
+    UMThroughputCounter *_outboundThroughputBytes;
+
     time_t  link_up_time;
     time_t  link_down_time;
     time_t  link_congestion_time;
@@ -220,6 +226,11 @@ typedef enum SpeedStatus
 @property(readwrite,assign)     UMMicroSec      t4e;
 @property(readwrite,assign,atomic) M2PA_Status m2pa_status;
 @property(readwrite,assign,atomic) SCTP_Status sctp_status;
+@property(readwrite,strong,atomic)  UMThroughputCounter *inboundThroughputPackets;
+@property(readwrite,strong,atomic)  UMThroughputCounter *outboundThroughputPackets;
+@property(readwrite,strong,atomic)  UMThroughputCounter *inboundThroughputBytes;
+@property(readwrite,strong,atomic)  UMThroughputCounter *outboundThroughputBytes;
+@property(readwrite,assign,atomic)  SpeedStatus speed_status;
 
 - (UMLayerM2PA *)initWithTaskQueueMulti:(UMTaskQueueMulti *)tq;
 - (UMLayerM2PA *)initWithTaskQueueMulti:(UMTaskQueueMulti *)tq name:(NSString *)name;

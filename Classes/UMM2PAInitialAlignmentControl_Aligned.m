@@ -17,7 +17,7 @@
 
 - (NSString *)description
 {
-    return @"UMM2PAInitialAlignmentControl_Aligned";
+    return @"aligned";
 }
 
 

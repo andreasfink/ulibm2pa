@@ -17,7 +17,7 @@
 
 -(NSString *)description
 {
-    return @"UMM2PALinkStateControl_State";
+    return @"undefined-state";
 }
 
 - (UMM2PALinkStateControl_State *)eventAlignmentNotPossible:(UMLayerM2PA *)link

@@ -18,7 +18,7 @@
 
 - (NSString *)description
 {
-    return @"UMM2PAInitialAlignmentControl_Proving";
+    return @"proving";
 }
 
 - (UMM2PAInitialAlignmentControl_Proving *)initWithLink:(UMLayerM2PA *)link

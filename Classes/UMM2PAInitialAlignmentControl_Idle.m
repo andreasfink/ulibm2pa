@@ -17,7 +17,7 @@
 
 - (NSString *)description
 {
-    return @"UMM2PAInitialAlignmentControl_Idle";
+    return @"idle";
 }
 
 - (UMM2PAInitialAlignmentControl_Idle *)initWithLink:(UMLayerM2PA *)link

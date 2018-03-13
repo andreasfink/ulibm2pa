@@ -216,6 +216,12 @@
         control_link_buffer = [[NSMutableData alloc] init];
         data_link_buffer = [[NSMutableData alloc] init];
         waitingMessages = [[UMQueue alloc]init];
+
+        _inboundThroughputPackets =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
+        _outboundThroughputPackets =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
+        _inboundThroughputBytes =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
+        _outboundThroughputBytes =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
+
     }
     return self;
 }
@@ -421,6 +427,8 @@
 
 - (void) sctpIncomingDataMessage:(NSData *)data
 {
+    [_inboundThroughputPackets increaseBy:1];
+    [_inboundThroughputBytes increaseBy:(uint32_t)data.length];
 
     u_int32_t len;
     
@@ -1095,6 +1103,9 @@
           stream:(uint16_t)streamId
       ackRequest:(NSDictionary *)ackRequest
 {
+    [_outboundThroughputBytes increaseBy:(uint32_t)data.length];
+    [_outboundThroughputPackets increaseBy:1];
+
     [_dataLock lock];
     [t1 stop]; /* alignment ready	*/
     [t6 stop]; /* Remote congestion	*/
