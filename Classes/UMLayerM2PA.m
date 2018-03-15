@@ -72,6 +72,7 @@
 @synthesize t7;
 @synthesize t4n;
 @synthesize t4e;
+@synthesize speed_status;
 
 #pragma mark -
 #pragma mark Initializer
