@@ -419,5 +419,6 @@ typedef enum SpeedStatus
 -(void)setM2pa_status:(M2PA_Status)status;
 - (void)resetSequenceNumbers;
 - (NSDictionary *)apiStatus;
+- (void)stopDetachAndDestroy;
 
 @end
