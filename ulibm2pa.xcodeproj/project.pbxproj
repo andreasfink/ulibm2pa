@@ -13,6 +13,16 @@
 		A604D07419B999400090FC94 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A604D07219B999400090FC94 /* InfoPlist.strings */; };
 		A604D07619B999400090FC94 /* ulibm2paTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A604D07519B999400090FC94 /* ulibm2paTests.m */; };
 		A615D9091B4D5ED900854472 /* ulib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A615D9081B4D5ED900854472 /* ulib.framework */; };
+		A63220A520610A81006CC06A /* rfc4165-m2pa.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A632209B20610A81006CC06A /* rfc4165-m2pa.pdf */; };
+		A63220A620610A81006CC06A /* Q-702 (Signalling Data Link).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A632209C20610A81006CC06A /* Q-702 (Signalling Data Link).PDF */; };
+		A63220A720610A81006CC06A /* Q-703 (Signalling Link).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A632209D20610A81006CC06A /* Q-703 (Signalling Link).PDF */; };
+		A63220A820610A81006CC06A /* Q-707 (testing and maintenance).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A632209E20610A81006CC06A /* Q-707 (testing and maintenance).PDF */; };
+		A63220A920610A81006CC06A /* Q-700 (SS7 Introduction).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A632209F20610A81006CC06A /* Q-700 (SS7 Introduction).PDF */; };
+		A63220AA20610A81006CC06A /* Q-706 (MTP Performance).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A63220A020610A81006CC06A /* Q-706 (MTP Performance).PDF */; };
+		A63220AB20610A81006CC06A /* Q-701 (Functional Description MTP).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A63220A120610A81006CC06A /* Q-701 (Functional Description MTP).PDF */; };
+		A63220AC20610A81006CC06A /* Q-708 (Numbering of int. SPCs).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A63220A220610A81006CC06A /* Q-708 (Numbering of int. SPCs).PDF */; };
+		A63220AD20610A81006CC06A /* Q-704 (Signalling Network Functions and Messages).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A63220A320610A81006CC06A /* Q-704 (Signalling Network Functions and Messages).PDF */; };
+		A63220AE20610A81006CC06A /* Q-705 (Signalling Network Structure).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A63220A420610A81006CC06A /* Q-705 (Signalling Network Structure).PDF */; };
 		A634B48F1A2E7AE900854472 /* UMLayerM2PAUser.h in Headers */ = {isa = PBXBuildFile; fileRef = A634B48D1A2E7AE900854472 /* UMLayerM2PAUser.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A634B4901A2E7AE900854472 /* UMLayerM2PAUser.m in Sources */ = {isa = PBXBuildFile; fileRef = A634B48E1A2E7AE900854472 /* UMLayerM2PAUser.m */; };
 		A634B4911A2E7AE900854472 /* UMLayerM2PAUser.m in Sources */ = {isa = PBXBuildFile; fileRef = A634B48E1A2E7AE900854472 /* UMLayerM2PAUser.m */; };
@@ -138,6 +148,16 @@
 		A604D07319B999400090FC94 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A604D07519B999400090FC94 /* ulibm2paTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ulibm2paTests.m; sourceTree = "<group>"; };
 		A615D9081B4D5ED900854472 /* ulib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ulib.framework; path = /Library/Frameworks/ulib.framework; sourceTree = "<absolute>"; };
+		A632209B20610A81006CC06A /* rfc4165-m2pa.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "rfc4165-m2pa.pdf"; sourceTree = "<group>"; };
+		A632209C20610A81006CC06A /* Q-702 (Signalling Data Link).PDF */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Q-702 (Signalling Data Link).PDF"; sourceTree = "<group>"; };
+		A632209D20610A81006CC06A /* Q-703 (Signalling Link).PDF */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Q-703 (Signalling Link).PDF"; sourceTree = "<group>"; };
+		A632209E20610A81006CC06A /* Q-707 (testing and maintenance).PDF */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Q-707 (testing and maintenance).PDF"; sourceTree = "<group>"; };
+		A632209F20610A81006CC06A /* Q-700 (SS7 Introduction).PDF */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Q-700 (SS7 Introduction).PDF"; sourceTree = "<group>"; };
+		A63220A020610A81006CC06A /* Q-706 (MTP Performance).PDF */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Q-706 (MTP Performance).PDF"; sourceTree = "<group>"; };
+		A63220A120610A81006CC06A /* Q-701 (Functional Description MTP).PDF */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Q-701 (Functional Description MTP).PDF"; sourceTree = "<group>"; };
+		A63220A220610A81006CC06A /* Q-708 (Numbering of int. SPCs).PDF */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Q-708 (Numbering of int. SPCs).PDF"; sourceTree = "<group>"; };
+		A63220A320610A81006CC06A /* Q-704 (Signalling Network Functions and Messages).PDF */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Q-704 (Signalling Network Functions and Messages).PDF"; sourceTree = "<group>"; };
+		A63220A420610A81006CC06A /* Q-705 (Signalling Network Structure).PDF */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Q-705 (Signalling Network Structure).PDF"; sourceTree = "<group>"; };
 		A634B48D1A2E7AE900854472 /* UMLayerM2PAUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMLayerM2PAUser.h; sourceTree = "<group>"; };
 		A634B48E1A2E7AE900854472 /* UMLayerM2PAUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UMLayerM2PAUser.m; sourceTree = "<group>"; };
 		A634B4921A2E913900854472 /* UMLayerM2PAUserProfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMLayerM2PAUserProfile.h; sourceTree = "<group>"; };
@@ -254,6 +274,7 @@
 		A604D04719B999400090FC94 = {
 			isa = PBXGroup;
 			children = (
+				A632209A20610A81006CC06A /* doc */,
 				A6F693F61B4E83CD0090FC94 /* VERSION */,
 				A6BD07641DC2B4F80048E807 /* LICENSE */,
 				A6F693F51B4E83C40090FC94 /* configure.in */,
@@ -393,6 +414,23 @@
 				A604D07219B999400090FC94 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		A632209A20610A81006CC06A /* doc */ = {
+			isa = PBXGroup;
+			children = (
+				A632209B20610A81006CC06A /* rfc4165-m2pa.pdf */,
+				A632209C20610A81006CC06A /* Q-702 (Signalling Data Link).PDF */,
+				A632209D20610A81006CC06A /* Q-703 (Signalling Link).PDF */,
+				A632209E20610A81006CC06A /* Q-707 (testing and maintenance).PDF */,
+				A632209F20610A81006CC06A /* Q-700 (SS7 Introduction).PDF */,
+				A63220A020610A81006CC06A /* Q-706 (MTP Performance).PDF */,
+				A63220A120610A81006CC06A /* Q-701 (Functional Description MTP).PDF */,
+				A63220A220610A81006CC06A /* Q-708 (Numbering of int. SPCs).PDF */,
+				A63220A320610A81006CC06A /* Q-704 (Signalling Network Functions and Messages).PDF */,
+				A63220A420610A81006CC06A /* Q-705 (Signalling Network Structure).PDF */,
+			);
+			path = doc;
 			sourceTree = "<group>";
 		};
 		A6E7BF311FBECDFE00C53765 /* doc */ = {
@@ -542,10 +580,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				A6E7BF411FBECE2100C53765 /* Q-705 (Signalling Network Structure).PDF in Resources */,
+				A63220A920610A81006CC06A /* Q-700 (SS7 Introduction).PDF in Resources */,
 				A6BD07651DC2B4F80048E807 /* LICENSE in Resources */,
+				A63220AD20610A81006CC06A /* Q-704 (Signalling Network Functions and Messages).PDF in Resources */,
+				A63220A720610A81006CC06A /* Q-703 (Signalling Link).PDF in Resources */,
+				A63220A620610A81006CC06A /* Q-702 (Signalling Data Link).PDF in Resources */,
+				A63220AA20610A81006CC06A /* Q-706 (MTP Performance).PDF in Resources */,
+				A63220AE20610A81006CC06A /* Q-705 (Signalling Network Structure).PDF in Resources */,
+				A63220A520610A81006CC06A /* rfc4165-m2pa.pdf in Resources */,
 				A6E7BF3C1FBECE2100C53765 /* Q-704 (Signalling Network Functions and Messages).PDF in Resources */,
 				A6E7BF3E1FBECE2100C53765 /* Q-706 (MTP Performance).PDF in Resources */,
 				A6E7BF451FBECE2100C53765 /* rfc4165-m2pa.pdf in Resources */,
+				A63220AC20610A81006CC06A /* Q-708 (Numbering of int. SPCs).PDF in Resources */,
 				A6E7BF3D1FBECE2100C53765 /* Q-701 (Functional Description MTP).PDF in Resources */,
 				A6E7BF401FBECE2100C53765 /* Q-707 (testing and maintenance).PDF in Resources */,
 				A6E7BF431FBECE2100C53765 /* Q-700 (SS7 Introduction).PDF in Resources */,
@@ -553,7 +599,9 @@
 				A6E7BF441FBECE2100C53765 /* Q-702 (Signalling Data Link).PDF in Resources */,
 				A6E7BF3F1FBECE2100C53765 /* Q-703 (Signalling Link).PDF in Resources */,
 				A6E7BF421FBECE2100C53765 /* Q-708 (Numbering of int. SPCs).PDF in Resources */,
+				A63220AB20610A81006CC06A /* Q-701 (Functional Description MTP).PDF in Resources */,
 				A6F693F71B4E83CD0090FC94 /* VERSION in Resources */,
+				A63220A820610A81006CC06A /* Q-707 (testing and maintenance).PDF in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
