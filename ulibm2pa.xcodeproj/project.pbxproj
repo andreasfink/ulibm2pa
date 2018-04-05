@@ -13,16 +13,6 @@
 		A604D07419B999400090FC94 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A604D07219B999400090FC94 /* InfoPlist.strings */; };
 		A604D07619B999400090FC94 /* ulibm2paTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A604D07519B999400090FC94 /* ulibm2paTests.m */; };
 		A615D9091B4D5ED900854472 /* ulib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A615D9081B4D5ED900854472 /* ulib.framework */; };
-		A63220A520610A81006CC06A /* rfc4165-m2pa.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A632209B20610A81006CC06A /* rfc4165-m2pa.pdf */; };
-		A63220A620610A81006CC06A /* Q-702 (Signalling Data Link).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A632209C20610A81006CC06A /* Q-702 (Signalling Data Link).PDF */; };
-		A63220A720610A81006CC06A /* Q-703 (Signalling Link).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A632209D20610A81006CC06A /* Q-703 (Signalling Link).PDF */; };
-		A63220A820610A81006CC06A /* Q-707 (testing and maintenance).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A632209E20610A81006CC06A /* Q-707 (testing and maintenance).PDF */; };
-		A63220A920610A81006CC06A /* Q-700 (SS7 Introduction).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A632209F20610A81006CC06A /* Q-700 (SS7 Introduction).PDF */; };
-		A63220AA20610A81006CC06A /* Q-706 (MTP Performance).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A63220A020610A81006CC06A /* Q-706 (MTP Performance).PDF */; };
-		A63220AB20610A81006CC06A /* Q-701 (Functional Description MTP).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A63220A120610A81006CC06A /* Q-701 (Functional Description MTP).PDF */; };
-		A63220AC20610A81006CC06A /* Q-708 (Numbering of int. SPCs).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A63220A220610A81006CC06A /* Q-708 (Numbering of int. SPCs).PDF */; };
-		A63220AD20610A81006CC06A /* Q-704 (Signalling Network Functions and Messages).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A63220A320610A81006CC06A /* Q-704 (Signalling Network Functions and Messages).PDF */; };
-		A63220AE20610A81006CC06A /* Q-705 (Signalling Network Structure).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A63220A420610A81006CC06A /* Q-705 (Signalling Network Structure).PDF */; };
 		A634B48F1A2E7AE900854472 /* UMLayerM2PAUser.h in Headers */ = {isa = PBXBuildFile; fileRef = A634B48D1A2E7AE900854472 /* UMLayerM2PAUser.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A634B4901A2E7AE900854472 /* UMLayerM2PAUser.m in Sources */ = {isa = PBXBuildFile; fileRef = A634B48E1A2E7AE900854472 /* UMLayerM2PAUser.m */; };
 		A634B4911A2E7AE900854472 /* UMLayerM2PAUser.m in Sources */ = {isa = PBXBuildFile; fileRef = A634B48E1A2E7AE900854472 /* UMLayerM2PAUser.m */; };
@@ -101,21 +91,10 @@
 		A6B718331A31F1410090FC94 /* UMM2PALinkStateControl_ProcessorOutage.m in Sources */ = {isa = PBXBuildFile; fileRef = A6B718311A31F1410090FC94 /* UMM2PALinkStateControl_ProcessorOutage.m */; };
 		A6B718361A31F17E0090FC94 /* UMM2PALinkStateControl_InService.h in Headers */ = {isa = PBXBuildFile; fileRef = A6B718341A31F17E0090FC94 /* UMM2PALinkStateControl_InService.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A6B718371A31F17E0090FC94 /* UMM2PALinkStateControl_InService.m in Sources */ = {isa = PBXBuildFile; fileRef = A6B718351A31F17E0090FC94 /* UMM2PALinkStateControl_InService.m */; };
-		A6BD07651DC2B4F80048E807 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = A6BD07641DC2B4F80048E807 /* LICENSE */; };
 		A6DA2B8B1A2E02F00090FC94 /* UMM2PATask_TimerEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = A6DA2B891A2E02F00090FC94 /* UMM2PATask_TimerEvent.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A6DA2B8C1A2E02F00090FC94 /* UMM2PATask_TimerEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = A6DA2B8A1A2E02F00090FC94 /* UMM2PATask_TimerEvent.m */; };
 		A6DA2B8D1A2E02F00090FC94 /* UMM2PATask_TimerEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = A6DA2B8A1A2E02F00090FC94 /* UMM2PATask_TimerEvent.m */; };
 		A6DE3DF91A31F9400090FC94 /* UMM2PALinkStateControl_AllStates.h in Headers */ = {isa = PBXBuildFile; fileRef = A6DE3DF81A31F9400090FC94 /* UMM2PALinkStateControl_AllStates.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A6E7BF3C1FBECE2100C53765 /* Q-704 (Signalling Network Functions and Messages).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A6E7BF321FBECE2000C53765 /* Q-704 (Signalling Network Functions and Messages).PDF */; };
-		A6E7BF3D1FBECE2100C53765 /* Q-701 (Functional Description MTP).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A6E7BF331FBECE2000C53765 /* Q-701 (Functional Description MTP).PDF */; };
-		A6E7BF3E1FBECE2100C53765 /* Q-706 (MTP Performance).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A6E7BF341FBECE2000C53765 /* Q-706 (MTP Performance).PDF */; };
-		A6E7BF3F1FBECE2100C53765 /* Q-703 (Signalling Link).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A6E7BF351FBECE2000C53765 /* Q-703 (Signalling Link).PDF */; };
-		A6E7BF401FBECE2100C53765 /* Q-707 (testing and maintenance).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A6E7BF361FBECE2100C53765 /* Q-707 (testing and maintenance).PDF */; };
-		A6E7BF411FBECE2100C53765 /* Q-705 (Signalling Network Structure).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A6E7BF371FBECE2100C53765 /* Q-705 (Signalling Network Structure).PDF */; };
-		A6E7BF421FBECE2100C53765 /* Q-708 (Numbering of int. SPCs).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A6E7BF381FBECE2100C53765 /* Q-708 (Numbering of int. SPCs).PDF */; };
-		A6E7BF431FBECE2100C53765 /* Q-700 (SS7 Introduction).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A6E7BF391FBECE2100C53765 /* Q-700 (SS7 Introduction).PDF */; };
-		A6E7BF441FBECE2100C53765 /* Q-702 (Signalling Data Link).PDF in Resources */ = {isa = PBXBuildFile; fileRef = A6E7BF3A1FBECE2100C53765 /* Q-702 (Signalling Data Link).PDF */; };
-		A6E7BF451FBECE2100C53765 /* rfc4165-m2pa.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A6E7BF3B1FBECE2100C53765 /* rfc4165-m2pa.pdf */; };
 		A6E93D2F1A2CE59700854472 /* UMLayerM2PA.h in Headers */ = {isa = PBXBuildFile; fileRef = A6E93D2D1A2CE59700854472 /* UMLayerM2PA.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A6E93D301A2CE59700854472 /* UMLayerM2PA.m in Sources */ = {isa = PBXBuildFile; fileRef = A6E93D2E1A2CE59700854472 /* UMLayerM2PA.m */; };
 		A6E93D311A2CE59700854472 /* UMLayerM2PA.m in Sources */ = {isa = PBXBuildFile; fileRef = A6E93D2E1A2CE59700854472 /* UMLayerM2PA.m */; };
@@ -123,7 +102,6 @@
 		A6F542511A2F66D10090FC94 /* UMM2PATask_AdminAttachOrder.m in Sources */ = {isa = PBXBuildFile; fileRef = A6F5424F1A2F66D10090FC94 /* UMM2PATask_AdminAttachOrder.m */; };
 		A6F542541A2F68BA0090FC94 /* UMM2PATask_AdminDetachOrder.h in Headers */ = {isa = PBXBuildFile; fileRef = A6F542521A2F68BA0090FC94 /* UMM2PATask_AdminDetachOrder.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A6F542551A2F68BA0090FC94 /* UMM2PATask_AdminDetachOrder.m in Sources */ = {isa = PBXBuildFile; fileRef = A6F542531A2F68BA0090FC94 /* UMM2PATask_AdminDetachOrder.m */; };
-		A6F693F71B4E83CD0090FC94 /* VERSION in Resources */ = {isa = PBXBuildFile; fileRef = A6F693F61B4E83CD0090FC94 /* VERSION */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -544,7 +522,7 @@
 		A604D04819B999400090FC94 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0900;
+				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = "Andreas Fink (andreas@fink.org)";
 				TargetAttributes = {
 					A604D05019B999400090FC94 = {
@@ -579,29 +557,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A6E7BF411FBECE2100C53765 /* Q-705 (Signalling Network Structure).PDF in Resources */,
-				A63220A920610A81006CC06A /* Q-700 (SS7 Introduction).PDF in Resources */,
-				A6BD07651DC2B4F80048E807 /* LICENSE in Resources */,
-				A63220AD20610A81006CC06A /* Q-704 (Signalling Network Functions and Messages).PDF in Resources */,
-				A63220A720610A81006CC06A /* Q-703 (Signalling Link).PDF in Resources */,
-				A63220A620610A81006CC06A /* Q-702 (Signalling Data Link).PDF in Resources */,
-				A63220AA20610A81006CC06A /* Q-706 (MTP Performance).PDF in Resources */,
-				A63220AE20610A81006CC06A /* Q-705 (Signalling Network Structure).PDF in Resources */,
-				A63220A520610A81006CC06A /* rfc4165-m2pa.pdf in Resources */,
-				A6E7BF3C1FBECE2100C53765 /* Q-704 (Signalling Network Functions and Messages).PDF in Resources */,
-				A6E7BF3E1FBECE2100C53765 /* Q-706 (MTP Performance).PDF in Resources */,
-				A6E7BF451FBECE2100C53765 /* rfc4165-m2pa.pdf in Resources */,
-				A63220AC20610A81006CC06A /* Q-708 (Numbering of int. SPCs).PDF in Resources */,
-				A6E7BF3D1FBECE2100C53765 /* Q-701 (Functional Description MTP).PDF in Resources */,
-				A6E7BF401FBECE2100C53765 /* Q-707 (testing and maintenance).PDF in Resources */,
-				A6E7BF431FBECE2100C53765 /* Q-700 (SS7 Introduction).PDF in Resources */,
 				A604D05F19B999400090FC94 /* InfoPlist.strings in Resources */,
-				A6E7BF441FBECE2100C53765 /* Q-702 (Signalling Data Link).PDF in Resources */,
-				A6E7BF3F1FBECE2100C53765 /* Q-703 (Signalling Link).PDF in Resources */,
-				A6E7BF421FBECE2100C53765 /* Q-708 (Numbering of int. SPCs).PDF in Resources */,
-				A63220AB20610A81006CC06A /* Q-701 (Functional Description MTP).PDF in Resources */,
-				A6F693F71B4E83CD0090FC94 /* VERSION in Resources */,
-				A63220A820610A81006CC06A /* Q-707 (testing and maintenance).PDF in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -722,12 +678,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -777,12 +735,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;

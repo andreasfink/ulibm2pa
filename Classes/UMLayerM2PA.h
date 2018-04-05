@@ -126,7 +126,6 @@ typedef enum SpeedStatus
 {
     //NSString *name;
     UMSynchronizedArray *_users;
-    NSString *attachTo;
     UMM2PALinkStateControl_State        *lscState;
     UMM2PAInitialAlignmentControl_State *iacState;
     UMMutex *_seqNumLock;
@@ -193,6 +192,7 @@ typedef enum SpeedStatus
 }
 
 @property(readwrite,strong)     NSString *name;
+
 @property(readwrite,strong)     UMM2PALinkStateControl_State        *lscState;
 @property(readwrite,strong)     UMM2PAInitialAlignmentControl_State *iacState;
 

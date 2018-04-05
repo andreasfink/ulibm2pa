@@ -1698,7 +1698,7 @@
 {
     NSMutableDictionary *config = [[NSMutableDictionary alloc]init];
     [self addLayerConfig:config];
-    config[@"attach-to"] = attachTo;
+    config[@"attach-to"] = sctpLink.layerName;
     config[@"autostart"] = autostart ? @YES : @ NO;
     config[@"window-size"] = @(window_size);
     config[@"speed"] = @(speed);
@@ -1725,7 +1725,7 @@
     }
     if(cfg[@"attach-to"])
     {
-        attachTo =  [cfg[@"attach-to"] stringValue];
+        NSString *attachTo =  [cfg[@"attach-to"] stringValue];
         sctpLink = [appContext getSCTP:attachTo];
         if(sctpLink == NULL)
         {
@@ -1793,7 +1793,7 @@
     d[@"name"] = self.layerName;
     d[@"link-state-control"] = [lscState description];
     d[@"initial-alignment-control-state"] = [iacState description];
-    d[@"attach-to"] = attachTo;
+    d[@"attach-to"] = sctpLink.layerName;
     d[@"local-processor-outage"] = local_processor_outage ? @(YES) : @(NO);
     d[@"remote-processor-outage"] = remote_processor_outage ? @(YES) : @(NO);
     d[@"level3-indication"] = level3Indication ? @(YES) : @(NO);
