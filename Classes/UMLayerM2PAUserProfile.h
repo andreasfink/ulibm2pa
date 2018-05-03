@@ -13,12 +13,12 @@
 
 @interface UMLayerM2PAUserProfile : UMObject
 {
-    BOOL allMessages;
-    BOOL sctpLinkstateMessages;
-    BOOL m2paLinkstateMessages;
-    BOOL dataMessages;
-    BOOL processorOutageMessages;
-    
+    BOOL _allMessages;
+    BOOL _sctpLinkstateMessages;
+    BOOL _m2paLinkstateMessages;
+    BOOL _dataMessages;
+    BOOL _processorOutageMessages;
+    BOOL _owner;
 }
 
 @property(readwrite,assign) BOOL allMessages;
@@ -26,6 +26,7 @@
 @property(readwrite,assign) BOOL m2paLinkstateMessages;
 @property(readwrite,assign) BOOL dataMessages;
 @property(readwrite,assign) BOOL processorOutageMessages;
+@property(readwrite,assign) BOOL owner;
 
 
 

@@ -13,29 +13,25 @@
 
 @implementation UMLayerM2PAUserProfile
 
-@synthesize allMessages;
-@synthesize sctpLinkstateMessages;
-@synthesize m2paLinkstateMessages;
-@synthesize dataMessages;
-@synthesize processorOutageMessages;
 
 - (UMLayerM2PAUserProfile *)initWithDefaultProfile
 {
     self = [super init];
     if(self)
     {
-        allMessages = YES;
-        sctpLinkstateMessages = YES;
-        m2paLinkstateMessages = YES;
-        dataMessages = YES;
-        processorOutageMessages = YES;
+        _allMessages = YES;
+        _sctpLinkstateMessages = YES;
+        _m2paLinkstateMessages = YES;
+        _dataMessages = YES;
+        _processorOutageMessages = YES;
+        _owner = YES;
     }
     return self;
 }
 
 - (BOOL) wantsDataMessages
 {
-    if((allMessages) || (dataMessages))
+    if((_allMessages) || (_dataMessages))
     {
         return YES;
     }
@@ -44,7 +40,7 @@
 
 - (BOOL) wantsSctpLinkstateMessages
 {
-    if((allMessages) || (sctpLinkstateMessages))
+    if((_allMessages) || (_sctpLinkstateMessages))
     {
         return YES;
     }
@@ -53,7 +49,7 @@
 
 - (BOOL) wantsM2PALinkstateMessages
 {
-    if((allMessages) || (m2paLinkstateMessages))
+    if((_allMessages) || (_m2paLinkstateMessages))
     {
         return YES;
     }
@@ -62,7 +58,7 @@
 
 - (BOOL) wantsProcessorOutageMessages
 {
-    if((allMessages) || (processorOutageMessages))
+    if((_allMessages) || (_processorOutageMessages))
     {
         return YES;
     }

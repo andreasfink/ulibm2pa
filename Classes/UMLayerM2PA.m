@@ -1360,8 +1360,6 @@
     self.m2pa_status = M2PA_STATUS_OOS;
 }
 
-    
-
 - (NSString *)linkStatusString:(M2PA_linkstate_message) linkstate
 {
     switch(linkstate)
