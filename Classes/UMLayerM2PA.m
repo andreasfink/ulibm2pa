@@ -197,22 +197,17 @@
         speed = 100.0;
         window_size = 128;
         
-        t1 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires1) object:NULL duration:M2PA_DEFAULT_T1 name:@"t1" repeats:NO];
-        t2 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires2) object:NULL duration:M2PA_DEFAULT_T2 name:@"t2" repeats:NO];
-        t3 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires3) object:NULL duration:M2PA_DEFAULT_T3 name:@"t3" repeats:NO];
-        t4 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires4) object:NULL duration:M2PA_DEFAULT_T4_N name:@"t4" repeats:NO];
-        t4r = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires4r) object:NULL duration:M2PA_DEFAULT_T4_R name:@"t4t" repeats:NO];
-        t5 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires5) object:NULL duration:M2PA_DEFAULT_T5 name:@"t5" repeats:NO];
-        t6 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires6) object:NULL duration:M2PA_DEFAULT_T6 name:@"t6" repeats:NO];
-        t7 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires7) object:NULL duration:M2PA_DEFAULT_T7 name:@"t7" repeats:NO];
+        t1 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires1) object:NULL seconds:M2PA_DEFAULT_T1 name:@"t1" repeats:NO];
+        t2 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires2) object:NULL seconds:M2PA_DEFAULT_T2 name:@"t2" repeats:NO];
+        t3 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires3) object:NULL seconds:M2PA_DEFAULT_T3 name:@"t3" repeats:NO];
+        t4 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires4) object:NULL seconds:M2PA_DEFAULT_T4_N name:@"t4" repeats:NO];
+        t4r = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires4r) object:NULL seconds:M2PA_DEFAULT_T4_R name:@"t4t" repeats:NO];
+        t5 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires5) object:NULL seconds:M2PA_DEFAULT_T5 name:@"t5" repeats:NO];
+        t6 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires6) object:NULL seconds:M2PA_DEFAULT_T6 name:@"t6" repeats:NO];
+        t7 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires7) object:NULL seconds:M2PA_DEFAULT_T7 name:@"t7" repeats:NO];
         
-        t1.duration = M2PA_DEFAULT_T1;
-        t2.duration = M2PA_DEFAULT_T2;
-        t3.duration = M2PA_DEFAULT_T3;
-        t4.duration = M2PA_DEFAULT_T4_N;
         t4n = M2PA_DEFAULT_T4_N;
         t4e = M2PA_DEFAULT_T4_E;
-        t4r.duration = M2PA_DEFAULT_T4_R;
         speedometer = [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
         control_link_buffer = [[NSMutableData alloc] init];
         data_link_buffer = [[NSMutableData alloc] init];
