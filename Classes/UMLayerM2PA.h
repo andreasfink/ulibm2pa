@@ -55,24 +55,24 @@
 
 /* default timer values */
 /* all timers are  in microseconds */
-#define	M2PA_DEFAULT_T1	45000000LL /* 45s */
+#define	M2PA_DEFAULT_T1	45.000000 /* 45s */
 /* T1:  alignment ready */
 /*  highspeed: 25-350s */
 /*  64k link: 40-50s	*/
 /*  4.8k: 500-600s */
 
-#define	M2PA_DEFAULT_T2	60000000LL /* 6s */
+#define	M2PA_DEFAULT_T2	6.0 /* 6s */
 /* T2: not aligned */
 /* low: 5-50s */
 /* high: 70-150s */
 
-#define	M2PA_DEFAULT_T3	2000000LL /* 2sec */
+#define	M2PA_DEFAULT_T3	2.0 /* 2sec */
 /* T2: aligned  */
 /* 1-2s */
 
-#define	M2PA_DEFAULT_T4_N	8000000LL		/* normal proving period  3-70s  8s */
-#define	M2PA_DEFAULT_T4_E	500000LL        /* emergency proving period  0.4s - 0.6s : 0.5s*/
-#define	M2PA_DEFAULT_T4_R	2000000LL		/* resending timer of link status proving every 2 seconds */
+#define	M2PA_DEFAULT_T4_N	8.0		/* normal proving period  3-70s  8s */
+#define	M2PA_DEFAULT_T4_E	0.5        /* emergency proving period  0.4s - 0.6s : 0.5s*/
+#define	M2PA_DEFAULT_T4_R	2.0		/* resending timer of link status proving every 2 seconds */
 /*T4: proving period normal */
 /*  highspeed: 3-70s */
 /*  64k:	7.5-9.5s, nominal 8.5s */
@@ -84,15 +84,15 @@
 /* on cisco:   <500-1200>  t04 timer value (in ms) */
 
 
-#define	M2PA_DEFAULT_T5	100000LL /* 100ms */
+#define	M2PA_DEFAULT_T5	0.1 /* 100ms */
 /* Timer sending SIB. 80-120ms */
 
-#define	M2PA_DEFAULT_T6	3500000LL /*3.5s */
+#define	M2PA_DEFAULT_T6	3.5 /*3.5s */
 /* Remote congestion */
 /* 64k: 3-6s */
 /* 4.8k 8-12s */
 
-#define	M2PA_DEFAULT_T7	1000000LL /* 1s */
+#define	M2PA_DEFAULT_T7	1.0 /* 1s */
 /* excessive delay of acknowledgement */
 /* 64k: 0.5-2s */
 /* 4.8k 4-6s */
