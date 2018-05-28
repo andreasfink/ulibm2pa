@@ -59,8 +59,6 @@
 @synthesize ready_received;
 @synthesize ready_sent;
 @synthesize paused;
-@synthesize speed;
-@synthesize window_size;
 
 @synthesize t1;
 @synthesize t2;
@@ -194,8 +192,8 @@
         ready_received = 0;
         ready_sent = 0;
         paused = NO;
-        speed = 100.0;
-        window_size = M2PA_DEFAULT_WINDOW_SIZE;
+        _speed = 0; /* unlimited */
+        _window_size = M2PA_DEFAULT_WINDOW_SIZE;
         
         t1 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires1) object:NULL seconds:M2PA_DEFAULT_T1 name:@"t1" repeats:NO];
         t2 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires2) object:NULL seconds:M2PA_DEFAULT_T2 name:@"t2" repeats:NO];
@@ -1065,7 +1063,7 @@
 
     //	error(0,"fsn: %u, bsn: %u, outstanding %u",link->fsn,link->bsn2,link->outstanding);
 
-    if (outstanding > window_size)
+    if (outstanding > _window_size)
     {
         speed_status = SPEED_EXCEEDED;
     }
@@ -1073,7 +1071,11 @@
     {
         speed_status = SPEED_WITHIN_LIMIT;
         current_speed = [speedometer getSpeedForSeconds:3];
-        if (current_speed > speed)
+        if(_speed <= 0)
+        {
+            speed_status = SPEED_WITHIN_LIMIT;
+        }
+        else if (current_speed > _speed)
         {
             speed_status = SPEED_EXCEEDED;
         }
@@ -1693,8 +1695,8 @@
     [self addLayerConfig:config];
     config[@"attach-to"] = sctpLink.layerName;
     config[@"autostart"] = autostart ? @YES : @ NO;
-    config[@"window-size"] = @(window_size);
-    config[@"speed"] = @(speed);
+    config[@"window-size"] = @(_window_size);
+    config[@"speed"] = @(_speed);
     config[@"t1"] =@(t1.duration/1000000.0);
     config[@"t2"] =@(t2.duration/1000000.0);
     config[@"t3"] =@(t3.duration/1000.0);
@@ -1734,11 +1736,11 @@
     }
     if(cfg[@"window-size"])
     {
-        window_size = [cfg[@"window-size"] intValue];
+        _window_size = [cfg[@"window-size"] intValue];
     }
     if (cfg[@"speed"])
     {
-        speed = [cfg[@"speed"] doubleValue];
+        _speed = [cfg[@"speed"] doubleValue];
     }
     if (cfg[@"t1"])
     {
@@ -1832,8 +1834,8 @@
     d[@"ready-received"] = @(ready_received);
     d[@"ready-sent"] = @(ready_sent);
     d[@"reception-enabled"] = receptionEnabled ? @(YES) : @(NO);
-    d[@"configured-speed"] = @(speed);
-    d[@"window-size"] = @(window_size);
+    d[@"configured-speed"] = @(_speed);
+    d[@"window-size"] = @(_window_size);
     d[@"current-speed"] =   [speedometer getSpeedTripleJson];
     d[@"submission-speed"] =   [submission_speed getSpeedTripleJson];
 

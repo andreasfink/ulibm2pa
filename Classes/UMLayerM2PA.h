@@ -170,8 +170,8 @@ typedef enum SpeedStatus
     BOOL    paused;
     
     BOOL    receptionEnabled;
-    double  speed;
-    int     window_size;
+    double  _speed;
+    int     _window_size;
     UMThroughputCounter	*speedometer;
     UMThroughputCounter	*submission_speed;
 
