@@ -97,6 +97,8 @@
 /* 64k: 0.5-2s */
 /* 4.8k 4-6s */
 
+/* how many outstanding unacknowledgedpackets are allowed */
+#define    M2PA_DEFAULT_WINDOW_SIZE     128
 
 //Request for Comments: 4165                                B. Bidulock
 

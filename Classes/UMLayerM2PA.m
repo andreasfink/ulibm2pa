@@ -195,7 +195,7 @@
         ready_sent = 0;
         paused = NO;
         speed = 100.0;
-        window_size = 128;
+        window_size = M2PA_DEFAULT_WINDOW_SIZE;
         
         t1 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires1) object:NULL seconds:M2PA_DEFAULT_T1 name:@"t1" repeats:NO];
         t2 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires2) object:NULL seconds:M2PA_DEFAULT_T2 name:@"t2" repeats:NO];
