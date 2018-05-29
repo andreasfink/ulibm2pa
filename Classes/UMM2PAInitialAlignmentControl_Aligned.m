@@ -75,9 +75,10 @@
 - (UMM2PAInitialAlignmentControl_State *)eventSIN:(UMLayerM2PA *)link
 {
     [link.t3 stop];
-    if([[link t4]duration] == link.t4e)
+    if(link.t4.duration == link.t4e)
     {
         /* ?? set i to ie aerm */
+        /* we are in emergency mode */
     }
     [link.t4 start];
     /* Cp :=0 */

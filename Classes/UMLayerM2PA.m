@@ -68,8 +68,6 @@
 @synthesize t5;
 @synthesize t6;
 @synthesize t7;
-@synthesize t4n;
-@synthesize t4e;
 @synthesize speed_status;
 
 #pragma mark -
@@ -204,8 +202,8 @@
         t6 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires6) object:NULL seconds:M2PA_DEFAULT_T6 name:@"t6" repeats:NO];
         t7 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires7) object:NULL seconds:M2PA_DEFAULT_T7 name:@"t7" repeats:NO];
         
-        t4n = M2PA_DEFAULT_T4_N;
-        t4e = M2PA_DEFAULT_T4_E;
+        _t4n = M2PA_DEFAULT_T4_N;
+        _t4e = M2PA_DEFAULT_T4_E;
         speedometer = [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
         control_link_buffer = [[NSMutableData alloc] init];
         data_link_buffer = [[NSMutableData alloc] init];
@@ -1700,8 +1698,8 @@
     config[@"t1"] =@(t1.duration/1000000.0);
     config[@"t2"] =@(t2.duration/1000000.0);
     config[@"t3"] =@(t3.duration/1000.0);
-    config[@"t4e"] =@(t4e/1000000.0);
-    config[@"t4n"] =@(t4n/1000000.0);
+    config[@"t4e"] =@(_t4e/1000000.0);
+    config[@"t4n"] =@(_t4n/1000000.0);
     config[@"t4r"] =@(t4r.duration/1000000.0);
     config[@"t5"] =@(t5.duration/1000000.0);
     config[@"t6"] =@(t6.duration/1000000.0);
@@ -1744,39 +1742,39 @@
     }
     if (cfg[@"t1"])
     {
-        t1.duration = [cfg[@"t1"] doubleValue] * 1000000.0;
+        t1.seconds = [cfg[@"t1"] doubleValue];
     }
     if (cfg[@"t2"])
     {
-        t2.duration = [cfg[@"t2"] doubleValue] * 1000000.0;
+        t2.seconds = [cfg[@"t2"] doubleValue];
     }
     if (cfg[@"t3"])
     {
-        t3.duration = [cfg[@"t3"] doubleValue] * 1000000.0;
+        t3.seconds = [cfg[@"t3"] doubleValue];
     }
     if (cfg[@"t4e"])
     {
-        t4e = [cfg[@"t4e"] doubleValue] * 1000000.0;
+        _t4e = [cfg[@"t4e"] doubleValue];
     }
     if (cfg[@"t4n"])
     {
-        t4n = [cfg[@"t4n"] doubleValue] * 1000000.0;
+        _t4n = [cfg[@"t4n"] doubleValue];
     }
     if (cfg[@"t4r"])
     {
-        t4r.duration = [cfg[@"t4r"] doubleValue] * 1000000.0;
+        t4r.seconds = [cfg[@"t4r"] doubleValue];
     }
     if (cfg[@"t5"])
     {
-        t5.duration = [cfg[@"t5"] doubleValue] *1000000.0;
+        t5.seconds = [cfg[@"t5"] doubleValue];
     }
     if (cfg[@"t6"])
     {
-        t6.duration = [cfg[@"t6"] doubleValue] *1000000.0;
+        t6.seconds = [cfg[@"t6"] doubleValue];
     }
     if (cfg[@"t7"])
     {
-        t7.duration = [cfg[@"t7"] doubleValue]*1000000.0;
+        t7.seconds = [cfg[@"t7"] doubleValue];
     }
     [self adminAttachOrder:sctpLink];
 }

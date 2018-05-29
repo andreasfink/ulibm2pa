@@ -145,8 +145,8 @@ typedef enum SpeedStatus
     u_int32_t		fsn; /* forward sequence number. Last sequence number sent */
     u_int32_t		bsn2; /* backward sequence number. Last FSN number acked from the peer for our transmission */
     u_int32_t		outstanding;
-    UMMicroSec      t4n;
-    UMMicroSec      t4e;
+    NSTimeInterval      _t4n;
+    NSTimeInterval      _t4e;
     UMLayerSctp     *sctpLink;
 
     UMTimer    *t1;
@@ -224,8 +224,8 @@ typedef enum SpeedStatus
 @property(readwrite,strong)     UMTimer  *t5;
 @property(readwrite,strong)     UMTimer  *t6;
 @property(readwrite,strong)     UMTimer  *t7;
-@property(readwrite,assign)     UMMicroSec      t4n;
-@property(readwrite,assign)     UMMicroSec      t4e;
+@property(readwrite,assign)     NSTimeInterval      t4n;
+@property(readwrite,assign)     NSTimeInterval      t4e;
 @property(readwrite,assign,atomic) M2PA_Status m2pa_status;
 @property(readwrite,assign,atomic) SCTP_Status sctp_status;
 @property(readwrite,strong,atomic)  UMThroughputCounter *inboundThroughputPackets;
