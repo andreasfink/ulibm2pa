@@ -75,10 +75,14 @@
 - (UMM2PAInitialAlignmentControl_State *)eventSIN:(UMLayerM2PA *)link
 {
     [link.t3 stop];
-    if(link.t4.duration == link.t4e)
+    if(link.emergency)
     {
-        /* ?? set i to ie aerm */
-        /* we are in emergency mode */
+        /* use emergency proving period */
+        link.t4.duration = link.t4e;
+    }
+    else
+    {
+        link.t4.duration = link.t4n;
     }
     [link.t4 start];
     /* Cp :=0 */

@@ -1337,6 +1337,14 @@
     }
     [self sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT];
 
+    if(t4.duration == 0)
+    {
+        t4.duration = _t4n;
+    }
+    if(_inEmergencyMode)
+    {
+        t4.duration = _t4e;
+    }
     [t2 start];
     [t4 start];
     [t4r start];
