@@ -78,11 +78,11 @@
     if(link.emergency)
     {
         /* use emergency proving period */
-        link.t4.duration = link.t4e;
+        link.t4.seconds = link.t4e;
     }
     else
     {
-        link.t4.duration = link.t4n;
+        link.t4.seconds = link.t4n;
     }
     [link.t4 start];
     /* Cp :=0 */
@@ -93,14 +93,14 @@
 
 - (UMM2PAInitialAlignmentControl_State *)eventSIE:(UMLayerM2PA *)link
 {
-    [link.t4 setDuration:link.t4e];
+    link.t4.seconds = link.t4e;
     return [self eventSIN:link];
 }
 
 - (UMM2PAInitialAlignmentControl_State *)eventEmergency:(UMLayerM2PA *)link
 {
     [link txcSendSIE];
-    [link.t4 setDuration:link.t4e];
+    link.t4.seconds = link.t4e;
     return self;
 }
 

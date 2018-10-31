@@ -58,10 +58,10 @@
 
 - (UMM2PAInitialAlignmentControl_State *)eventSIE:(UMLayerM2PA *)link
 {
-    if(link.t4.duration != link.t4e)
+    if(link.t4.seconds != link.t4e)
     {
         [link.t4 stop];
-        link.t4.duration = link.t4e;
+        link.t4.seconds = link.t4e;
         [link aermStop];
         [link aermSetTe]; /****/
         [link aermStart];

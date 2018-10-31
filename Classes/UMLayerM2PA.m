@@ -1337,13 +1337,13 @@
     }
     [self sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT];
 
-    if(t4.duration == 0)
+    if(t4.seconds == 0)
     {
-        t4.duration = _t4n;
+        t4.seconds = _t4n;
     }
     if(_inEmergencyMode)
     {
-        t4.duration = _t4e;
+        t4.seconds = _t4e;
     }
     [t2 start];
     [t4 start];
@@ -1703,15 +1703,15 @@
     config[@"autostart"] = autostart ? @YES : @ NO;
     config[@"window-size"] = @(_window_size);
     config[@"speed"] = @(_speed);
-    config[@"t1"] =@(t1.duration/1000000.0);
-    config[@"t2"] =@(t2.duration/1000000.0);
-    config[@"t3"] =@(t3.duration/1000.0);
-    config[@"t4e"] =@(_t4e/1000000.0);
-    config[@"t4n"] =@(_t4n/1000000.0);
-    config[@"t4r"] =@(t4r.duration/1000000.0);
-    config[@"t5"] =@(t5.duration/1000000.0);
-    config[@"t6"] =@(t6.duration/1000000.0);
-    config[@"t7"] =@(t7.duration/1000000.0);
+    config[@"t1"] =@(t1.seconds);
+    config[@"t2"] =@(t2.seconds);
+    config[@"t3"] =@(t3.seconds);
+    config[@"t4e"] =@(_t4e);
+    config[@"t4n"] =@(_t4n);
+    config[@"t4r"] =@(t4r.seconds);
+    config[@"t5"] =@(t5.seconds);
+    config[@"t6"] =@(t6.seconds);
+    config[@"t7"] =@(t7.seconds);
     return config;
 }
 

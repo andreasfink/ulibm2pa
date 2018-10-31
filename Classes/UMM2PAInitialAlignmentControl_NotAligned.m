@@ -61,14 +61,14 @@
     if(link.emergency)
     {
         /* use emergency proving period */
-        [[link t4] setDuration:link.t4e];
+        link.t4.seconds = link.t4e;
         [link.t4 start];
         [link txcSendSIE];
     }
     else
     {
         /* use normal proving period */
-        [[link t4] setDuration:link.t4n];
+        link.t4.seconds = link.t4n;
         [link.t4 start];
         [link txcSendSIN];
     }
