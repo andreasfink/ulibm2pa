@@ -1106,17 +1106,6 @@
     [t1 stop]; /* alignment ready	*/
     [t6 stop]; /* Remote congestion	*/
 
-    size_t headerlen = 16;
-    size_t totallen =  headerlen + data.length;
-
-    unsigned char *m2pa_header = malloc(totallen);
-    memset(m2pa_header,0x00,totallen);
-
-    m2pa_header[0] = M2PA_VERSION1; /* version field */
-    m2pa_header[1] = 0; /* spare field */
-    m2pa_header[2] = M2PA_CLASS_RFC4165; /* m2pa_message_class = draft13;*/
-    m2pa_header[3] = M2PA_TYPE_USER_DATA; /*m2pa_message_type;*/
-    *((unsigned long *)&m2pa_header[4]) = htonl(totallen);
 
     [_seqNumLock lock];
     fsn = (fsn+1) % FSN_BSN_SIZE;
@@ -1134,11 +1123,28 @@
     }
     [_seqNumLock unlock];
 
-    *((uint32_t *)&m2pa_header[8]) = htonl(bsn);
-    *((uint32_t *)&m2pa_header[12]) = htonl(fsn);
-    memcpy(&m2pa_header[16],data.bytes,data.length);
-    NSData *sctpData = [NSData dataWithBytes:m2pa_header length:totallen];
-    free(m2pa_header);
+
+    uint8_t header[16];
+    size_t totallen =  sizeof(header) + data.length;
+    header[0] = M2PA_VERSION1; /* version field */
+    header[1] = 0; /* spare field */
+    header[2] = M2PA_CLASS_RFC4165; /* m2pa_message_class = draft13;*/
+    header[3] = M2PA_TYPE_USER_DATA; /*m2pa_message_type;*/
+    header[4] = (totallen >> 24) & 0xFF;
+    header[5] = (totallen >> 16) & 0xFF;
+    header[6] = (totallen >> 8) & 0xFF;
+    header[7] = (totallen >> 0) & 0xFF;
+    header[8] = (bsn >> 24) & 0xFF;
+    header[9] = (bsn >> 16) & 0xFF;
+    header[10] = (bsn >> 8) & 0xFF;
+    header[11] = (bsn >> 0) & 0xFF;
+    header[12] = (fsn >> 24) & 0xFF;
+    header[13] = (fsn >> 16) & 0xFF;
+    header[14] = (fsn >> 8) & 0xFF;
+    header[15] = (fsn >> 0) & 0xFF;
+
+    NSMutableData *sctpData = [[NSMutableData alloc]initWithBytes:&header length:sizeof(header)];
+    [sctpData appendData:data];
 
     [sctpLink dataFor:self
                  data:sctpData
