@@ -15,11 +15,6 @@
 
 @implementation UMM2PAInitialAlignmentControl_Proving
 
-- (NSString *)stateName
-{
-    return @"InitialAlignmentControl_Proving";
-}
-
 
 - (NSString *)description
 {

@@ -18,7 +18,6 @@
 }
 
 - (NSString *)description;
-
 - (UMM2PAInitialAlignmentControl_State *)initWithLink:(UMLayerM2PA *)link;
 - (UMM2PAInitialAlignmentControl_State *)eventStart:(UMLayerM2PA *)link;
 - (UMM2PAInitialAlignmentControl_State *)eventStop:(UMLayerM2PA *)link;

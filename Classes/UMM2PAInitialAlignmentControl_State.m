@@ -16,14 +16,9 @@
 
 @implementation UMM2PAInitialAlignmentControl_State
 
-- (NSString *)stateName
-{
-    return @"InitialAlignmentControl_Unknown";
-}
-
 -(NSString *)description
 {
-    return @"UMM2PAInitialAlignmentControl_undefined";
+    return @"undefined";
 }
 
 

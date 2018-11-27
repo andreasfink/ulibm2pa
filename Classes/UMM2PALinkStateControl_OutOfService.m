@@ -15,9 +15,9 @@
 
 @implementation UMM2PALinkStateControl_OutOfService
 
-- (NSString *)stateName
+- (NSString *)description
 {
-    return @"LinkStateControl_OutOfService";
+    return @"out-of-service";
 }
 
 - (UMM2PALinkStateControl_OutOfService *)initWithLink:(UMLayerM2PA *)link
@@ -35,11 +35,6 @@
     @throw([NSException exceptionWithName:@"API_ERROR"
                                    reason:@"dont call init. Call initWithLink"
                                  userInfo:@{    @"backtrace":   UMBacktrace(NULL,0) }]);
-}
-
--(NSString *)description
-{
-    return @"oos";
 }
 
 - (UMM2PALinkStateControl_State *)eventSIO:(UMLayerM2PA *)link

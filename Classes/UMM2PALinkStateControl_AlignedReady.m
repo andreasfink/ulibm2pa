@@ -14,10 +14,11 @@
 
 @implementation UMM2PALinkStateControl_AlignedReady
 
-- (NSString *)stateName
+-(NSString *)description
 {
-    return @"LinkStateControl_AlignedReady";
+    return @"aligned-ready";
 }
+
 
 - (UMM2PALinkStateControl_AlignedReady *)initWithLink:(UMLayerM2PA *)link
 {
@@ -33,11 +34,6 @@
     @throw([NSException exceptionWithName:@"API_ERROR"
                                    reason:@"dont call init. Call initWithLink"
                                  userInfo:@{    @"backtrace":   UMBacktrace(NULL,0) }]);
-}
-
--(NSString *)description
-{
-    return @"ready";
 }
 
 - (UMM2PALinkStateControl_State *)eventSIPO:(UMLayerM2PA *)link

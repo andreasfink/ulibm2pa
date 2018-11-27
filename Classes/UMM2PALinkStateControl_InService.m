@@ -14,9 +14,9 @@
 
 @implementation UMM2PALinkStateControl_InService
 
-- (NSString *)stateName
+-(NSString *)description
 {
-    return @"LinkStateControl_InService";
+    return @"in-service";
 }
 
 - (UMM2PALinkStateControl_InService *)initWithLink:(UMLayerM2PA *)link
@@ -36,10 +36,6 @@
                                  userInfo:@{    @"backtrace":   UMBacktrace(NULL,0) }]);
 }
 
--(NSString *)description
-{
-    return @"in-service";
-}
 
 
 

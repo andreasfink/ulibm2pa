@@ -20,11 +20,6 @@
     return @"idle";
 }
 
-- (NSString *)stateName
-{
-    return @"InitialAlignmentControl_Idle";
-}
-
 - (UMM2PAInitialAlignmentControl_Idle *)initWithLink:(UMLayerM2PA *)link
 {
     self = [super initWithLink:link];

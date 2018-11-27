@@ -15,14 +15,9 @@
 
 @implementation UMM2PALinkStateControl_PowerOff
 
-- (NSString *)stateName
-{
-    return @"LinkStateControl_PowerOff";
-}
-
 -(NSString *)description
 {
-    return @"off";
+    return @"power-off";
 }
 
 

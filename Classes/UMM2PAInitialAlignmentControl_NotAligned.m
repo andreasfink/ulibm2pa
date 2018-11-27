@@ -15,11 +15,6 @@
 
 @implementation UMM2PAInitialAlignmentControl_NotAligned
 
-- (NSString *)stateName
-{
-    return @"InitialAlignmentControl_NotAligned";
-}
-
 - (NSString *)description
 {
     return @"not-aligned";

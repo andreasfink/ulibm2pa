@@ -14,9 +14,9 @@
 
 @implementation UMM2PALinkStateControl_AlignedNotReady
 
-- (NSString *)stateName
+-(NSString *)description
 {
-    return @"LinkStateControl_AlignedNotReady";
+    return @"aligned-not-ready";
 }
 
 - (UMM2PALinkStateControl_AlignedNotReady *)initWithLink:(UMLayerM2PA *)link
@@ -36,10 +36,6 @@
 }
 
 
--(NSString *)description
-{
-    return @"aligned-not-ready";
-}
 
 - (UMM2PALinkStateControl_State *)eventLocalProcessorRecovered:(UMLayerM2PA *)link
 {

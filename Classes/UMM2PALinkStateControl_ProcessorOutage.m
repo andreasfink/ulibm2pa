@@ -14,10 +14,11 @@
 
 @implementation UMM2PALinkStateControl_ProcessorOutage
 
-- (NSString *)stateName
+-(NSString *)description
 {
-    return @"LinkStateControl_ProcessorOutage";
+    return @"processor-outage";
 }
+
 
 - (UMM2PALinkStateControl_ProcessorOutage *)initWithLink:(UMLayerM2PA *)link
 {
@@ -33,11 +34,6 @@
     @throw([NSException exceptionWithName:@"API_ERROR"
                                    reason:@"dont call init. Call initWithLink"
                                  userInfo:@{    @"backtrace":   UMBacktrace(NULL,0) }]);
-}
-
--(NSString *)description
-{
-    return @"processor-outage";
 }
 
 

@@ -14,9 +14,9 @@
 
 @implementation UMM2PALinkStateControl_InitialAlignment
 
-- (NSString *)stateName
+-(NSString *)description
 {
-    return @"LinkStateControl_InitialAlignment";
+    return @"initial-alignment";
 }
 
 - (UMM2PALinkStateControl_InitialAlignment *)initWithLink:(UMLayerM2PA *)link
@@ -36,10 +36,6 @@
 }
 
 
--(NSString *)description
-{
-    return @"initial-alignment";
-}
 
 - (UMM2PALinkStateControl_State *)eventLocalProcessorOutage:(UMLayerM2PA *)link
 {

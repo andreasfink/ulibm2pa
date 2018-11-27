@@ -14,11 +14,6 @@
 #import "UMLayerM2PA.h"
 @implementation UMM2PAInitialAlignmentControl_Aligned
 
-- (NSString *)stateName
-{
-    return @"InitialAlignmentControl_Aligned";
-}
-
 - (NSString *)description
 {
     return @"aligned";
