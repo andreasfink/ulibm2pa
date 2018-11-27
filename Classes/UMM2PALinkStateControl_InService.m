@@ -14,6 +14,11 @@
 
 @implementation UMM2PALinkStateControl_InService
 
+- (NSString *)stateName
+{
+    return @"LinkStateControl_InService";
+}
+
 - (UMM2PALinkStateControl_InService *)initWithLink:(UMLayerM2PA *)link
 {
     self =[super initWithLink:link];

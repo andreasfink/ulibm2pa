@@ -14,6 +14,11 @@
 
 @implementation UMM2PALinkStateControl_AlignedNotReady
 
+- (NSString *)stateName
+{
+    return @"LinkStateControl_AlignedNotReady";
+}
+
 - (UMM2PALinkStateControl_AlignedNotReady *)initWithLink:(UMLayerM2PA *)link
 {
     self =[super initWithLink:link];

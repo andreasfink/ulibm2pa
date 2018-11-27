@@ -14,6 +14,11 @@
 
 @implementation UMM2PALinkStateControl_InitialAlignment
 
+- (NSString *)stateName
+{
+    return @"LinkStateControl_InitialAlignment";
+}
+
 - (UMM2PALinkStateControl_InitialAlignment *)initWithLink:(UMLayerM2PA *)link
 {
     self =[super initWithLink:link];
@@ -60,7 +65,7 @@
 - (UMM2PALinkStateControl_State *)eventAlignmentComplete:(UMLayerM2PA *)link
 {
     [link suermStart];
-    [[link t1]start];
+    [link.t1 start];
     if(link.local_processor_outage)
     {
         [link pocLocalProcessorOutage];
@@ -70,7 +75,7 @@
     }
     else
     {
-        [link txcSendFISU];
+        [link txcSendFISU]; /* sends READY */
         [link.t1 stop];
         [link.t4 stop];
         [link.t4r stop];

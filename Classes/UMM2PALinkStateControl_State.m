@@ -14,6 +14,10 @@
 
 @implementation UMM2PALinkStateControl_State
 
+- (NSString *)stateName
+{
+    return @"LinkStateControl_undefined";
+}
 
 -(NSString *)description
 {

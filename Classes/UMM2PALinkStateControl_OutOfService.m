@@ -15,6 +15,11 @@
 
 @implementation UMM2PALinkStateControl_OutOfService
 
+- (NSString *)stateName
+{
+    return @"LinkStateControl_OutOfService";
+}
+
 - (UMM2PALinkStateControl_OutOfService *)initWithLink:(UMLayerM2PA *)link
 {
     self =[super initWithLink:link];

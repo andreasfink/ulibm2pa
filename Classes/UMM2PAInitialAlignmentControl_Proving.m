@@ -15,6 +15,11 @@
 
 @implementation UMM2PAInitialAlignmentControl_Proving
 
+- (NSString *)stateName
+{
+    return @"InitialAlignmentControl_Proving";
+}
+
 
 - (NSString *)description
 {
@@ -46,10 +51,11 @@
     return [[UMM2PAInitialAlignmentControl_Aligned alloc]initWithLink:link];
 }
 
-
 - (UMM2PAInitialAlignmentControl_State *)eventTimer4:(UMLayerM2PA *)link
 {
     /* alignment complete */
+    [link.t4 stop];
+    [link.t4r stop];
     [link lscAlignmentComplete];
     [link aermStop];
     [link cancelEmergency];

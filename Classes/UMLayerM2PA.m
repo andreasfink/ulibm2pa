@@ -793,22 +793,7 @@
 
 - (void)_timerFires4
 {
-    [_t4 stop];
-    [_t4r stop];
-    if(self.m2pa_status == M2PA_LINKSTATE_READY)
-    {
-        /* we are in service already so this is a old timer which got forgotton to stop */
-        [_t1 stop];
-        [_t4 stop];
-        [_t4r stop];
-    }
-    else
-    {
-        [_t1 start];
-        [self sendLinkstatus:M2PA_LINKSTATE_READY];
-        [_t4r start];
-        self.m2pa_status = M2PA_STATUS_ALIGNED_READY;
-    }
+    iacState = [iacState eventTimer4:self];
 }
 
 - (void)_timerFires4r
@@ -1783,7 +1768,7 @@
     d[@"fsn"] = @(fsn);
     d[@"bsn2"] = @(bsn2);
     d[@"outstanding"] = @(outstanding);
-    
+
     switch(_m2pa_status)
     {
             

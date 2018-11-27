@@ -14,6 +14,11 @@
 
 @implementation UMM2PALinkStateControl_ProcessorOutage
 
+- (NSString *)stateName
+{
+    return @"LinkStateControl_ProcessorOutage";
+}
+
 - (UMM2PALinkStateControl_ProcessorOutage *)initWithLink:(UMLayerM2PA *)link
 {
     self =[super initWithLink:link];
