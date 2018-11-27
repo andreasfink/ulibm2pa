@@ -1076,8 +1076,8 @@
     [_outboundThroughputPackets increaseBy:1];
 
     [_dataLock lock];
-    [t1 stop]; /* alignment ready	*/
-    [t6 stop]; /* Remote congestion	*/
+    [_t1 stop]; /* alignment ready	*/
+    [_t6 stop]; /* Remote congestion	*/
 
 
     [_seqNumLock lock];
@@ -1729,15 +1729,15 @@
     }
     if (cfg[@"t1"])
     {
-        t1.seconds = [cfg[@"t1"] doubleValue];
+        _t1.seconds = [cfg[@"t1"] doubleValue];
     }
     if (cfg[@"t2"])
     {
-        t2.seconds = [cfg[@"t2"] doubleValue];
+        _t2.seconds = [cfg[@"t2"] doubleValue];
     }
     if (cfg[@"t3"])
     {
-        t3.seconds = [cfg[@"t3"] doubleValue];
+        _t3.seconds = [cfg[@"t3"] doubleValue];
     }
     if (cfg[@"t4e"])
     {
