@@ -40,6 +40,7 @@
 - (UMM2PAInitialAlignmentControl_State *)eventStart:(UMLayerM2PA *)link
 {
     [link txcSendSIO];
+    [link.t4r start];
     return [[UMM2PAInitialAlignmentControl_NotAligned alloc]initWithLink:link];
 }
 

@@ -62,6 +62,7 @@
         /* use emergency proving period */
         link.t4.seconds = link.t4e;
         [link.t4 start];
+        [link.t4r start];
         [link txcSendSIE];
     }
     else
@@ -69,6 +70,7 @@
         /* use normal proving period */
         link.t4.seconds = link.t4n;
         [link.t4 start];
+        [link.t4r start];
         [link txcSendSIN];
     }
     [[link t3]start];
