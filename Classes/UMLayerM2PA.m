@@ -60,14 +60,6 @@
 @synthesize ready_sent;
 @synthesize paused;
 
-@synthesize t1;
-@synthesize t2;
-@synthesize t3;
-@synthesize t4;
-@synthesize t4r;
-@synthesize t5;
-@synthesize t6;
-@synthesize t7;
 @synthesize speed_status;
 
 #pragma mark -
@@ -193,14 +185,14 @@
         _speed = 0; /* unlimited */
         _window_size = M2PA_DEFAULT_WINDOW_SIZE;
         
-        t1 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires1) object:NULL seconds:M2PA_DEFAULT_T1 name:@"t1" repeats:NO];
-        t2 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires2) object:NULL seconds:M2PA_DEFAULT_T2 name:@"t2" repeats:NO];
-        t3 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires3) object:NULL seconds:M2PA_DEFAULT_T3 name:@"t3" repeats:NO];
-        t4 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires4) object:NULL seconds:M2PA_DEFAULT_T4_N name:@"t4" repeats:NO];
-        t4r = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires4r) object:NULL seconds:M2PA_DEFAULT_T4_R name:@"t4t" repeats:NO];
-        t5 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires5) object:NULL seconds:M2PA_DEFAULT_T5 name:@"t5" repeats:NO];
-        t6 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires6) object:NULL seconds:M2PA_DEFAULT_T6 name:@"t6" repeats:NO];
-        t7 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires7) object:NULL seconds:M2PA_DEFAULT_T7 name:@"t7" repeats:NO];
+        _t1 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires1) object:NULL seconds:M2PA_DEFAULT_T1 name:@"t1" repeats:NO];
+        _t2 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires2) object:NULL seconds:M2PA_DEFAULT_T2 name:@"t2" repeats:NO];
+        _t3 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires3) object:NULL seconds:M2PA_DEFAULT_T3 name:@"t3" repeats:NO];
+        _t4 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires4) object:NULL seconds:M2PA_DEFAULT_T4_N name:@"t4" repeats:NO];
+        _t4r = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires4r) object:NULL seconds:M2PA_DEFAULT_T4_R name:@"t4r" repeats:YES];
+        _t5 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires5) object:NULL seconds:M2PA_DEFAULT_T5 name:@"t5" repeats:NO];
+        _t6 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires6) object:NULL seconds:M2PA_DEFAULT_T6 name:@"t6" repeats:NO];
+        _t7 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires7) object:NULL seconds:M2PA_DEFAULT_T7 name:@"t7" repeats:NO];
         
         _t4n = M2PA_DEFAULT_T4_N;
         _t4e = M2PA_DEFAULT_T4_E;
@@ -640,11 +632,11 @@
 {
     link_congestion_cleared_time = time(NULL);
     congested = NO;
-    [t6 stop];
+    [_t6 stop];
     [self sendCongestionClearedIndication];
     if([waitingMessages count]>0)
     {
-        [t7 start];
+        [_t7 start];
     }
 }
 
@@ -746,43 +738,42 @@
 
 - (void)timerFires1
 {
-    [t1 stop];
+    [_t1 stop];
     [self timerEvent:NULL timerNr:1];
 
 }
 - (void)timerFires2
 {
-    [t2 stop];
+    [_t2 stop];
     [self timerEvent:NULL timerNr:2];
 }
 - (void)timerFires3
 {
-    [t3 stop];
+    [_t3 stop];
     [self timerEvent:NULL timerNr:3];
 }
 - (void)timerFires4
 {
-    [t4 stop];
+    [_t4 stop];
     [self timerEvent:NULL timerNr:4];
 }
 - (void)timerFires4r
 {
-    [t4r stop];
-    [self timerEvent:NULL timerNr:-4];
+    [self timerEvent:NULL timerNr:-4]; /* note: 4r is a recurring event so we dont stop */
 }
 - (void)timerFires5
 {
-    [t5 stop];
+    [_t5 stop];
     [self timerEvent:NULL timerNr:5];
 }
 - (void)timerFires6
 {
-    [t6 stop];
+    [_t6 stop];
     [self timerEvent:NULL timerNr:6];
 }
 - (void)timerFires7
 {
-    [t7 stop];
+    [_t7 stop];
     [self timerEvent:NULL timerNr:7];
 }
 
@@ -802,45 +793,27 @@
 
 - (void)_timerFires4
 {
-    [t4 stop];
-    [t4r stop];
+    [_t4 stop];
+    [_t4r stop];
     if(self.m2pa_status == M2PA_LINKSTATE_READY)
     {
         /* we are in service already so this is a old timer which got forgotton to stop */
-        [t1 stop];
-        [t4 stop];
-        [t4r stop];
+        [_t1 stop];
+        [_t4 stop];
+        [_t4r stop];
     }
     else
     {
-        [t1 start];
+        [_t1 start];
         [self sendLinkstatus:M2PA_LINKSTATE_READY];
-        [t4r start];
+        [_t4r start];
         self.m2pa_status = M2PA_STATUS_ALIGNED_READY;
     }
 }
 
 - (void)_timerFires4r
 {
-    if(self.m2pa_status == M2PA_STATUS_ALIGNED_NOT_READY)
-    {
-        if(emergency==NO)
-        {
-            [self sendLinkstatus:M2PA_LINKSTATE_PROVING_NORMAL];
-        }
-        else
-        {
-            [self sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY];
-        }
-        [t4r start];
-    }
-    else if(self.m2pa_status == M2PA_STATUS_ALIGNED_READY)
-    {
-        [self sendLinkstatus:M2PA_LINKSTATE_READY];
-        [t3 stop];
-        [t4 stop];
-        [t4r stop];
-    }
+    iacState = [iacState eventTimer4r:self];
 }
 
 - (void)_timerFires5
@@ -1343,17 +1316,17 @@
     }
     [self sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT];
 
-    if(t4.seconds == 0)
+    if(_t4.seconds == 0)
     {
-        t4.seconds = _t4n;
+        _t4.seconds = _t4n;
     }
     if(_inEmergencyMode)
     {
-        t4.seconds = _t4e;
+        _t4.seconds = _t4e;
     }
-    [t2 start];
-    [t4 start];
-    [t4r start];
+    [_t2 start];
+    [_t4 start];
+    [_t4r start];
     self.m2pa_status = M2PA_STATUS_INITIAL_ALIGNMENT;
 }
 
@@ -1709,15 +1682,15 @@
     config[@"autostart"] = autostart ? @YES : @ NO;
     config[@"window-size"] = @(_window_size);
     config[@"speed"] = @(_speed);
-    config[@"t1"] =@(t1.seconds);
-    config[@"t2"] =@(t2.seconds);
-    config[@"t3"] =@(t3.seconds);
+    config[@"t1"] =@(_t1.seconds);
+    config[@"t2"] =@(_t2.seconds);
+    config[@"t3"] =@(_t3.seconds);
     config[@"t4e"] =@(_t4e);
     config[@"t4n"] =@(_t4n);
-    config[@"t4r"] =@(t4r.seconds);
-    config[@"t5"] =@(t5.seconds);
-    config[@"t6"] =@(t6.seconds);
-    config[@"t7"] =@(t7.seconds);
+    config[@"t4r"] =@(_t4r.seconds);
+    config[@"t5"] =@(_t5.seconds);
+    config[@"t6"] =@(_t6.seconds);
+    config[@"t7"] =@(_t7.seconds);
     return config;
 }
 
@@ -1776,19 +1749,19 @@
     }
     if (cfg[@"t4r"])
     {
-        t4r.seconds = [cfg[@"t4r"] doubleValue];
+        _t4r.seconds = [cfg[@"t4r"] doubleValue];
     }
     if (cfg[@"t5"])
     {
-        t5.seconds = [cfg[@"t5"] doubleValue];
+        _t5.seconds = [cfg[@"t5"] doubleValue];
     }
     if (cfg[@"t6"])
     {
-        t6.seconds = [cfg[@"t6"] doubleValue];
+        _t6.seconds = [cfg[@"t6"] doubleValue];
     }
     if (cfg[@"t7"])
     {
-        t7.seconds = [cfg[@"t7"] doubleValue];
+        _t7.seconds = [cfg[@"t7"] doubleValue];
     }
     [self adminAttachOrder:sctpLink];
 }

@@ -108,4 +108,17 @@
 {
     return [[UMM2PAInitialAlignmentControl_Idle alloc] initWithLink:link];
 }
+
+- (UMM2PAInitialAlignmentControl_State *)eventTimer4:(UMLayerM2PA *)link
+{
+    return self;
+}
+
+- (UMM2PAInitialAlignmentControl_State *)eventTimer4r:(UMLayerM2PA *)link
+{
+    [link.t4r stop]; /* if we are not in alignment state, we are ignoring it */
+    return self;
+}
+
+
 @end

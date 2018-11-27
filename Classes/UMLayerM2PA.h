@@ -149,14 +149,14 @@ typedef enum SpeedStatus
     NSTimeInterval      _t4e;
     UMLayerSctp     *sctpLink;
 
-    UMTimer    *t1;
-    UMTimer    *t2;
-    UMTimer    *t3;
-    UMTimer    *t4;
-    UMTimer    *t4r;
-    UMTimer    *t5;
-    UMTimer    *t6;
-    UMTimer    *t7;
+    UMTimer    *_t1;
+    UMTimer    *_t2;
+    UMTimer    *_t3;
+    UMTimer    *_t4;
+    UMTimer    *_t4r;
+    UMTimer    *_t5;
+    UMTimer    *_t6;
+    UMTimer    *_t7;
     
     SCTP_Status _sctp_status;
     M2PA_Status _m2pa_status;

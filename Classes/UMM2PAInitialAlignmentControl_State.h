@@ -32,5 +32,7 @@
 - (UMM2PAInitialAlignmentControl_State *)eventHighLinkErrorRate:(UMLayerM2PA *)link;
 - (UMM2PAInitialAlignmentControl_State *)eventPowerOff:(UMLayerM2PA *)link;
 - (UMM2PAInitialAlignmentControl_State *)eventProvingEnds:(UMLayerM2PA *)link;
+- (UMM2PAInitialAlignmentControl_State *)eventTimer4:(UMLayerM2PA *)link;
+- (UMM2PAInitialAlignmentControl_State *)eventTimer4r:(UMLayerM2PA *)link;
 
 @end

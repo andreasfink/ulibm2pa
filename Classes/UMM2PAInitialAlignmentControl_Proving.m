@@ -56,6 +56,19 @@
     return [[UMM2PAInitialAlignmentControl_Idle alloc]initWithLink:link];
 }
 
+- (UMM2PAInitialAlignmentControl_State *)eventTimer4r:(UMLayerM2PA *)link
+{
+    if(link.emergency==NO)
+    {
+        [link sendLinkstatus:M2PA_LINKSTATE_PROVING_NORMAL];
+    }
+    else
+    {
+        [link sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY];
+    }
+    return self;
+}
+
 - (UMM2PAInitialAlignmentControl_State *)eventSIE:(UMLayerM2PA *)link
 {
     if(link.t4.seconds != link.t4e)
@@ -65,8 +78,8 @@
         [link aermStop];
         [link aermSetTe]; /****/
         [link aermStart];
-        /* cancel Further Proving */
         [link.t4 start];
+        [link.t4r start];
     }
     link.emergency = YES;
     /* shorten the timer maybe ? */
@@ -83,7 +96,6 @@
 
 - (UMM2PAInitialAlignmentControl_State *)eventStop:(UMLayerM2PA *)link
 {
- 
     return [[UMM2PAInitialAlignmentControl_Idle alloc]initWithLink:link];
 }
 
