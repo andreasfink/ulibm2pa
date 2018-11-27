@@ -78,7 +78,7 @@
 }
 - (UMM2PALinkStateControl_State *)eventSIN:(UMLayerM2PA *)link
 {
-    [link logDebug:@"Unexpected eventSIN"];
+    [link logDebug:@"Unexpected eventSIN. Ignoring"];
     return self;
 }
 - (UMM2PALinkStateControl_State *)eventSIO:(UMLayerM2PA *)link

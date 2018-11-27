@@ -593,21 +593,21 @@
 
 - (void) _proving_normal_received
 {
-    lscState  = [lscState eventSIN:self];
     iacState  = [iacState eventSIN:self];
+    lscState  = [lscState eventSIN:self];
 }
 
 - (void) _proving_emergency_received
 {
-    lscState  = [lscState eventSIE:self];
     iacState  = [iacState eventSIE:self];
+    lscState  = [lscState eventSIE:self];
 }
 
 
 - (void) _linkstate_ready_received
 {
-    lscState  = [lscState eventFisu:self];
     iacState  = [iacState eventProvingEnds:self];
+    lscState  = [lscState eventFisu:self];
 }
 
 - (void) _linkstate_processor_outage_received

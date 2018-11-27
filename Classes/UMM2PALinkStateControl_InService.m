@@ -81,12 +81,12 @@
 
 - (UMM2PALinkStateControl_State *)eventSIN:(UMLayerM2PA *)link
 {
-    return [self eventLinkFailure:link];
+    return self; //[self eventLinkFailure:link];
 }
 
 - (UMM2PALinkStateControl_State *)eventSIE:(UMLayerM2PA *)link
 {
-    return [self eventLinkFailure:link];
+    return self; //[self eventLinkFailure:link];
 }
 
 - (UMM2PALinkStateControl_State *)eventSIOS:(UMLayerM2PA *)link
