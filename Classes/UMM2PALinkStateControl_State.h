@@ -16,7 +16,7 @@
 {
     UMLayerM2PA  *_link;
 }
-- (NSString *)stateName;
+- (NSString *)description;
 - (UMM2PALinkStateControl_State *)initWithLink:(UMLayerM2PA *)link;
 - (UMM2PALinkStateControl_State *)eventAlignmentNotPossible:(UMLayerM2PA *)link;
 - (UMM2PALinkStateControl_State *)eventAlignmentComplete:(UMLayerM2PA *)link;
