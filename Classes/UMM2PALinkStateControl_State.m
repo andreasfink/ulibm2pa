@@ -84,8 +84,9 @@
 - (UMM2PALinkStateControl_State *)eventSIO:(UMLayerM2PA *)link
 {
     [link logDebug:@"Unexpected eventSIO"];
-    return self;
+    return [[UMM2PALinkStateControl_OutOfService alloc]initWithLink:link];
 }
+
 - (UMM2PALinkStateControl_State *)eventSIOS:(UMLayerM2PA *)link
 {
     [link logDebug:@"Unexpected eventSIOS"];

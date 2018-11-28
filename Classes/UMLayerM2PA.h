@@ -134,7 +134,7 @@ typedef enum SpeedStatus
     UMMutex *_dataLock;
     UMMutex *_controlLock;
     UMMutex *_incomingDataBufferLock;
-
+	int		_alignmentsReceived;
     BOOL    local_processor_outage;
     BOOL    remote_processor_outage;
     BOOL    level3Indication;
@@ -233,6 +233,7 @@ typedef enum SpeedStatus
 @property(readwrite,strong,atomic)  UMThroughputCounter *inboundThroughputBytes;
 @property(readwrite,strong,atomic)  UMThroughputCounter *outboundThroughputBytes;
 @property(readwrite,assign,atomic)  SpeedStatus speed_status;
+@property(readwrite,assign,atomic)  int alignmentsReceived;
 
 - (UMLayerM2PA *)initWithTaskQueueMulti:(UMTaskQueueMulti *)tq;
 - (UMLayerM2PA *)initWithTaskQueueMulti:(UMTaskQueueMulti *)tq name:(NSString *)name;

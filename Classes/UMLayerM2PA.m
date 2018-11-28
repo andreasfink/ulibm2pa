@@ -1421,17 +1421,27 @@
     }
     unsigned char m2pa_header[M2PA_LINKSTATE_PACKETLEN];
     
-    
-    m2pa_header[0] = M2PA_VERSION1; /* version field */
-    m2pa_header[1] = 0; /* spare field */
-    m2pa_header[2] = M2PA_CLASS_RFC4165; /* m2pa_message_class;*/
-    m2pa_header[3] = M2PA_TYPE_LINK_STATUS; /*m2pa_message_type;*/
-        
-    *((uint32_t *)&m2pa_header[4])  = htonl(M2PA_LINKSTATE_PACKETLEN);
-    *((uint32_t *)&m2pa_header[8])  = htonl(0x00FFFFFF);
-    *((uint32_t *)&m2pa_header[12]) = htonl(0x00FFFFFF);
-    *((uint32_t *)&m2pa_header[16]) = htonl(linkstate);
-        
+    m2pa_header[0]  = M2PA_VERSION1; /* version field */
+    m2pa_header[1]  = 0; /* spare field */
+    m2pa_header[2]  = M2PA_CLASS_RFC4165; /* m2pa_message_class;*/
+	m2pa_header[3]  = M2PA_TYPE_LINK_STATUS; /*m2pa_message_type;*/
+	m2pa_header[4]  = (M2PA_LINKSTATE_PACKETLEN >> 24)& 0xFF;
+	m2pa_header[5]  = (M2PA_LINKSTATE_PACKETLEN >> 16)& 0xFF;
+	m2pa_header[6]  = (M2PA_LINKSTATE_PACKETLEN >> 8)& 0xFF;
+	m2pa_header[7]  = (M2PA_LINKSTATE_PACKETLEN >> 0)& 0xFF;
+	m2pa_header[8]  = 0x00;
+	m2pa_header[9]  = 0xFF;
+	m2pa_header[10] = 0xFF;
+	m2pa_header[11] = 0xFF;
+	m2pa_header[12] = 0x00;
+	m2pa_header[13] = 0xFF;
+	m2pa_header[14] = 0xFF;
+	m2pa_header[15] = 0xFF;
+	m2pa_header[16] = (linkstate >> 24) & 0xFF;
+	m2pa_header[17] = (linkstate >> 16) & 0xFF;
+	m2pa_header[18] = (linkstate >> 8) & 0xFF;
+	m2pa_header[19] = (linkstate >> 0) & 0xFF;
+
     NSData *data = [NSData dataWithBytes:m2pa_header length:M2PA_LINKSTATE_PACKETLEN];
     
     if(self.logLevel <= UMLOG_DEBUG)
