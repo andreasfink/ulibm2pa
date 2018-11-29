@@ -142,7 +142,7 @@
 - (UMM2PALinkStateControl_State *)eventPowerOff:(UMLayerM2PA *)link
 {
     [link logDebug:@"Event PowerOff"];
-    return [[UMM2PALinkStateControl_PowerOff alloc]initWithLink:link];
+    return [[UMM2PALinkStateControl_Idle alloc]initWithLink:link];
 }
 
 - (UMM2PALinkStateControl_State *)initWithLink:(UMLayerM2PA *)link

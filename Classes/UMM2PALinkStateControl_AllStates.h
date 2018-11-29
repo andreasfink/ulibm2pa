@@ -10,10 +10,14 @@
 // the author.
 
 #import "UMM2PALinkStateControl_State.h"
+#import "UMM2PALinkStateControl_Idle.h"
 #import "UMM2PALinkStateControl_PowerOff.h"
 #import "UMM2PALinkStateControl_OutOfService.h"
 #import "UMM2PALinkStateControl_InitialAlignment.h"
+#import "UMM2PALinkStateControl_NotAligned.h"
 #import "UMM2PALinkStateControl_AlignedNotReady.h"
 #import "UMM2PALinkStateControl_AlignedReady.h"
 #import "UMM2PALinkStateControl_ProcessorOutage.h"
 #import "UMM2PALinkStateControl_InService.h"
+#import "UMM2PALinkStateControl_Aligned.h"
+#import "UMM2PALinkStateControl_Proving.h"

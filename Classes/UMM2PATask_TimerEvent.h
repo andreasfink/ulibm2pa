@@ -16,12 +16,12 @@
 
 @interface UMM2PATask_TimerEvent : UMLayerTask
 {
-    int timerNumber; /*timer 4r = -4 */
+    NSString *_timerName; /*timer 4r = -4 */
 }
 
-@property(readwrite,assign) int timerNumber;
+@property(readwrite,strong) NSString *timerName;
 
-- (UMM2PATask_TimerEvent *)initWithReceiver:(UMLayerM2PA *)rx sender:(id<UMLayerM2PAUserProtocol>)tx timerNumber:(int)nr;
+- (UMM2PATask_TimerEvent *)initWithReceiver:(UMLayerM2PA *)rx sender:(id<UMLayerM2PAUserProtocol>)tx timerName:(NSString *)tname;
 - (void)main;
 
 @end

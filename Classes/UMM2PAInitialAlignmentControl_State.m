@@ -21,6 +21,13 @@
     return @"undefined";
 }
 
+- (UMM2PAInitialAlignmentControl_State *)init
+{
+	@throw([NSException exceptionWithName:@"API_ERROR"
+								   reason:@"don't call init. Call initWithLink: instead"
+								 userInfo:@{    @"backtrace":   UMBacktrace(NULL,0) }]);
+}
+
 
 - (UMM2PAInitialAlignmentControl_State *)initWithLink:(UMLayerM2PA *)link
 {
@@ -32,12 +39,6 @@
     return self;
 }
 
-- (UMM2PAInitialAlignmentControl_State *)init
-{
-    @throw([NSException exceptionWithName:@"API_ERROR"
-                                   reason:@"don't call init. Call initWithLink: instead"
-                                 userInfo:@{    @"backtrace":   UMBacktrace(NULL,0) }]);
-}
 
 
 - (UMM2PAInitialAlignmentControl_State *)eventStart:(UMLayerM2PA *)link
@@ -120,5 +121,29 @@
     return self;
 }
 
+- (UMM2PAInitialAlignmentControl_State *)eventAlignmentNotPossible:(UMLayerM2PA *)link
+{
+	return self;
+}
+
+- (UMM2PAInitialAlignmentControl_State *)eventLocalProcessorOutage:(UMLayerM2PA *)link;
+{
+	return self;
+}
+
+- (UMM2PAInitialAlignmentControl_State *)eventRemoteProcessorOutage:(UMLayerM2PA *)link
+{
+	return self;
+}
+
+- (UMM2PAInitialAlignmentControl_State *)eventLocalProcessorRecovered:(UMLayerM2PA *)link;
+{
+	return self;
+}
+
+- (UMM2PAInitialAlignmentControl_State *)eventRemoteProcessorRecovered:(UMLayerM2PA *)link
+{
+	return self;
+}
 
 @end

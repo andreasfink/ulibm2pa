@@ -33,5 +33,12 @@
 - (UMM2PAInitialAlignmentControl_State *)eventProvingEnds:(UMLayerM2PA *)link;
 - (UMM2PAInitialAlignmentControl_State *)eventTimer4:(UMLayerM2PA *)link;
 - (UMM2PAInitialAlignmentControl_State *)eventTimer4r:(UMLayerM2PA *)link;
+- (UMM2PAInitialAlignmentControl_State *)eventAlignmentNotPossible:(UMLayerM2PA *)link;
+- (UMM2PAInitialAlignmentControl_State *)eventLocalProcessorOutage:(UMLayerM2PA *)link;
+- (UMM2PAInitialAlignmentControl_State *)eventRemoteProcessorOutage:(UMLayerM2PA *)link;
+- (UMM2PAInitialAlignmentControl_State *)eventLocalProcessorRecovered:(UMLayerM2PA *)link;
+- (UMM2PAInitialAlignmentControl_State *)eventRemoteProcessorRecovered:(UMLayerM2PA *)link;
+
+
 
 @end

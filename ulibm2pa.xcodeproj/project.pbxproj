@@ -18,6 +18,20 @@
 		A634B4941A2E913900854472 /* UMLayerM2PAUserProfile.h in Headers */ = {isa = PBXBuildFile; fileRef = A634B4921A2E913900854472 /* UMLayerM2PAUserProfile.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A634B4951A2E913900854472 /* UMLayerM2PAUserProfile.m in Sources */ = {isa = PBXBuildFile; fileRef = A634B4931A2E913900854472 /* UMLayerM2PAUserProfile.m */; };
 		A634B4961A2E913900854472 /* UMLayerM2PAUserProfile.m in Sources */ = {isa = PBXBuildFile; fileRef = A634B4931A2E913900854472 /* UMLayerM2PAUserProfile.m */; };
+		A6817F2E21AFDD7F00B2BF25 /* UMM2PALinkStateControl_Idle.h in Headers */ = {isa = PBXBuildFile; fileRef = A6817F2C21AFDD7F00B2BF25 /* UMM2PALinkStateControl_Idle.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A6817F2F21AFDD7F00B2BF25 /* UMM2PALinkStateControl_Idle.m in Sources */ = {isa = PBXBuildFile; fileRef = A6817F2D21AFDD7F00B2BF25 /* UMM2PALinkStateControl_Idle.m */; };
+		A6817F3221AFDF5700B2BF25 /* UMM2PALinkStateControl_NotAligned.h in Headers */ = {isa = PBXBuildFile; fileRef = A6817F3021AFDF5700B2BF25 /* UMM2PALinkStateControl_NotAligned.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A6817F3321AFDF5700B2BF25 /* UMM2PALinkStateControl_NotAligned.m in Sources */ = {isa = PBXBuildFile; fileRef = A6817F3121AFDF5700B2BF25 /* UMM2PALinkStateControl_NotAligned.m */; };
+		A6817F3621AFE31400B2BF25 /* UMM2PALinkStateControl_Aligned.h in Headers */ = {isa = PBXBuildFile; fileRef = A6817F3421AFE31400B2BF25 /* UMM2PALinkStateControl_Aligned.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A6817F3721AFE31400B2BF25 /* UMM2PALinkStateControl_Aligned.m in Sources */ = {isa = PBXBuildFile; fileRef = A6817F3521AFE31400B2BF25 /* UMM2PALinkStateControl_Aligned.m */; };
+		A6817F3A21AFEDB400B2BF25 /* UMM2PALinkStateControl_Proving.h in Headers */ = {isa = PBXBuildFile; fileRef = A6817F3821AFEDB400B2BF25 /* UMM2PALinkStateControl_Proving.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A6817F3B21AFEDB400B2BF25 /* UMM2PALinkStateControl_Proving.m in Sources */ = {isa = PBXBuildFile; fileRef = A6817F3921AFEDB400B2BF25 /* UMM2PALinkStateControl_Proving.m */; };
+		A6817F3E21AFF7DA00B2BF25 /* UMM2PAInitialAlignmentControl_LocalProcessorOutage.h in Headers */ = {isa = PBXBuildFile; fileRef = A6817F3C21AFF7DA00B2BF25 /* UMM2PAInitialAlignmentControl_LocalProcessorOutage.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A6817F3F21AFF7DA00B2BF25 /* UMM2PAInitialAlignmentControl_LocalProcessorOutage.m in Sources */ = {isa = PBXBuildFile; fileRef = A6817F3D21AFF7DA00B2BF25 /* UMM2PAInitialAlignmentControl_LocalProcessorOutage.m */; };
+		A6817F4221AFF7E400B2BF25 /* UMM2PAInitialAlignmentControl_RemoteProcessorOutage.h in Headers */ = {isa = PBXBuildFile; fileRef = A6817F4021AFF7E400B2BF25 /* UMM2PAInitialAlignmentControl_RemoteProcessorOutage.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A6817F4321AFF7E400B2BF25 /* UMM2PAInitialAlignmentControl_RemoteProcessorOutage.m in Sources */ = {isa = PBXBuildFile; fileRef = A6817F4121AFF7E400B2BF25 /* UMM2PAInitialAlignmentControl_RemoteProcessorOutage.m */; };
+		A6817F4A21AFF99900B2BF25 /* UMM2PAInitialAlignmentControl_BothProcessorsOut.h in Headers */ = {isa = PBXBuildFile; fileRef = A6817F4821AFF99900B2BF25 /* UMM2PAInitialAlignmentControl_BothProcessorsOut.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A6817F4B21AFF99900B2BF25 /* UMM2PAInitialAlignmentControl_BothProcessorsOut.m in Sources */ = {isa = PBXBuildFile; fileRef = A6817F4921AFF99900B2BF25 /* UMM2PAInitialAlignmentControl_BothProcessorsOut.m */; };
 		A6827E0E1E37FC6B00F3048B /* UMLayerM2PAApplicationContextProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = A6827E0C1E37FC6B00F3048B /* UMLayerM2PAApplicationContextProtocol.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A689741C1A2CF3C100854472 /* ulibsctp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A689741B1A2CF3C100854472 /* ulibsctp.framework */; };
 		A689741D1A2CF49C00854472 /* ulibsctp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A689741B1A2CF3C100854472 /* ulibsctp.framework */; };
@@ -139,6 +153,20 @@
 		A634B48E1A2E7AE900854472 /* UMLayerM2PAUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UMLayerM2PAUser.m; sourceTree = "<group>"; };
 		A634B4921A2E913900854472 /* UMLayerM2PAUserProfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMLayerM2PAUserProfile.h; sourceTree = "<group>"; };
 		A634B4931A2E913900854472 /* UMLayerM2PAUserProfile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UMLayerM2PAUserProfile.m; sourceTree = "<group>"; };
+		A6817F2C21AFDD7F00B2BF25 /* UMM2PALinkStateControl_Idle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UMM2PALinkStateControl_Idle.h; sourceTree = "<group>"; };
+		A6817F2D21AFDD7F00B2BF25 /* UMM2PALinkStateControl_Idle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UMM2PALinkStateControl_Idle.m; sourceTree = "<group>"; };
+		A6817F3021AFDF5700B2BF25 /* UMM2PALinkStateControl_NotAligned.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UMM2PALinkStateControl_NotAligned.h; sourceTree = "<group>"; };
+		A6817F3121AFDF5700B2BF25 /* UMM2PALinkStateControl_NotAligned.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UMM2PALinkStateControl_NotAligned.m; sourceTree = "<group>"; };
+		A6817F3421AFE31400B2BF25 /* UMM2PALinkStateControl_Aligned.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UMM2PALinkStateControl_Aligned.h; sourceTree = "<group>"; };
+		A6817F3521AFE31400B2BF25 /* UMM2PALinkStateControl_Aligned.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UMM2PALinkStateControl_Aligned.m; sourceTree = "<group>"; };
+		A6817F3821AFEDB400B2BF25 /* UMM2PALinkStateControl_Proving.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UMM2PALinkStateControl_Proving.h; sourceTree = "<group>"; };
+		A6817F3921AFEDB400B2BF25 /* UMM2PALinkStateControl_Proving.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UMM2PALinkStateControl_Proving.m; sourceTree = "<group>"; };
+		A6817F3C21AFF7DA00B2BF25 /* UMM2PAInitialAlignmentControl_LocalProcessorOutage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UMM2PAInitialAlignmentControl_LocalProcessorOutage.h; sourceTree = "<group>"; };
+		A6817F3D21AFF7DA00B2BF25 /* UMM2PAInitialAlignmentControl_LocalProcessorOutage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UMM2PAInitialAlignmentControl_LocalProcessorOutage.m; sourceTree = "<group>"; };
+		A6817F4021AFF7E400B2BF25 /* UMM2PAInitialAlignmentControl_RemoteProcessorOutage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UMM2PAInitialAlignmentControl_RemoteProcessorOutage.h; sourceTree = "<group>"; };
+		A6817F4121AFF7E400B2BF25 /* UMM2PAInitialAlignmentControl_RemoteProcessorOutage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UMM2PAInitialAlignmentControl_RemoteProcessorOutage.m; sourceTree = "<group>"; };
+		A6817F4821AFF99900B2BF25 /* UMM2PAInitialAlignmentControl_BothProcessorsOut.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UMM2PAInitialAlignmentControl_BothProcessorsOut.h; sourceTree = "<group>"; };
+		A6817F4921AFF99900B2BF25 /* UMM2PAInitialAlignmentControl_BothProcessorsOut.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UMM2PAInitialAlignmentControl_BothProcessorsOut.m; sourceTree = "<group>"; };
 		A6827E0C1E37FC6B00F3048B /* UMLayerM2PAApplicationContextProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMLayerM2PAApplicationContextProtocol.h; sourceTree = "<group>"; };
 		A689741B1A2CF3C100854472 /* ulibsctp.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ulibsctp.framework; path = /Library/Frameworks/ulibsctp.framework; sourceTree = "<absolute>"; };
 		A68974291A2D274100854472 /* UMM2PATask_AdminInit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMM2PATask_AdminInit.h; sourceTree = "<group>"; };
@@ -299,21 +327,35 @@
 				A634B4921A2E913900854472 /* UMLayerM2PAUserProfile.h */,
 				A634B4931A2E913900854472 /* UMLayerM2PAUserProfile.m */,
 				A68974351A2D299F00854472 /* UMLayerM2PAUserProtocol.h */,
-				A6B7180C1A31DD850090FC94 /* UMM2PAInitialAlignmentControl_Aligned.h */,
-				A6B7180D1A31DD850090FC94 /* UMM2PAInitialAlignmentControl_Aligned.m */,
 				A6B718141A31DEDE0090FC94 /* UMM2PAInitialAlignmentControl_AllStates.h */,
 				A6B718041A31DD680090FC94 /* UMM2PAInitialAlignmentControl_Idle.h */,
 				A6B718051A31DD680090FC94 /* UMM2PAInitialAlignmentControl_Idle.m */,
+				A6817F3C21AFF7DA00B2BF25 /* UMM2PAInitialAlignmentControl_LocalProcessorOutage.h */,
+				A6817F3D21AFF7DA00B2BF25 /* UMM2PAInitialAlignmentControl_LocalProcessorOutage.m */,
+				A6817F4021AFF7E400B2BF25 /* UMM2PAInitialAlignmentControl_RemoteProcessorOutage.h */,
+				A6817F4121AFF7E400B2BF25 /* UMM2PAInitialAlignmentControl_RemoteProcessorOutage.m */,
+				A6817F4821AFF99900B2BF25 /* UMM2PAInitialAlignmentControl_BothProcessorsOut.h */,
+				A6817F4921AFF99900B2BF25 /* UMM2PAInitialAlignmentControl_BothProcessorsOut.m */,
 				A6B718081A31DD790090FC94 /* UMM2PAInitialAlignmentControl_NotAligned.h */,
 				A6B718091A31DD790090FC94 /* UMM2PAInitialAlignmentControl_NotAligned.m */,
 				A6B718101A31DD950090FC94 /* UMM2PAInitialAlignmentControl_Proving.h */,
 				A6B718111A31DD950090FC94 /* UMM2PAInitialAlignmentControl_Proving.m */,
 				A6B718001A31DD430090FC94 /* UMM2PAInitialAlignmentControl_State.h */,
 				A6B718011A31DD430090FC94 /* UMM2PAInitialAlignmentControl_State.m */,
+				A6B7180C1A31DD850090FC94 /* UMM2PAInitialAlignmentControl_Aligned.h */,
+				A6B7180D1A31DD850090FC94 /* UMM2PAInitialAlignmentControl_Aligned.m */,
+				A6817F2C21AFDD7F00B2BF25 /* UMM2PALinkStateControl_Idle.h */,
+				A6817F2D21AFDD7F00B2BF25 /* UMM2PALinkStateControl_Idle.m */,
 				A6B7182C1A31F12D0090FC94 /* UMM2PALinkStateControl_AlignedNotReady.h */,
 				A6B7182D1A31F12D0090FC94 /* UMM2PALinkStateControl_AlignedNotReady.m */,
 				A6B718281A31F1210090FC94 /* UMM2PALinkStateControl_AlignedReady.h */,
+				A6817F3421AFE31400B2BF25 /* UMM2PALinkStateControl_Aligned.h */,
+				A6817F3521AFE31400B2BF25 /* UMM2PALinkStateControl_Aligned.m */,
+				A6817F3821AFEDB400B2BF25 /* UMM2PALinkStateControl_Proving.h */,
+				A6817F3921AFEDB400B2BF25 /* UMM2PALinkStateControl_Proving.m */,
 				A6B718291A31F1210090FC94 /* UMM2PALinkStateControl_AlignedReady.m */,
+				A6817F3021AFDF5700B2BF25 /* UMM2PALinkStateControl_NotAligned.h */,
+				A6817F3121AFDF5700B2BF25 /* UMM2PALinkStateControl_NotAligned.m */,
 				A6DE3DF81A31F9400090FC94 /* UMM2PALinkStateControl_AllStates.h */,
 				A6B718241A31F1130090FC94 /* UMM2PALinkStateControl_InitialAlignment.h */,
 				A6B718251A31F1130090FC94 /* UMM2PALinkStateControl_InitialAlignment.m */,
@@ -436,6 +478,7 @@
 			files = (
 				A6DE3DF91A31F9400090FC94 /* UMM2PALinkStateControl_AllStates.h in Headers */,
 				A6B7181A1A31F0CA0090FC94 /* UMM2PALinkStateControl_State.h in Headers */,
+				A6817F3221AFDF5700B2BF25 /* UMM2PALinkStateControl_NotAligned.h in Headers */,
 				A689742D1A2D275600854472 /* UMM2PATask_AdminSetConfig.h in Headers */,
 				A6B7180E1A31DD850090FC94 /* UMM2PAInitialAlignmentControl_Aligned.h in Headers */,
 				A6B717DA1A3193980090FC94 /* UMM2PATask_sctpDataIndication.h in Headers */,
@@ -449,7 +492,9 @@
 				A68974601A2D330600854472 /* UMM2PATask_Start.h in Headers */,
 				A6B718021A31DD430090FC94 /* UMM2PAInitialAlignmentControl_State.h in Headers */,
 				A68974651A2D331200854472 /* UMM2PATask_Stop.h in Headers */,
+				A6817F4221AFF7E400B2BF25 /* UMM2PAInitialAlignmentControl_RemoteProcessorOutage.h in Headers */,
 				A6E93D2F1A2CE59700854472 /* UMLayerM2PA.h in Headers */,
+				A6817F3E21AFF7DA00B2BF25 /* UMM2PAInitialAlignmentControl_LocalProcessorOutage.h in Headers */,
 				A68974741A2D334B00854472 /* UMM2PATask_SetSlc.h in Headers */,
 				A68974511A2D328A00854472 /* UMM2PATask_Data.h in Headers */,
 				A689746F1A2D333200854472 /* UMM2PATask_EmergencyCheases.h in Headers */,
@@ -461,15 +506,19 @@
 				A68974381A2D29C500854472 /* UMLayerM2PAStatus.h in Headers */,
 				A68974561A2D32E900854472 /* UMM2PATask_PowerOn.h in Headers */,
 				A68974361A2D299F00854472 /* UMLayerM2PAUserProtocol.h in Headers */,
+				A6817F3A21AFEDB400B2BF25 /* UMM2PALinkStateControl_Proving.h in Headers */,
 				A689746A1A2D332A00854472 /* UMM2PATask_Emergency.h in Headers */,
 				A634B48F1A2E7AE900854472 /* UMLayerM2PAUser.h in Headers */,
 				A6B718261A31F1130090FC94 /* UMM2PALinkStateControl_InitialAlignment.h in Headers */,
 				A6B718221A31F0F60090FC94 /* UMM2PALinkStateControl_OutOfService.h in Headers */,
+				A6817F3621AFE31400B2BF25 /* UMM2PALinkStateControl_Aligned.h in Headers */,
 				A6B717D61A3193860090FC94 /* UMM2PATask_sctpStatusIndication.h in Headers */,
 				A6B7181E1A31F0E10090FC94 /* UMM2PALinkStateControl_PowerOff.h in Headers */,
 				A6B718361A31F17E0090FC94 /* UMM2PALinkStateControl_InService.h in Headers */,
+				A6817F2E21AFDD7F00B2BF25 /* UMM2PALinkStateControl_Idle.h in Headers */,
 				A689745B1A2D32F800854472 /* UMM2PATask_PowerOff.h in Headers */,
 				A6B718121A31DD950090FC94 /* UMM2PAInitialAlignmentControl_Proving.h in Headers */,
+				A6817F4A21AFF99900B2BF25 /* UMM2PAInitialAlignmentControl_BothProcessorsOut.h in Headers */,
 				A6B718061A31DD680090FC94 /* UMM2PAInitialAlignmentControl_Idle.h in Headers */,
 				A6B7182E1A31F12D0090FC94 /* UMM2PALinkStateControl_AlignedNotReady.h in Headers */,
 				A6B7182A1A31F1210090FC94 /* UMM2PALinkStateControl_AlignedReady.h in Headers */,
@@ -574,13 +623,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A6817F3721AFE31400B2BF25 /* UMM2PALinkStateControl_Aligned.m in Sources */,
 				A6B7182B1A31F1210090FC94 /* UMM2PALinkStateControl_AlignedReady.m in Sources */,
+				A6817F2F21AFDD7F00B2BF25 /* UMM2PALinkStateControl_Idle.m in Sources */,
 				A6B718031A31DD430090FC94 /* UMM2PAInitialAlignmentControl_State.m in Sources */,
 				A6B7180B1A31DD790090FC94 /* UMM2PAInitialAlignmentControl_NotAligned.m in Sources */,
 				A634B4951A2E913900854472 /* UMLayerM2PAUserProfile.m in Sources */,
 				A689746B1A2D332A00854472 /* UMM2PATask_Emergency.m in Sources */,
 				A68974521A2D328A00854472 /* UMM2PATask_Data.m in Sources */,
 				A6B718131A31DD950090FC94 /* UMM2PAInitialAlignmentControl_Proving.m in Sources */,
+				A6817F4B21AFF99900B2BF25 /* UMM2PAInitialAlignmentControl_BothProcessorsOut.m in Sources */,
 				A689742E1A2D275600854472 /* UMM2PATask_AdminSetConfig.m in Sources */,
 				A68974661A2D331200854472 /* UMM2PATask_Stop.m in Sources */,
 				A6B718331A31F1410090FC94 /* UMM2PALinkStateControl_ProcessorOutage.m in Sources */,
@@ -594,11 +646,14 @@
 				A6B718371A31F17E0090FC94 /* UMM2PALinkStateControl_InService.m in Sources */,
 				A6B7182F1A31F12D0090FC94 /* UMM2PALinkStateControl_AlignedNotReady.m in Sources */,
 				A6E93D301A2CE59700854472 /* UMLayerM2PA.m in Sources */,
+				A6817F4321AFF7E400B2BF25 /* UMM2PAInitialAlignmentControl_RemoteProcessorOutage.m in Sources */,
 				A6B717D71A3193860090FC94 /* UMM2PATask_sctpStatusIndication.m in Sources */,
 				A6B7181B1A31F0CA0090FC94 /* UMM2PALinkStateControl_State.m in Sources */,
+				A6817F3B21AFEDB400B2BF25 /* UMM2PALinkStateControl_Proving.m in Sources */,
 				A6F542551A2F68BA0090FC94 /* UMM2PATask_AdminDetachOrder.m in Sources */,
 				A6B7181F1A31F0E10090FC94 /* UMM2PALinkStateControl_PowerOff.m in Sources */,
 				A68974301A2D276200854472 /* UMM2PATask_AdminInit.m in Sources */,
+				A6817F3F21AFF7DA00B2BF25 /* UMM2PAInitialAlignmentControl_LocalProcessorOutage.m in Sources */,
 				A6B718271A31F1130090FC94 /* UMM2PALinkStateControl_InitialAlignment.m in Sources */,
 				A6DA2B8C1A2E02F00090FC94 /* UMM2PATask_TimerEvent.m in Sources */,
 				A68974341A2D277900854472 /* UMM2PATask_AdminAttach.m in Sources */,
@@ -607,6 +662,7 @@
 				A689745C1A2D32F800854472 /* UMM2PATask_PowerOff.m in Sources */,
 				A6B7180F1A31DD850090FC94 /* UMM2PAInitialAlignmentControl_Aligned.m in Sources */,
 				A68974611A2D330600854472 /* UMM2PATask_Start.m in Sources */,
+				A6817F3321AFDF5700B2BF25 /* UMM2PALinkStateControl_NotAligned.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

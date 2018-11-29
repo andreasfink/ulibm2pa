@@ -13,21 +13,25 @@
 #import "UMLayerM2PA.h"
 
 @implementation UMM2PATask_TimerEvent
-@synthesize timerNumber;
 
-- (UMM2PATask_TimerEvent *)initWithReceiver:(UMLayerM2PA *)rx sender:(id<UMLayerM2PAUserProtocol>)tx timerNumber:(int)nr
+- (UMM2PATask_TimerEvent *)initWithReceiver:(UMLayerM2PA *)rx sender:(id<UMLayerM2PAUserProtocol>)tx timerName:(NSString *)tname;
 {
     self = [super initWithName:[[self class]description]  receiver:rx sender:tx requiresSynchronisation:NO];
     if(self)
     {
-        self.timerNumber = nr;
+        _timerName = tname;
     }
     return self;
 }
 
 - (void)main
 {
-    UMLayerM2PA *link = (UMLayerM2PA *)self.receiver;
+	UMLayerM2PA *link = (UMLayerM2PA *)self.receiver;
+
+	if(link.logLevel <= UMLOG_DEBUG)
+	{
+		[link.logFeed debugText:[NSString stringWithFormat:@"Timer %@ fires",_timerName]];
+	}
     [link _timerEventTask:self];
 }
 

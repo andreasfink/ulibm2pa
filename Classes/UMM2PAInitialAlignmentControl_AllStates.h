@@ -13,3 +13,7 @@
 #import "UMM2PAInitialAlignmentControl_NotAligned.h"
 #import "UMM2PAInitialAlignmentControl_Aligned.h"
 #import "UMM2PAInitialAlignmentControl_Proving.h"
+#import "UMM2PAInitialAlignmentControl_LocalProcessorOutage.h"
+#import "UMM2PAInitialAlignmentControl_RemoteProcessorOutage.h"
+#import "UMM2PAInitialAlignmentControl_BothProcessorsOut.h"
+

@@ -124,82 +124,120 @@ typedef enum SpeedStatus
     SPEED_EXCEEDED		= 1,
 } SpeedStatus;
 
+typedef enum PocStatus
+{
+	PocStatus_idle,
+	PocStatus_inService,
+} PocStatus;
+
 @interface UMLayerM2PA : UMLayer<UMLayerSctpUserProtocol>
 {
-    //NSString *name;
-    UMSynchronizedArray *_users;
-    UMM2PALinkStateControl_State        *lscState;
-    UMM2PAInitialAlignmentControl_State *iacState;
-    UMMutex *_seqNumLock;
-    UMMutex *_dataLock;
-    UMMutex *_controlLock;
-    UMMutex *_incomingDataBufferLock;
-	int		_alignmentsReceived;
-    BOOL    local_processor_outage;
-    BOOL    remote_processor_outage;
-    BOOL    level3Indication;
-    int     slc;
-    int     networkIndicator;
+    UMSynchronizedArray 				*_users;
+    UMM2PALinkStateControl_State        *_lscState;
+    UMM2PAInitialAlignmentControl_State *_iacState;
+    UMMutex 							*_seqNumLock;
+    UMMutex 							*_dataLock;
+    UMMutex 							*_controlLock;
+    UMMutex 							*_incomingDataBufferLock;
+	int									_alignmentsReceived;
+    BOOL    							_local_processor_outage;
+    BOOL    							_remote_processor_outage;
+    BOOL    							_level3Indication;
+    int     							_slc;
+    int     							_networkIndicator;
+	BOOL								_linkstate_busy;
+    u_int32_t							_bsn; /* backward sequence number. Last Sequence number received from the peer */
+    u_int32_t							_fsn; /* forward sequence number. Last sequence number sent */
+    u_int32_t							_bsn2; /* backward sequence number. Last FSN number acked from the peer for our transmission */
+    u_int32_t							_outstanding;
+    NSTimeInterval      				_t4n;
+    NSTimeInterval      				_t4e;
+    UMLayerSctp     					*_sctpLink;
 
-    u_int32_t		bsn; /* backward sequence number. Last Sequence number received from the peer */
-    u_int32_t		fsn; /* forward sequence number. Last sequence number sent */
-    u_int32_t		bsn2; /* backward sequence number. Last FSN number acked from the peer for our transmission */
-    u_int32_t		outstanding;
-    NSTimeInterval      _t4n;
-    NSTimeInterval      _t4e;
-    UMLayerSctp     *sctpLink;
+	UMTimer    *_t1;	/* Timer "alignment ready" */
+		/* Starts when entering PROVING state. Stops when AlignmentReady is received */
+		/* recommended values: 			*/
+		/* 64kbps:	 T1 = 40-50s		*/
+		/* 4.8kbps: T1 = 500-600s		*/
+		/* Following successful alignment and proving procedure, the signalling terminal enters Aligned Ready state and the aligned ready time-out T1 is stopped on entry in the In-service state and the duration of time-out T1 should be chosen such that the remote end can perform four additional proving attempts. */
 
-    UMTimer    *_t1;
-    UMTimer    *_t2;
-    UMTimer    *_t3;
-    UMTimer    *_t4;
-    UMTimer    *_t4r;
-    UMTimer    *_t5;
-    UMTimer    *_t6;
-    UMTimer    *_t7;
+    UMTimer    *_t2;	/* Timer "not aligned" */
+		/* recommended values: 			*/
+		/* 64kbps T2 = 5-150 s 			*/
+		/* 4.8kbps: T2 = 5-50 s 		*/
+
+    UMTimer    *_t3;	/* Timer "aligned" */
+		/* recommended value: 1-2s 			*/
+
+    UMTimer    *_t4;	/* Proving period timer = 2^16 or 2^32 octet transmission time */
+		/*
+		 	T4n (64) = 7.5-9.5 s Nominal value 8.2 s
+		 	T4n (4.8) = 100-120 s Nominal value 110 s
+		 	T4e (64) = 400-600 ms Nominal value 500 ms
+		 	T4e (4.8) = 6-8 s Nominal value 7 s
+		 	Expiry of timer T4 (see 12.3) indicates a successful proving period unless the proving
+		 	period has been previously aborted up to four times.
+		 */
+    UMTimer    *_t4r;	/* intervall to send alignment messages */
+    UMTimer    *_t5; /* Timer T5 "sending SIB" */
+		/* recommended value: 80-120ms */
+
+    UMTimer    *_t6;	/* Timer T6 "remote congestion" */
+		/* Recommended Values:
+		 	T6 (64) = 3-6 s
+		 	T6 (4.8) = 8-12 s
+	 	*/
+    UMTimer    *_t7;	/* Timer T7 "excessive delay of acknowledgement" */
+		/* Recommended Values:
+		 	T7 (64) = 0.5-2 s	Bit rate of 64 kbit/s
+		 	For PCR method		Values less than 0.8s should not be used
+		 	T7 (4.8) = 4-6 s	Bit rate of 4.8 kbit/s
+		 */
+		/* A timing mechanism, timer T7, shall be provided which generates an indication of excessive delay of acknowledgement if, assuming that there is at least one outstanding MSU in the retransmission buffer, no new acknowledgement has been received within a time-out T7 (see 12.3). In the case of excessive delay in the reception of acknowledgements, a link failure indications is given to level 3. */
+
     
     SCTP_Status _sctp_status;
     M2PA_Status _m2pa_status;
 
-    BOOL    congested;
-    BOOL    emergency;
-    BOOL    autostart;
-    BOOL    link_restarts;
-    int     ready_received;
-    int     ready_sent;
-    BOOL    paused;
-    
-    BOOL    receptionEnabled;
+    BOOL    _congested;
+    BOOL    _emergency;
+    BOOL    _autostart;
+    BOOL    _link_restarts;
+    int     _ready_received;
+    int     _ready_sent;
+    BOOL    _paused;
+	BOOL	_furtherProving;
+    BOOL    _receptionEnabled;
     double  _speed;
     int     _window_size;
-    UMThroughputCounter	*speedometer;
-    UMThroughputCounter	*submission_speed;
+	int		_provingCounter;
+	PocStatus	_pocStatus;
+
+    UMThroughputCounter	*_speedometer;
+    UMThroughputCounter	*_submission_speed;
 
     UMThroughputCounter *_inboundThroughputPackets;
     UMThroughputCounter *_outboundThroughputPackets;
     UMThroughputCounter *_inboundThroughputBytes;
     UMThroughputCounter *_outboundThroughputBytes;
 
-    time_t  link_up_time;
-    time_t  link_down_time;
-    time_t  link_congestion_time;
-    time_t  link_speed_excess_time;
-    time_t  link_congestion_cleared_time;
-    time_t  link_speed_excess_cleared_time;
+    NSDate	*_link_up_time;
+    NSDate	*_link_down_time;
+    NSDate	*_link_congestion_time;
+    NSDate	*_link_speed_excess_time;
+    NSDate	*_link_congestion_cleared_time;
+    NSDate	*_link_speed_excess_cleared_time;
 
-    NSMutableData *data_link_buffer;
-    NSMutableData *control_link_buffer;
-    SpeedStatus speed_status;
-    UMQueue *waitingMessages;
+    NSMutableData 	*_data_link_buffer;
+    NSMutableData 	*_control_link_buffer;
+    SpeedStatus 	_speed_status;
+    UMQueue 		*_waitingMessages;
 }
-
-@property(readwrite,strong)     NSString *name;
 
 @property(readwrite,strong)     UMM2PALinkStateControl_State        *lscState;
 @property(readwrite,strong)     UMM2PAInitialAlignmentControl_State *iacState;
 
 @property(readwrite,assign)     int slc;
-@property(readwrite,assign)     BOOL inEmergencyMode;
 @property(readwrite,strong)     UMThroughputCounter *speedometer;
 
 @property(readwrite,assign)     BOOL    congested;
@@ -215,6 +253,8 @@ typedef enum SpeedStatus
 @property(readwrite,assign)     BOOL    paused;
 @property(readwrite,assign)     double  speed;
 @property(readwrite,assign)     int     window_size;
+@property(readwrite,assign)     int     provingCounter;
+@property(readwrite,assign)     BOOL    furtherProving;
 
 @property(readwrite,strong)     UMTimer  *t1;       /* T1:  alignment ready */
 @property(readwrite,strong)     UMTimer  *t2;      	/* T2: not aligned */
@@ -334,7 +374,7 @@ typedef enum SpeedStatus
            data:(NSData *)sendingData
      ackRequest:(NSDictionary *)ack;
 
-- (void)timerEvent:(id<UMLayerM2PAUserProtocol>)caller timerNr:(int)tnr;
+- (void)queueTimerEvent:(id<UMLayerM2PAUserProtocol>)caller timerName:(NSString *)tname;
 
 - (void)powerOnFor:(id<UMLayerM2PAUserProtocol>)caller;
 - (void)powerOffFor:(id<UMLayerM2PAUserProtocol>)caller;
@@ -377,6 +417,8 @@ typedef enum SpeedStatus
 -(void)cancelLocalProcessorOutage;
 
 -(void)cancelEmergency;
+-(void)markFurtherProving;
+-(void)cancelFurtherProving;
 -(void)rcStart;
 -(void)rcStop;
 
@@ -394,6 +436,10 @@ typedef enum SpeedStatus
 -(void)iacEmergencyCeases;
 -(void)iacStart;
 -(void)iacStop;
+-(void)iacAlignmentNotPossible;
+
+-(void)lscNoProcessorOutage;
+
 -(void)suermStart;
 -(void)suermStop;
 
@@ -405,6 +451,7 @@ typedef enum SpeedStatus
 -(void)pocRemoteProcessorOutage;
 -(void)pocLocalProcessorRecovered;
 -(void)pocRemoteProcessorRecovered;
+-(void)pocStart;
 -(void)pocStop;
 
 -(void)rcRejectMsuFisu;
