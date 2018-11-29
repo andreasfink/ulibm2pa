@@ -255,6 +255,7 @@ typedef enum PocStatus
 @property(readwrite,assign)     int     window_size;
 @property(readwrite,assign)     int     provingCounter;
 @property(readwrite,assign)     BOOL    furtherProving;
+@property(readwrite,assign)     u_int32_t outstanding;
 
 @property(readwrite,strong)     UMTimer  *t1;       /* T1:  alignment ready */
 @property(readwrite,strong)     UMTimer  *t2;      	/* T2: not aligned */
