@@ -8,6 +8,7 @@
 
 #import "UMM2PALinkStateControl_NotAligned.h"
 #import "UMM2PALinkStateControl_AllStates.h"
+#import "UMLayerM2PA.h"
 
 @implementation UMM2PALinkStateControl_NotAligned
 
