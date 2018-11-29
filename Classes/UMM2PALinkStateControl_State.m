@@ -155,5 +155,13 @@
     return self;
 }
 
+- (void)logEvent:(NSString *)event
+{
+	if(_link.logLevel <= UMLOG_DEBUG)
+	{
+		NSString *s = [NSString stringWithFormat:@"LSC %@: %@",[self description],event];
+		[_link.logFeed debugText:s];
+	}
+}
 
 @end

@@ -41,6 +41,7 @@
 - (UMM2PALinkStateControl_State *)eventFlushBuffers:(UMLayerM2PA *)link; /* from MTP3 */
 - (UMM2PALinkStateControl_State *)eventContinue:(UMLayerM2PA *)link; /* from MTP3 */
 - (UMM2PALinkStateControl_State *)eventNoProcessorOutage:(UMLayerM2PA *)link; /* from POC */
+- (void)logEvent:(NSString *)event;
 
 
 @end

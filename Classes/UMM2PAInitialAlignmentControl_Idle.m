@@ -22,6 +22,7 @@
 
 - (UMM2PAInitialAlignmentControl_State *)eventLocalProcessorOutage:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
 	link.local_processor_outage=YES;
 	[link pocLocalProcessorOutage];
 	return [[UMM2PAInitialAlignmentControl_LocalProcessorOutage alloc]initWithLink:link];
@@ -29,6 +30,7 @@
 
 - (UMM2PAInitialAlignmentControl_State *)eventRemoteProcessorOutage:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
 	link.remote_processor_outage=YES;
 	[link pocRemoteProcessorOutage];
 	return [[UMM2PAInitialAlignmentControl_RemoteProcessorOutage alloc]initWithLink:link];
@@ -43,6 +45,7 @@
 
 - (UMM2PAInitialAlignmentControl_State *)eventStart:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     [link txcSendSIO];
 	[link.t2 start];
 	[link.t4r start];
@@ -51,6 +54,7 @@
 
 - (UMM2PAInitialAlignmentControl_State *)eventEmergency:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     link.emergency=YES;
 	[link.iacState eventEmergency:link];
     return self;
@@ -58,12 +62,14 @@
 
 - (UMM2PAInitialAlignmentControl_State *)eventEmergencyCeases:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     link.emergency=NO;
     return self;
 }
 
 - (UMM2PAInitialAlignmentControl_State *)eventPowerOff:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     [link.t2 stop];
     return self;
 }

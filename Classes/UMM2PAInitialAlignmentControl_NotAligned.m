@@ -40,6 +40,7 @@
 
 - (UMM2PAInitialAlignmentControl_State *)eventStop:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     [link.t2 stop];
     link.emergency=NO;
     return [[UMM2PAInitialAlignmentControl_Idle alloc]initWithLink:link];
@@ -47,6 +48,7 @@
 
 - (UMM2PAInitialAlignmentControl_State *)eventTimer2:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     link.emergency=NO;
     link.iacState = [[UMM2PAInitialAlignmentControl_Idle alloc]initWithLink:link];
     [link lscAlignmentNotPossible]; /* this call might change the state */
@@ -54,42 +56,80 @@
 
 }
 
-- (UMM2PAInitialAlignmentControl_State *)eventSIX:(UMLayerM2PA *)link
-{
-    [[link t2]stop];
-    if(link.emergency)
-    {
-        /* use emergency proving period */
-        link.t4.seconds = link.t4e;
-        [link.t4 start];
-        [link.t4r start];
-        [link txcSendSIE];
-    }
-    else
-    {
-        /* use normal proving period */
-        link.t4.seconds = link.t4n;
-        [link.t4 start];
-        [link.t4r start];
-        [link txcSendSIN];
-    }
-    [[link t3]start];
-    return [[UMM2PAInitialAlignmentControl_Aligned alloc]initWithLink:link];
-}
 
 - (UMM2PAInitialAlignmentControl_State *)eventSIO:(UMLayerM2PA *)link
 {
-    return [self eventSIX:link];
+	[self logEvent:@(__func__)];
+
+	[link.t2 stop];
+	if(link.emergency)
+	{
+		/* use emergency proving period */
+		link.t4.seconds = link.t4e;
+		[link.t4 start];
+		[link.t4r start];
+		[link txcSendSIE];
+	}
+	else
+	{
+		/* use normal proving period */
+		link.t4.seconds = link.t4n;
+		[link.t4 start];
+		[link.t4r start];
+		[link txcSendSIN];
+	}
+	[link.t3 start];
+	return [[UMM2PAInitialAlignmentControl_Aligned alloc]initWithLink:link];
 }
 
 - (UMM2PAInitialAlignmentControl_State *)eventSIN:(UMLayerM2PA *)link
 {
-    return [self eventSIX:link];
+	[self logEvent:@(__func__)];
+
+	[link.t2 stop];
+	if(link.emergency)
+	{
+		/* use emergency proving period */
+		link.t4.seconds = link.t4e;
+		[link.t4 start];
+		[link.t4r start];
+		[link txcSendSIE];
+	}
+	else
+	{
+		/* use normal proving period */
+		link.t4.seconds = link.t4n;
+		[link.t4 start];
+		[link.t4r start];
+		[link txcSendSIN];
+	}
+	[link.t3 start];
+	return [[UMM2PAInitialAlignmentControl_Aligned alloc]initWithLink:link];
 }
 
 - (UMM2PAInitialAlignmentControl_State *)eventSIE:(UMLayerM2PA *)link
 {
-    return [self eventSIX:link];
+	[self logEvent:@(__func__)];
+
+	[link.t2 stop];
+	if(link.emergency)
+	{
+		/* use emergency proving period */
+		link.t4.seconds = link.t4e;
+		[link.t4 start];
+		[link.t4r start];
+		[link txcSendSIE];
+	}
+	else
+	{
+		/* use normal proving period */
+		link.t4.seconds = link.t4n;
+		[link.t4 start];
+		[link.t4r start];
+		[link txcSendSIN];
+	}
+	[link.t3 start];
+	return [[UMM2PAInitialAlignmentControl_Aligned alloc]initWithLink:link];
 }
 
 - (UMM2PAInitialAlignmentControl_State *)eventEmergency:(UMLayerM2PA *)link

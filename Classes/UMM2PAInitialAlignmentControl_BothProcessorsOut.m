@@ -19,6 +19,7 @@
 
 - (UMM2PAInitialAlignmentControl_State *)eventLocalProcessorRecovered:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
 	[link pocLocalProcessorRecovered];
 	return [[UMM2PAInitialAlignmentControl_RemoteProcessorOutage alloc]initWithLink:link];
 }
@@ -26,12 +27,14 @@
 
 - (UMM2PAInitialAlignmentControl_State *)eventRemoteProcessorRecovered:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
 	[link pocRemoteProcessorRecovered];
 	return [[UMM2PAInitialAlignmentControl_LocalProcessorOutage alloc]initWithLink:link];
 }
 
 - (UMM2PAInitialAlignmentControl_State *)eventStop:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
 	[link pocStop];
 	return [[UMM2PAInitialAlignmentControl_Idle alloc]initWithLink:link];
 }

@@ -40,6 +40,7 @@
 
 - (UMM2PAInitialAlignmentControl_State *)eventSIO:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     [[link t4]stop];
     [link aermStop];
     [[link t3]start];
@@ -48,6 +49,7 @@
 
 - (UMM2PAInitialAlignmentControl_State *)eventTimer4:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     /* alignment complete */
     [link.t4 stop];
     [link.t4r stop];
@@ -59,6 +61,7 @@
 
 - (UMM2PAInitialAlignmentControl_State *)eventTimer4r:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     if(link.emergency==NO)
     {
         [link sendLinkstatus:M2PA_LINKSTATE_PROVING_NORMAL];
@@ -72,6 +75,7 @@
 
 - (UMM2PAInitialAlignmentControl_State *)eventSIE:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     if(link.t4.seconds != link.t4e)
     {
         [link.t4 stop];
@@ -89,6 +93,7 @@
 
 - (UMM2PAInitialAlignmentControl_State *)eventEmergency:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     link.emergency = YES;
     [link txcSendSIE];
     /* shorten the timer maybe ? */
@@ -97,17 +102,20 @@
 
 - (UMM2PAInitialAlignmentControl_State *)eventStop:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     return [[UMM2PAInitialAlignmentControl_Idle alloc]initWithLink:link];
 }
 
 - (UMM2PAInitialAlignmentControl_State *)eventSIOS:(UMLayerM2PA *)link
 {
-    /* alignment not possible */
+	[self logEvent:@(__func__)];
+	/* alignment not possible */
     return [[UMM2PAInitialAlignmentControl_Idle alloc]initWithLink:link];
 }
 
 - (UMM2PAInitialAlignmentControl_State *)eventHighLinkErrorRate:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     /* alignment not possible */
     return [[UMM2PAInitialAlignmentControl_Idle alloc]initWithLink:link];
 }

@@ -20,22 +20,6 @@
 }
 
 
-- (UMM2PAInitialAlignmentControl_Aligned *)initWithLink:(UMLayerM2PA *)link
-{
-    self = [super initWithLink:link];
-    if(self)
-    {
-        
-    }
-    return self;
-}
-
-- (UMM2PAInitialAlignmentControl_Aligned *)init
-{
-    @throw([NSException exceptionWithName:@"API_ERROR"
-                                   reason:@"don't call init. Call initWithLink: instead"
-                                 userInfo:@{    @"backtrace":   UMBacktrace(NULL,0) }]);
-}
 
 - (void)dealloc
 {
@@ -48,6 +32,7 @@
 
 - (UMM2PAInitialAlignmentControl_State *)eventStop:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     [link.t3 stop];
     [link cancelEmergency];
     return [[UMM2PAInitialAlignmentControl_Idle alloc]initWithLink:link];
@@ -55,6 +40,7 @@
 
 - (UMM2PAInitialAlignmentControl_State *)eventTimer3:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     [link.t3 stop];
     [link cancelEmergency];
     link.iacState = [[UMM2PAInitialAlignmentControl_Idle alloc]initWithLink:link];
@@ -64,6 +50,7 @@
 
 - (UMM2PAInitialAlignmentControl_State *)eventSIOS:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     [link.t3 stop];
     [link cancelEmergency];
     link.iacState = [[UMM2PAInitialAlignmentControl_Idle alloc]initWithLink:link];
@@ -73,6 +60,7 @@
 
 - (UMM2PAInitialAlignmentControl_State *)eventSIN:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     [link.t3 stop];
     if(link.emergency)
     {
@@ -92,12 +80,14 @@
 
 - (UMM2PAInitialAlignmentControl_State *)eventSIE:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     link.t4.seconds = link.t4e;
     return [self eventSIN:link];
 }
 
 - (UMM2PAInitialAlignmentControl_State *)eventEmergency:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     [link txcSendSIE];
     link.t4.seconds = link.t4e;
     return self;
