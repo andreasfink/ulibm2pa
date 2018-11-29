@@ -120,6 +120,5 @@
     return [[UMM2PAInitialAlignmentControl_Idle alloc]initWithLink:link];
 }
 
-
 @end
 
