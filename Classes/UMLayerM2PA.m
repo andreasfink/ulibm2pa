@@ -552,52 +552,74 @@
 
 - (void) _oos_received
 {
+	[_controlLock lock];
     if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:@"Received M2PA_LINKSTATE_OUT_OF_SERVICE"];
     }
     _lscState  = [_lscState eventSIOS:self];
+	[_controlLock unlock];
 }
 
 - (void) _alignment_received
 {
+	[_controlLock lock];
     _lscState  = [_lscState eventSIO:self];
+	[_controlLock unlock];
+
 }
 
 - (void) _proving_normal_received
 {
+	[_controlLock lock];
     _lscState  = [_lscState eventSIN:self];
+	[_controlLock unlock];
 }
 
 - (void) _proving_emergency_received
 {
+	[_controlLock lock];
     _lscState  = [_lscState eventSIE:self];
+	[_controlLock unlock];
 }
 
 
 - (void) _linkstate_ready_received
 {
+	[_controlLock lock];
     _lscState  = [_lscState eventFisu:self];
+	[_controlLock unlock];
 }
 
 - (void) _linkstate_processor_outage_received
 {
 
+	[_controlLock lock];
     _lscState  = [_lscState eventLocalProcessorOutage:self];
+	[_controlLock unlock];
 }
 
 - (void) _linkstate_processor_recovered_received
 {
+	[_controlLock lock];
     _lscState  = [_lscState eventLocalProcessorRecovered:self];
+	[_controlLock unlock];
+
 }
 
 - (void) _linkstate_busy_received
 {
+	[_controlLock lock];
     _lscState  = [_lscState eventSIB:self];
+	[_controlLock unlock];
 }
 
 - (void) _linkstate_busy_ended_received
 {
+	[_controlLock lock];
+	_lscState  = [_lscState eventContinue:self];
+	[_controlLock unlock];
+
     _link_congestion_cleared_time = [NSDate date];
     _congested = NO;
     [_t6 stop];

@@ -21,89 +21,106 @@
 
 - (UMM2PALinkStateControl_State *)eventAlignmentNotPossible:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     [link logDebug:@"Unexpected eventAlignmentNotPossible"];
     return self;
 }
 
 - (UMM2PALinkStateControl_State *)eventAlignmentComplete:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     [link logDebug:@"Unexpected eventAlignmentComplete"];
     return self;
 }
 
 - (UMM2PALinkStateControl_State *)eventEmergency:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     [link logDebug:@"Unexpected eventEmergency"];
     return self;
 }
 - (UMM2PALinkStateControl_State *)eventEmergencyCeases:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     [link logDebug:@"Unexpected eventEmergencyCeases"];
     return self;
 }
 - (UMM2PALinkStateControl_State *)eventFisu:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     [link logDebug:@"Unexpected eventFisu"];
     return self;
 }
 - (UMM2PALinkStateControl_State *)eventLinkFailure:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     [link logDebug:@"Unexpected eventLinkFailure"];
     return self;
 }
 - (UMM2PALinkStateControl_State *)eventLocalProcessorOutage:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     [link logDebug:@"Unexpected eventLocalProcessorOutage"];
     return self;
 }
 - (UMM2PALinkStateControl_State *)eventLocalProcessorRecovered:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     [link logDebug:@"Unexpected eventLocalProcessorRecovered"];
     return self;
 }
 - (UMM2PALinkStateControl_State *)eventMsu:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     [link logDebug:@"Unexpected eventMsu"];
     return self;
 }
 - (UMM2PALinkStateControl_State *)eventPowerOn:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     [link logDebug:@"Unexpected eventPowerOn"];
     return self;
 }
 - (UMM2PALinkStateControl_State *)eventSIE:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     [link logDebug:@"Unexpected eventSIE"];
     return self;
 }
 - (UMM2PALinkStateControl_State *)eventSIN:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     [link logDebug:@"Unexpected eventSIN. Ignoring"];
     return self;
 }
 - (UMM2PALinkStateControl_State *)eventSIO:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     [link logDebug:@"Unexpected eventSIO"];
     return [[UMM2PALinkStateControl_OutOfService alloc]initWithLink:link];
 }
 
 - (UMM2PALinkStateControl_State *)eventSIOS:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     [link logDebug:@"Unexpected eventSIOS"];
     return self;
 }
 - (UMM2PALinkStateControl_State *)eventSIPO:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     [link logDebug:@"Unexpected eventSIPO"];
     return self;
 }
 - (UMM2PALinkStateControl_State *)eventStart:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     [link logDebug:@"Unexpected eventStart"];
     return self;
 }
 - (UMM2PALinkStateControl_State *)eventStop:(UMLayerM2PA *)link
 {
+	[self logEvent:@(__func__)];
     [link logDebug:@"Unexpected eventStop"];
     return self;
 }
@@ -159,7 +176,7 @@
 {
 	if(_link.logLevel <= UMLOG_DEBUG)
 	{
-		NSString *s = [NSString stringWithFormat:@"LSC %@: %@",[self description],event];
+		NSString *s = [NSString stringWithFormat:@"LSC State=%@ Event=%@",[self description],event];
 		[_link.logFeed debugText:s];
 	}
 }
