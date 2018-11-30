@@ -71,7 +71,7 @@
 {
 	[self logEvent:@(__func__)];
     [link.t2 stop];
-    return [[UMM2PAInitialAlignmentControl_PowerOff alloc]initWithLink:link];
+    return [[UMM2PAInitialAlignmentControl_Idle alloc]initWithLink:link];
 }
 
 @end
