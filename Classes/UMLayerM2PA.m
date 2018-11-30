@@ -496,12 +496,11 @@
         dptr = _control_link_buffer.bytes;
         len = ntohl(*(u_int32_t *)&dptr[4]);
         linkstatus = ntohl(*(u_int32_t *)&dptr[16]);
-    
-        NSString *ls = [self linkStatusString:linkstatus];
-        NSString *ms = [self m2paStatusString:self.m2pa_status];
+
         if(self.logLevel <= UMLOG_DEBUG)
         {
-            [self logDebug:[NSString stringWithFormat:@"Received %@",[self linkStatusString:linkstatus]]];
+			NSString *ls = [self linkStatusString:linkstatus];
+            [self logDebug:[NSString stringWithFormat:@"Received %@",ls]];
         }
         switch(linkstatus)
         {
