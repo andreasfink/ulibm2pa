@@ -501,12 +501,6 @@
         NSString *ms = [self m2paStatusString:self.m2pa_status];
         if(self.logLevel <= UMLOG_DEBUG)
         {
-            [self logDebug:[NSString stringWithFormat:@" %d (%@) event -> %d (%@) status",
-                            linkstatus,ls,self.m2pa_status,ms]];
-        }
-
-        if(self.logLevel <= UMLOG_DEBUG)
-        {
             [self logDebug:[NSString stringWithFormat:@"Received %@",[self linkStatusString:linkstatus]]];
         }
         switch(linkstatus)
