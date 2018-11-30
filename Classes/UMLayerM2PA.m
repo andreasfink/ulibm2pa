@@ -143,7 +143,7 @@
         _controlLock = [[UMMutex alloc]initWithName:@"m2pa-control-mutex"];
         _incomingDataBufferLock = [[UMMutex alloc]initWithName:@"m2pa-incoming-data-mutex"];
 
-        _lscState = [[UMM2PALinkStateControl_Idle alloc]initWithLink:self];
+        _lscState = [[UMM2PALinkStateControl_PowerOff alloc]initWithLink:self];
         _iacState = [[UMM2PAInitialAlignmentControl_Idle alloc] initWithLink:self];
         _slc = 0;
         _emergency = NO;
@@ -246,11 +246,10 @@
      ** called upon SCTP reporting a association to be up
      ** according to figure 8/Q.703 and RFC4165 page 35
      */
-
+	[_controlLock lock];
     [self logInfo:@"sctpReportsUp"];
     /* send link status out of service to the other side */
     /* this is done in m2pa_start! */
-    [self txcSendSIOS];
     /* cancel local processor outage */
     _local_processor_outage = NO;
     _remote_processor_outage = NO;
@@ -267,14 +266,18 @@
     [_speedometer clear];
     [_submission_speed clear];
     _lscState  = [_lscState eventPowerOn:self];
+	[_controlLock unlock];
+
 }
 
 - (void)sctpReportsDown
 {
+	[_controlLock lock];
     [self logInfo:@"sctpReportsDown"];
     self.m2pa_status = M2PA_STATUS_OFF;
     /* we now wait for MTP3 to tell us to start the link again */
     _lscState  = [_lscState eventPowerOff:self];
+	[_controlLock unlock];
 }
 
 - (void) _sctpStatusIndicationTask:(UMM2PATask_sctpStatusIndication *)task
@@ -1259,7 +1262,7 @@
     [_speedometer clear];
     [_submission_speed clear];
 
-	_lscState = [[UMM2PALinkStateControl_Idle alloc]initWithLink:self];
+	_lscState = [[UMM2PALinkStateControl_PowerOff alloc]initWithLink:self];
 	_iacState = [[UMM2PAInitialAlignmentControl_Idle alloc]initWithLink:self];
 
    // self.m2pa_status = M2PA_STATUS_OOS; // this is being set once SCTP is established
