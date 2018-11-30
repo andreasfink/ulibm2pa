@@ -37,6 +37,32 @@
 #import "UMM2PALinkStateControl_AllStates.h"
 #import "UMM2PAInitialAlignmentControl_AllStates.h"
 
+#define IAC_ASSIGN_AND_LOG(oldstatus,newstatus) \
+{ \
+	UMM2PAInitialAlignmentControl_State *n = newstatus;\
+	if((oldstatus != n) && (self.logLevel <= UMLOG_DEBUG)) \
+	{ \
+		if(![oldstatus.description isEqualToString: n.description]); \
+		{ \
+			[self.logFeed debugText:[NSString stringWithFormat:@"IAC Status change %@->%@",oldstatus.description, n.description]]; \
+		} \
+		oldstatus = n; \
+	} \
+}
+
+#define LSC_ASSIGN_AND_LOG(oldstatus,newstatus) \
+{ \
+	UMM2PALinkStateControl_State  *n = newstatus;\
+	if((oldstatus != n) && (self.logLevel <= UMLOG_DEBUG))\
+	{ \
+		if(![oldstatus.description isEqualToString: n.description]); \
+		{ \
+			[self.logFeed debugText:[NSString stringWithFormat:@"LSC Status change %@->%@",oldstatus.description, n.description]]; \
+		} \
+		oldstatus = n; \
+	} \
+}
+
 
 @implementation UMLayerM2PA
 
@@ -777,25 +803,29 @@
 {
 }
 
+
+
+
 - (void)_timerFires4
 {
-    _iacState = [_iacState eventTimer4:self];
+	IAC_ASSIGN_AND_LOG(_iacState,[_iacState eventTimer4:self]);
 }
 
 - (void)_timerFires4r
 {
-    _iacState = [_iacState eventTimer4r:self];
+	IAC_ASSIGN_AND_LOG(_iacState,[_iacState eventTimer4r:self]);
 }
 
 - (void)_timerFires5
 {
+
 }
 
 - (void)_timerFires6
 {
 	/* Figure 13/Q.703 (sheet 2 of 7) */
 
-	[_lscState eventLinkFailure:self];
+	LSC_ASSIGN_AND_LOG(_lscState,[_lscState eventLinkFailure:self]);
 	_linkstate_busy = NO;
 	[_t7 stop];
 }
