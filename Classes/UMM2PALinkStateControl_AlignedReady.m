@@ -46,7 +46,7 @@
 
 - (UMM2PALinkStateControl_State *)eventFISU:(UMLayerM2PA *)link
 {
-    return [self eventMSU:link];
+	return [[UMM2PALinkStateControl_InService alloc]initWithLink:link];
 }
 
 - (UMM2PALinkStateControl_State *)eventMSU:(UMLayerM2PA *)link
