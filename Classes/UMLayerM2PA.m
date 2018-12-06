@@ -482,9 +482,10 @@
                 if([profile wantsDataMessages])
                 {
                     id user = u.user;
+                    NSString *uid = u.userId;
                     [user m2paDataIndication:self
                                          slc:_slc
-                                      userId:user
+                                      userId:uid
                                         data:userData];
 
                 }
@@ -877,6 +878,9 @@
                    slc:(int)xslc;
 
 {
+    UMAssert(uid.length > 0,@"no user id passed to MTP2 adminAttachFor");
+    UMAssert(p !=0,@"no profile MTP2 adminAttachFor");
+
     UMLayerTask *task =  [[UMM2PATask_AdminAttach alloc]initWithReceiver:self
                                                                   sender:caller
                                                                  profile:p
