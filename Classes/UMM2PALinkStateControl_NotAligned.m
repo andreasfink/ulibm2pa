@@ -76,6 +76,7 @@
 
 - (UMM2PALinkStateControl_State *)eventSIE:(UMLayerM2PA *)link
 {
+    link.iac
 	[link.t2 stop];
 	if(link.emergency)
 	{

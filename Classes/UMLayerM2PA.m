@@ -303,6 +303,7 @@
     self.m2pa_status = M2PA_STATUS_OFF;
     /* we now wait for MTP3 to tell us to start the link again */
     _lscState  = [_lscState eventPowerOff:self];
+    _liacState  = [_liacState eventPowerOff:self];
 	[_controlLock unlock];
 }
 
@@ -580,6 +581,7 @@
         [self logDebug:@"Received M2PA_LINKSTATE_OUT_OF_SERVICE"];
     }
     _lscState  = [_lscState eventSIOS:self];
+    _iacState  = [_iacState eventSIOS:self];
 	[_controlLock unlock];
 }
 
@@ -587,6 +589,7 @@
 {
 	[_controlLock lock];
     _lscState  = [_lscState eventSIO:self];
+    _iacState  = [_iacState eventSIO:self];
 	[_controlLock unlock];
 
 }
@@ -595,6 +598,7 @@
 {
 	[_controlLock lock];
     _lscState  = [_lscState eventSIN:self];
+    _iacState  = [_iacState eventSIN:self];
 	[_controlLock unlock];
 }
 
@@ -602,6 +606,7 @@
 {
 	[_controlLock lock];
     _lscState  = [_lscState eventSIE:self];
+    _iacState  = [_iacState eventSIE:self];
 	[_controlLock unlock];
 }
 
@@ -610,6 +615,7 @@
 {
 	[_controlLock lock];
     _lscState  = [_lscState eventFisu:self];
+    _iacState  = [_iacState eventFisu:self];
 	[_controlLock unlock];
 }
 
@@ -618,6 +624,7 @@
 
 	[_controlLock lock];
     _lscState  = [_lscState eventLocalProcessorOutage:self];
+    _iacState  = [_iacState eventLocalProcessorOutage:self];
 	[_controlLock unlock];
 }
 
@@ -625,6 +632,8 @@
 {
 	[_controlLock lock];
     _lscState  = [_lscState eventLocalProcessorRecovered:self];
+    _iacState  = [_iacState eventLocalProcessorRecovered:self];
+
 	[_controlLock unlock];
 
 }
@@ -633,13 +642,15 @@
 {
 	[_controlLock lock];
     _lscState  = [_lscState eventSIB:self];
+    _iacState  = [_iacState eventSIB:self];
 	[_controlLock unlock];
 }
 
 - (void) _linkstate_busy_ended_received
 {
 	[_controlLock lock];
-	_lscState  = [_lscState eventContinue:self];
+    _lscState  = [_lscState eventContinue:self];
+    _iacState  = [_iacState eventContinue:self];
 	[_controlLock unlock];
 
     _link_congestion_cleared_time = [NSDate date];
