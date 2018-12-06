@@ -56,7 +56,6 @@
 {
 	[self logEvent:@(__func__)];
     link.emergency=YES;
-	[link.iacState eventEmergency:link];
     return self;
 }
 
