@@ -482,10 +482,9 @@
                 if([profile wantsDataMessages])
                 {
                     id user = u.user;
-                    NSString *uid = u.userId;
                     [user m2paDataIndication:self
                                          slc:_slc
-                                      userId:uid
+                                      userId:user
                                         data:userData];
 
                 }

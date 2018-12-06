@@ -48,6 +48,11 @@
     return [[UMM2PALinkStateControl_ProcessorOutage alloc]initWithLink:link];
 }
 
+- (UMM2PALinkStateControl_State *)eventFisu:(UMLayerM2PA *)link
+{
+    return self;
+}
+
 - (UMM2PALinkStateControl_State *)eventSIPO:(UMLayerM2PA *)link
 {
     [link txcSendFISU];
