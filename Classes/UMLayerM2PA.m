@@ -303,7 +303,7 @@
     self.m2pa_status = M2PA_STATUS_OFF;
     /* we now wait for MTP3 to tell us to start the link again */
     _lscState  = [_lscState eventPowerOff:self];
-    _liacState  = [_liacState eventPowerOff:self];
+    _iacState  = [_iacState eventPowerOff:self];
 	[_controlLock unlock];
 }
 
@@ -615,7 +615,7 @@
 {
 	[_controlLock lock];
     _lscState  = [_lscState eventFisu:self];
-    _iacState  = [_iacState eventFisu:self];
+    //_iacState  = [_iacState eventFisu:self];
 	[_controlLock unlock];
 }
 
@@ -642,7 +642,7 @@
 {
 	[_controlLock lock];
     _lscState  = [_lscState eventSIB:self];
-    _iacState  = [_iacState eventSIB:self];
+    //_iacState  = [_iacState eventSIB:self];
 	[_controlLock unlock];
 }
 
@@ -650,7 +650,7 @@
 {
 	[_controlLock lock];
     _lscState  = [_lscState eventContinue:self];
-    _iacState  = [_iacState eventContinue:self];
+    //_iacState  = [_iacState eventContinue:self];
 	[_controlLock unlock];
 
     _link_congestion_cleared_time = [NSDate date];
