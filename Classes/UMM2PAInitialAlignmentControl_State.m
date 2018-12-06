@@ -168,8 +168,9 @@
 {
 	if(_link.logLevel <= UMLOG_DEBUG)
 	{
-		NSString *s = [NSString stringWithFormat:@"IAC %@: %@",[self description],event];
-		[_link.logFeed debugText:s];
+		NSString *s = [NSString stringWithFormat:@"IAC State=%@ Event=%@",[self description],event];
+		[_link logDebug:s];
 	}
 }
+
 @end

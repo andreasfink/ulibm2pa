@@ -96,7 +96,8 @@
 - (UMM2PALinkStateControl_State *)eventSIO:(UMLayerM2PA *)link
 {
 	[self logEvent:@(__func__)];
-    [link logDebug:@"Unexpected eventSIO"];
+	NSString *s =[NSString stringWithFormat: @"Unexpected eventSIO in state %@",self.description];
+    [link logDebug:s];
     return [[UMM2PALinkStateControl_OutOfService alloc]initWithLink:link];
 }
 
@@ -164,12 +165,14 @@
 
 - (UMM2PALinkStateControl_State *)initWithLink:(UMLayerM2PA *)link
 {
+
     self =[super init];
     if(self)
     {
         _link = link;
-    }
-    return self;
+		[self logEvent:@"NEW STATE"];
+	}
+	return self;
 }
 
 - (void)logEvent:(NSString *)event
@@ -177,7 +180,7 @@
 	if(_link.logLevel <= UMLOG_DEBUG)
 	{
 		NSString *s = [NSString stringWithFormat:@"LSC State=%@ Event=%@",[self description],event];
-		[_link.logFeed debugText:s];
+		[_link logDebug:s];
 	}
 }
 
