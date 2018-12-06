@@ -878,8 +878,8 @@
                    slc:(int)xslc;
 
 {
-    UMAssert(uid.length > 0,@"no user id passed to MTP2 adminAttachFor");
-    UMAssert(p !=0,@"no profile MTP2 adminAttachFor");
+    UMAssert(uid != NULL,@"no user id passed to MTP2 adminAttachFor");
+    UMAssert(p != NULL,@"no profile MTP2 adminAttachFor");
 
     UMLayerTask *task =  [[UMM2PATask_AdminAttach alloc]initWithReceiver:self
                                                                   sender:caller
