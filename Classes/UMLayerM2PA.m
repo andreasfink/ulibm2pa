@@ -875,7 +875,7 @@
                profile:(UMLayerM2PAUserProfile *)p
                 userId:(id)uid
                     ni:(int)xni
-                   slc:(int)xslc;
+                   slc:(int)xslc
 
 {
     UMAssert(uid != NULL,@"no user id passed to MTP2 adminAttachFor");
