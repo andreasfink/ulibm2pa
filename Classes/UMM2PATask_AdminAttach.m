@@ -32,7 +32,7 @@
         self.ni = xni;
         self.profile = p;
         self.slc = xslc;
-		_linkName = xlinkName;
+		self.linkName = xlinkName;
     }
     return self;
 }

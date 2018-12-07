@@ -875,12 +875,12 @@
 
 - (void)adminAttachFor:(id<UMLayerM2PAUserProtocol>)caller
                profile:(UMLayerM2PAUserProfile *)p
-			  linkName:(NSString *)uid
+			  linkName:(NSString *)linkName
                     ni:(int)xni
                    slc:(int)xslc
 
 {
-    UMAssert(uid != NULL,@"no user id passed to MTP2 adminAttachFor");
+    UMAssert(uid != NULL,@"no link name passed to MTP2 adminAttachFor");
     UMAssert(p != NULL,@"no profile MTP2 adminAttachFor");
 
     UMLayerTask *task =  [[UMM2PATask_AdminAttach alloc]initWithReceiver:self
@@ -888,7 +888,7 @@
                                                                  profile:p
                                                                       ni:xni
                                                                      slc:xslc
-																linkName:uid];
+																linkName:linkName];
     [self queueFromAdmin:task];
 }
 
@@ -1004,6 +1004,7 @@
     u.linkName = task.linkName;
     u.user = user;
     u.profile = task.profile;
+	u.linkName = task.linkName;
     _slc = task.slc;
     _networkIndicator = task.ni;
 
