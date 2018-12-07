@@ -880,7 +880,7 @@
                    slc:(int)xslc
 
 {
-    UMAssert(uid != NULL,@"no link name passed to MTP2 adminAttachFor");
+    UMAssert(linkName != NULL,@"no link name passed to MTP2 adminAttachFor");
     UMAssert(p != NULL,@"no profile MTP2 adminAttachFor");
 
     UMLayerTask *task =  [[UMM2PATask_AdminAttach alloc]initWithReceiver:self
