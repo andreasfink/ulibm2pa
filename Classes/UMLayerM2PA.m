@@ -470,8 +470,8 @@
                 return;
             }
 
-			int prio = dptr[16];
-            NSData *userData = [NSData dataWithBytes:&dptr[17] length:(userDataLen-1)];
+			int prio = dptr[17];
+            NSData *userData = [NSData dataWithBytes:&dptr[16] length:(userDataLen-1)];
             
             if (self.m2pa_status!=M2PA_STATUS_IS)
             {
