@@ -470,7 +470,9 @@
                 return;
             }
 
-			int prio = dptr[17];
+			int sio = dptr[17];
+			//int ssi = (sio >> 4) & 0x03;
+			int prio = (sio >> 6) & 0x03;
             NSData *userData = [NSData dataWithBytes:&dptr[16] length:(userDataLen-1)];
             
             if (self.m2pa_status!=M2PA_STATUS_IS)
@@ -487,8 +489,7 @@
                     [user m2paDataIndication:self
                                          slc:_slc
 								mtp3linkName:u.linkName
-                                        data:userData
-								priorityByte:prio];
+                                        data:userData];
 
                 }
             }
