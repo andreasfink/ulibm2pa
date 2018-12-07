@@ -16,13 +16,13 @@
 
 @interface UMLayerM2PAUser : UMObject
 {
-    id<UMLayerM2PAUserProtocol>  user;
-    UMLayerM2PAUserProfile  *profile;
-    id                      userId;
+    id<UMLayerM2PAUserProtocol>	_user;
+    UMLayerM2PAUserProfile  	*_profile;
+    NSString					*_linkName;
 }
 
-@property(readwrite,strong)   id<UMLayerM2PAUserProtocol> user;
+@property(readwrite,strong)	id<UMLayerM2PAUserProtocol> user;
 @property(readwrite,strong) UMLayerM2PAUserProfile *profile;
-@property(readwrite,strong) id userId;
+@property(readwrite,strong) id linkName;
 
 @end

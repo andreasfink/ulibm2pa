@@ -15,10 +15,6 @@
 
 @implementation UMLayerM2PAUser
 
-@synthesize user;
-@synthesize profile;
-@synthesize userId;
-
 - (UMLayerM2PAUser *)init
 {
     self = [super init];

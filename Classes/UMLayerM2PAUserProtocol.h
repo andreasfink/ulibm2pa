@@ -46,9 +46,10 @@
                            status:(SCTP_Status)s;
 
 - (void) m2paDataIndication:(UMLayer *)caller
-                        slc:(int)xslc
-                     userId:(id)uid
-                       data:(NSData *)d;
+						slc:(int)xslc
+			   mtp3linkName:(NSString *)linkName
+					   data:(NSData *)d
+			   priorityByte:(int)prio;
 
 - (void) m2paCongestion:(UMLayer *)caller
                     slc:(int)xslc

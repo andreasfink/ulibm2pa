@@ -17,13 +17,13 @@
 
 @interface UMM2PATask_AdminAttach : UMLayerTask
 {
-    UMLayerM2PAUserProfile *profile;
-    int slc;
-    int ni;
-    id  userId;
+    UMLayerM2PAUserProfile *_profile;
+    int _slc;
+    int _ni;
+    NSString *_linkName;
 }
 @property (readwrite,strong) UMLayerM2PAUserProfile *profile;
-@property (readwrite,strong) id userId;
+@property (readwrite,strong) NSString *linkName;
 @property (readwrite,assign) int ni;
 @property (readwrite,assign) int slc;
 
@@ -32,7 +32,7 @@
                                      profile:(UMLayerM2PAUserProfile *)profile
                                           ni:(int)xni
                                          slc:(int)xslc
-                                      userId:(id)uid;
+									linkName:(NSString *)xlinkName;
 - (void)main;
 
 @end

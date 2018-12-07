@@ -367,7 +367,7 @@ typedef enum PocStatus
 - (void)adminAttachFor:(id<UMLayerM2PAUserProtocol>)caller;
 - (void)adminAttachFor:(id<UMLayerM2PAUserProtocol>)caller
                profile:(UMLayerM2PAUserProfile *)p
-                userId:(id)uid
+			  linkName:(NSString *)linkName
                     ni:(int)ni
                    slc:(int)slc;
 

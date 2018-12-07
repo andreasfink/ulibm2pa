@@ -143,7 +143,7 @@
     {
         [u.user m2paStatusIndication:self
                                  slc:_slc
-                              userId:u.userId
+                              userId:u.linkName
                               status:_m2pa_status];
     }
 }
@@ -337,7 +337,7 @@
             {
                 [u.user m2paSctpStatusIndication:self
                                              slc:_slc
-                                          userId:u.userId
+                                          userId:u.linkName
                                           status:_sctp_status];
             }
         }
@@ -469,7 +469,9 @@
                 [self protocolViolation];
                 return;
             }
-            NSData *userData = [NSData dataWithBytes:&dptr[16] length:(userDataLen)];
+
+			int prio = dptr[16];
+            NSData *userData = [NSData dataWithBytes:&dptr[17] length:(userDataLen-1)];
             
             if (self.m2pa_status!=M2PA_STATUS_IS)
             {
@@ -482,11 +484,11 @@
                 if([profile wantsDataMessages])
                 {
                     id user = u.user;
-                    NSString *uid = u.userId;
                     [user m2paDataIndication:self
                                          slc:_slc
-                                      userId:uid
-                                        data:userData];
+								mtp3linkName:u.linkName
+                                        data:userData
+								priorityByte:prio];
 
                 }
             }
@@ -682,7 +684,7 @@
         {
             [u.user m2paCongestionCleared:self
                                slc:_slc
-                            userId:u.userId];
+                            userId:u.linkName];
         }
     }
 }
@@ -696,7 +698,7 @@
         {
             [u.user m2paCongestion:self
                                slc:_slc
-                            userId:u.userId];
+                            userId:u.linkName];
         }
     }
 }
@@ -873,7 +875,7 @@
 
 - (void)adminAttachFor:(id<UMLayerM2PAUserProtocol>)caller
                profile:(UMLayerM2PAUserProfile *)p
-                userId:(id)uid
+			  linkName:(NSString *)uid
                     ni:(int)xni
                    slc:(int)xslc
 
@@ -886,7 +888,7 @@
                                                                  profile:p
                                                                       ni:xni
                                                                      slc:xslc
-                                                                  userId:uid];
+																linkName:uid];
     [self queueFromAdmin:task];
 }
 
@@ -999,7 +1001,7 @@
     id<UMLayerM2PAUserProtocol> user = (id<UMLayerM2PAUserProtocol>)task.sender;
 
     UMLayerM2PAUser *u = [[UMLayerM2PAUser alloc]init];
-    u.userId = task.userId;
+    u.linkName = task.linkName;
     u.user = user;
     u.profile = task.profile;
     _slc = task.slc;
@@ -1012,7 +1014,7 @@
     }
     [user adminAttachConfirm:self
                          slc:task.slc
-                      userId:task.userId];
+					userId:task.linkName];
 }
 
 - (void)notifySpeedExceeded

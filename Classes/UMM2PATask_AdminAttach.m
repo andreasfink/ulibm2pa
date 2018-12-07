@@ -14,18 +14,13 @@
 #import "UMLayerM2PAUserProfile.h"
 
 @implementation UMM2PATask_AdminAttach
-@synthesize ni;
-@synthesize profile;
-@synthesize userId;
-@synthesize slc;
 
 - (UMM2PATask_AdminAttach *)initWithReceiver:(UMLayerM2PA *)rx
-                                      sender:(id<UMLayerM2PAUserProtocol>)tx
-                                     profile:(UMLayerM2PAUserProfile *)p
-                                          ni:(int)xni
-                                         slc:(int)xslc
-                                      userId:(id)uid;
-
+									  sender:(id<UMLayerM2PAUserProtocol>)tx
+									 profile:(UMLayerM2PAUserProfile *)p
+										  ni:(int)xni
+										 slc:(int)xslc
+									linkName:(NSString *)xlinkName
 {
     self = [super initWithName:[[self class]description]  receiver:rx sender:tx requiresSynchronisation:NO];
     if(self)
@@ -36,8 +31,8 @@
         }
         self.ni = xni;
         self.profile = p;
-        self.userId = uid;
         self.slc = xslc;
+		_linkName = xlinkName;
     }
     return self;
 }
