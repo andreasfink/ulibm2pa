@@ -472,7 +472,7 @@
 
 			int sio = dptr[17];
 			//int ssi = (sio >> 4) & 0x03;
-			int prio = (sio >> 6) & 0x03;
+			//int prio = (sio >> 6) & 0x03;
             NSData *userData = [NSData dataWithBytes:&dptr[16] length:userDataLen];
             
             if (self.m2pa_status!=M2PA_STATUS_IS)
