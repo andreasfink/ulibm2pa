@@ -36,7 +36,6 @@
 }
 
 
-
 - (UMM2PALinkStateControl_State *)eventLocalProcessorRecovered:(UMLayerM2PA *)link
 {
     [link pocLocalProcessorRecovered];
@@ -55,7 +54,7 @@
 {
     [link notifyMtp3InService];
     [[link t1]stop];
-    return [[UMM2PALinkStateControl_ProcessorOutage alloc]initWithLink:link];
+    return [[UMM2PALinkStateControl_InService alloc]initWithLink:link];
 }
 
 - (UMM2PALinkStateControl_State *)eventSIPO:(UMLayerM2PA *)link

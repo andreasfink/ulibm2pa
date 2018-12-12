@@ -18,6 +18,7 @@
     BOOL _m2paLinkstateMessages;
     BOOL _dataMessages;
     BOOL _processorOutageMessages;
+    BOOL _speedMessages;
     BOOL _owner;
 }
 
@@ -26,6 +27,7 @@
 @property(readwrite,assign) BOOL m2paLinkstateMessages;
 @property(readwrite,assign) BOOL dataMessages;
 @property(readwrite,assign) BOOL processorOutageMessages;
+@property(readwrite,assign) BOOL speedMessages;
 @property(readwrite,assign) BOOL owner;
 
 
@@ -37,5 +39,6 @@
 - (BOOL) wantsSctpLinkstateMessages;
 - (BOOL) wantsM2PALinkstateMessages;
 - (BOOL) wantsProcessorOutageMessages;
+- (BOOL) wantsSpeedMessages;
 
 @end

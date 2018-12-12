@@ -618,7 +618,7 @@
 {
 	[_controlLock lock];
     _lscState  = [_lscState eventFisu:self];
-    //_iacState  = [_iacState eventFisu:self];
+    _iacState  = [_iacState eventProvingEnds:self];
 	[_controlLock unlock];
 }
 
@@ -1021,21 +1021,37 @@
 
 - (void)notifySpeedExceeded
 {
-/* if we are sending too fast we have to pause, if the link is congested or not */
-/* however if we are in congestion status already, we have already sent this message */
-/* but it doesnt hurt to pause twice */
-//time(&link->link_speed_excess_time);
-//m2pa_send_speed_exceeded_indication_to_mtp3(link);
+    NSArray *usrs = [_users arrayCopy];
+    for(UMLayerM2PAUser *u in usrs)
+    {
+        if([u.profile wantsSpeedMessages])
+        {
+            [u.user m2paSpeedLimitReached:self
+                                      slc:_slc
+                                   userId:u.linkName];
+        }
+    }
 }
 
 - (void)notifySpeedExceededCleared
 {
-    
     /* if we drop out of speed excess we can resume. however if we are still in congestion status
      we have to wait it to clear */
- //   time(&link->link_speed_excess_cleared_time);
- //   m2pa_send_speed_exceeded_cleared_indication_to_mtp3(link);
+    //   time(&link->link_speed_excess_cleared_time);
+    //   m2pa_send_speed_exceeded_cleared_indication_to_mtp3(link);
+
+    NSArray *usrs = [_users arrayCopy];
+    for(UMLayerM2PAUser *u in usrs)
+    {
+        if([u.profile wantsSpeedMessages])
+        {
+            [u.user m2paSpeedLimitReachedCleared:self
+                                      slc:_slc
+                                   userId:u.linkName];
+        }
+    }
 }
+
 - (void)checkSpeed
 {
     int last_speed_status;
@@ -1712,26 +1728,77 @@
 
 - (void)notifyMtp3OutOfService
 {
-    
+    NSArray *usrs = [_users arrayCopy];
+    for(UMLayerM2PAUser *u in usrs)
+    {
+        if([u.profile wantsM2PALinkstateMessages])
+        {
+            [u.user m2paStatusIndication:self
+                                     slc:_slc
+                                  userId:u.linkName
+                                  status:M2PA_STATUS_OOS];
+        }
+    }
 }
+
 - (void)notifyMtp3Stop
 {
-    
+    NSArray *usrs = [_users arrayCopy];
+    for(UMLayerM2PAUser *u in usrs)
+    {
+        if([u.profile wantsM2PALinkstateMessages])
+        {
+            [u.user m2paStatusIndication:self
+                                     slc:_slc
+                                  userId:u.linkName
+                                  status:M2PA_STATUS_OFF];
+        }
+    }
 }
 
 -(void)notifyMtp3RemoteProcessorOutage
 {
-    
+    NSArray *usrs = [_users arrayCopy];
+    for(UMLayerM2PAUser *u in usrs)
+    {
+        if([u.profile wantsM2PALinkstateMessages])
+        {
+            [u.user m2paStatusIndication:self
+                                     slc:_slc
+                                  userId:u.linkName
+                                  status:M2PA_STATUS_PROCESSOR_OUTAGE];
+        }
+    }
 }
 
 -(void)notifyMtp3RemoteProcessorRecovered
 {
-    
+    NSArray *usrs = [_users arrayCopy];
+    for(UMLayerM2PAUser *u in usrs)
+    {
+        if([u.profile wantsM2PALinkstateMessages])
+        {
+            [u.user m2paStatusIndication:self
+                                     slc:_slc
+                                  userId:u.linkName
+                                  status:M2PA_STATUS_IS]; /* FIXME: we might not go to IS here */
+        }
+    }
 }
 
 -(void)notifyMtp3InService
 {
-    
+    NSArray *usrs = [_users arrayCopy];
+    for(UMLayerM2PAUser *u in usrs)
+    {
+        if([u.profile wantsM2PALinkstateMessages])
+        {
+            [u.user m2paStatusIndication:self
+                                     slc:_slc
+                                  userId:u.linkName
+                                  status:M2PA_STATUS_IS];
+        }
+    }
 }
 
 -(void)markFurtherProving

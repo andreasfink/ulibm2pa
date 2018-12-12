@@ -46,17 +46,20 @@
 
 - (UMM2PALinkStateControl_State *)eventFISU:(UMLayerM2PA *)link
 {
+    [link.t1 stop];
+    [link.t4 stop];
+    [link.t4r stop];
+    [link setM2pa_status:M2PA_STATUS_IS];
+    [link resetSequenceNumbers];
 	return [[UMM2PALinkStateControl_InService alloc]initWithLink:link];
 }
 
 - (UMM2PALinkStateControl_State *)eventMSU:(UMLayerM2PA *)link
 {
-    [link txcSendFISU];
     [link.t1 stop];
     [link.t4 stop];
     [link.t4r stop];
     [link setM2pa_status:M2PA_STATUS_IS];
-    
     [link resetSequenceNumbers];
     return [[UMM2PALinkStateControl_InService alloc]initWithLink:link];
 }
