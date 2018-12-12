@@ -88,6 +88,8 @@
             return @"M2PA_STATUS_ALIGNED_READY";
         case M2PA_STATUS_IS:
             return @"M2PA_STATUS_IS";
+        case M2PA_STATUS_PROCESSOR_OUTAGE:
+            return @"M2PA_STATUS_PROCESSOR_OUTAGE";
     }
     return @"M2PA_STATUS_INVALID";
 }
@@ -470,7 +472,7 @@
                 return;
             }
 
-			int sio = dptr[17];
+			//int sio = dptr[17];
 			//int ssi = (sio >> 4) & 0x03;
 			//int prio = (sio >> 6) & 0x03;
             NSData *userData = [NSData dataWithBytes:&dptr[16] length:userDataLen];
