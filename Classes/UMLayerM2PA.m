@@ -879,7 +879,6 @@
 - (void)adminAttachFor:(id<UMLayerM2PAUserProtocol>)caller
                profile:(UMLayerM2PAUserProfile *)p
 			  linkName:(NSString *)linkName
-                    ni:(int)xni
                    slc:(int)xslc
 
 {
@@ -889,7 +888,6 @@
     UMLayerTask *task =  [[UMM2PATask_AdminAttach alloc]initWithReceiver:self
                                                                   sender:caller
                                                                  profile:p
-                                                                      ni:xni
                                                                      slc:xslc
 																linkName:linkName];
     [self queueFromAdmin:task];
@@ -1009,7 +1007,6 @@
     u.profile = task.profile;
 	u.linkName = task.linkName;
     _slc = task.slc;
-    _networkIndicator = task.ni;
 
     [_users addObject:u];
     if(self.logLevel <= UMLOG_DEBUG)
@@ -1919,7 +1916,6 @@
     d[@"remote-processor-outage"] = _remote_processor_outage ? @(YES) : @(NO);
     d[@"level3-indication"] = _level3Indication ? @(YES) : @(NO);
     d[@"slc"] = @(_slc);
-    d[@"network-indicator"] = @(_networkIndicator);
     d[@"bsn"] = @(_bsn);
     d[@"fsn"] = @(_fsn);
     d[@"bsn2"] = @(_bsn2);
