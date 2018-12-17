@@ -144,7 +144,6 @@ typedef enum PocStatus
     BOOL    							_remote_processor_outage;
     BOOL    							_level3Indication;
     int     							_slc;
-    int     							_networkIndicator;
 	BOOL								_linkstate_busy;
     u_int32_t							_bsn; /* backward sequence number. Last Sequence number received from the peer */
     u_int32_t							_fsn; /* forward sequence number. Last sequence number sent */
@@ -368,7 +367,6 @@ typedef enum PocStatus
 - (void)adminAttachFor:(id<UMLayerM2PAUserProtocol>)caller
                profile:(UMLayerM2PAUserProfile *)p
 			  linkName:(NSString *)linkName
-                    ni:(int)ni
                    slc:(int)slc;
 
 - (void)dataFor:(id<UMLayerM2PAUserProtocol>)caller
