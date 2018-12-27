@@ -197,7 +197,8 @@
         _t5 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires5) object:NULL seconds:M2PA_DEFAULT_T5 name:@"t5" repeats:NO];
         _t6 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires6) object:NULL seconds:M2PA_DEFAULT_T6 name:@"t6" repeats:NO];
         _t7 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires7) object:NULL seconds:M2PA_DEFAULT_T7 name:@"t7" repeats:NO];
-        
+        _ackTimer = [[UMTimer alloc]initWithTarget:self selector:@selector(ackTimerFires) object:NULL seconds:M2PA_DEFAULT_ACK_TIMER name:@"ack-timer" repeats:YES];
+
         _t4n = M2PA_DEFAULT_T4_N;
         _t4e = M2PA_DEFAULT_T4_E;
         _speedometer = [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
@@ -451,9 +452,9 @@
         
             /* BSN in a packet is the last FSN received from the peer */
             /* so we set BSN for the next outgoing packet */
-            _bsn = ntohl(*(u_int32_t *)&dptr[12]) & FSN_BSN_MASK;
-            _bsn2 = ntohl(*(u_int32_t *)&dptr[8]) & FSN_BSN_MASK;
-        
+            _lastRxBsn = _bsn2 = ntohl(*(u_int32_t *)&dptr[8]) & FSN_BSN_MASK;
+            _lastRxFsn = _bsn  = ntohl(*(u_int32_t *)&dptr[12]) & FSN_BSN_MASK;
+
             if((_fsn >= FSN_BSN_MASK) || (_bsn2 >= FSN_BSN_MASK))
             {
                 _outstanding = 0;
@@ -464,6 +465,7 @@
                 _outstanding = ((long)_fsn - (long)_bsn2 ) % FSN_BSN_SIZE;
             }
             [self checkSpeed];
+            [_ackTimer start];
             int userDataLen = len-16;
             if(userDataLen < 0)
             {
@@ -799,10 +801,31 @@
     [_t6 stop];
 	[self queueTimerEvent:NULL timerName:@"t6"];
 }
+
+
 - (void)timerFires7
 {
     [_t7 stop];
 	[self queueTimerEvent:NULL timerName:@"t7"];
+}
+
+
+- (void)ackTimerFires
+{
+    if(_m2pa_status != M2PA_STATUS_IS)
+    {
+        return;
+    }
+
+    [_seqNumLock lock];
+    if(_lastRxFsn != _lastTxBsn) /* we have unacked received packets, lets send empty packet to ack it */
+    {
+        NSData *msu = [[NSData alloc]init];
+        [self sendData:msu
+                stream:M2PA_STREAM_USERDATA
+            ackRequest:ackRequest];
+    }
+    [_seqNumLock unlock];
 }
 
 /****/
@@ -1150,6 +1173,9 @@
     header[14] = (_fsn >> 8) & 0xFF;
     header[15] = (_fsn >> 0) & 0xFF;
 
+    _lastTxBsn = _bsn;
+    _lastTxFsn = _fsn;
+
     NSMutableData *sctpData = [[NSMutableData alloc]initWithBytes:&header length:sizeof(header)];
     [sctpData appendData:data];
 
@@ -1160,6 +1186,7 @@
            ackRequest:ackRequest];
     [_speedometer increase];
     [_dataLock unlock];
+    [_ackTimer start];
 }
 
 - (void)_dataTask:(UMM2PATask_Data *)task
@@ -1189,7 +1216,7 @@
     [_seqNumLock lock];
     _fsn = 0x00FFFFFF; /* last sent FSN */
     _bsn = 0x00FFFFFF; /* last received FSN, next BSN to send. */
-    _bsn2 = 0x00FFFFFF; /* last received bsn*/
+    _bsn2 = 0x00FFFFFF; /* last received bsn */
     [_seqNumLock unlock];
 }
 

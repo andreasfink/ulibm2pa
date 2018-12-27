@@ -97,10 +97,12 @@
 /* 64k: 0.5-2s */
 /* 4.8k 4-6s */
 
+#define    M2PA_DEFAULT_ACK_TIMER    1.0 /* 1s */
+
 /* how many outstanding unacknowledgedpackets are allowed */
 #define    M2PA_DEFAULT_WINDOW_SIZE     128
 
-//Request for Comments: 4165                                B. Bidulock
+//Request for Comments: 4165 B. Bidulock
 
 #define	SCTP_PROTOCOL_IDENTIFIER_M2PA	5
 
@@ -148,6 +150,13 @@ typedef enum PocStatus
     u_int32_t							_bsn; /* backward sequence number. Last Sequence number received from the peer */
     u_int32_t							_fsn; /* forward sequence number. Last sequence number sent */
     u_int32_t							_bsn2; /* backward sequence number. Last FSN number acked from the peer for our transmission */
+
+    u_int32_t                            _lastRxFsn;    /* last received FSN */
+    u_int32_t                            _lastRxBsn;    /* last received BSN */
+
+    u_int32_t                            _lastTxFsn;    /* last sent FSN */
+    u_int32_t                            _lastTxBsn;    /* last sent BSN */
+
     u_int32_t							_outstanding;
     NSTimeInterval      				_t4n;
     NSTimeInterval      				_t4e;
@@ -193,6 +202,8 @@ typedef enum PocStatus
 		 	T7 (4.8) = 4-6 s	Bit rate of 4.8 kbit/s
 		 */
 		/* A timing mechanism, timer T7, shall be provided which generates an indication of excessive delay of acknowledgement if, assuming that there is at least one outstanding MSU in the retransmission buffer, no new acknowledgement has been received within a time-out T7 (see 12.3). In the case of excessive delay in the reception of acknowledgements, a link failure indications is given to level 3. */
+
+    UMTimer    *_ackTimer;    /* if no MSU is being sent and there is outstanding ACKs from the other side we have to send empty MSUs */
 
     
     SCTP_Status _sctp_status;
@@ -264,6 +275,7 @@ typedef enum PocStatus
 @property(readwrite,strong)     UMTimer  *t5;
 @property(readwrite,strong)     UMTimer  *t6;
 @property(readwrite,strong)     UMTimer  *t7;
+@property(readwrite,strong)     UMTimer  *ackTimer;
 @property(readwrite,assign)     NSTimeInterval      t4n;
 @property(readwrite,assign)     NSTimeInterval      t4e;
 @property(readwrite,assign,atomic) M2PA_Status m2pa_status;
@@ -354,6 +366,8 @@ typedef enum PocStatus
 - (void)_timerFires5;
 - (void)_timerFires6;
 - (void)_timerFires7;
+
+- (void)ackTimerFires;
 
 #pragma mark -
 #pragma mark Task Creators
