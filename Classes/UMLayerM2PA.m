@@ -817,18 +817,17 @@
         return;
     }
 
+    [_dataLock lock];
     [_seqNumLock lock];
     if(_lastRxFsn != _lastTxBsn) /* we have unacked received packets, lets send empty packet to ack it */
     {
-        NSData *msu = [[NSData alloc]init];
-        [self sendData:msu
-                stream:M2PA_STREAM_USERDATA
-            ackRequest:NULL];
+        [self sendEmptyUserDataPacket];
     }
     [_seqNumLock unlock];
+    [_dataLock unlock];
 }
 
-/****/
+
 - (void)_timerFires1
 {
     
@@ -1185,6 +1184,59 @@
            protocolId:SCTP_PROTOCOL_IDENTIFIER_M2PA
            ackRequest:ackRequest];
     [_speedometer increase];
+    [_dataLock unlock];
+    [_ackTimer start];
+}
+
+- (void)sendEmptyUserDataPacket
+{
+    uint16_t    streamId = M2PA_STREAM_USERDATA;
+
+    [_dataLock lock];
+
+    [_seqNumLock lock];
+    _fsn = (_fsn+0) % FSN_BSN_SIZE; /* we do NOT increase the counter for empty packets */
+    /* The FSN and BSN values range from 0 to 16,777,215 */
+    if((_fsn == FSN_BSN_MASK) || (_bsn2 == FSN_BSN_MASK))
+    {
+        _outstanding = 0;
+        _bsn2 = _fsn;
+    }
+    else
+    {
+        _outstanding = ((long)_fsn - (long)_bsn2 ) % FSN_BSN_SIZE;
+    }
+    [_seqNumLock unlock];
+
+
+    uint8_t header[16];
+    size_t totallen =  sizeof(header) + 0;
+    header[0] = M2PA_VERSION1; /* version field */
+    header[1] = 0; /* spare field */
+    header[2] = M2PA_CLASS_RFC4165; /* m2pa_message_class = draft13;*/
+    header[3] = M2PA_TYPE_USER_DATA; /*m2pa_message_type;*/
+    header[4] = (totallen >> 24) & 0xFF;
+    header[5] = (totallen >> 16) & 0xFF;
+    header[6] = (totallen >> 8) & 0xFF;
+    header[7] = (totallen >> 0) & 0xFF;
+    header[8] = (_bsn >> 24) & 0xFF;
+    header[9] = (_bsn >> 16) & 0xFF;
+    header[10] = (_bsn >> 8) & 0xFF;
+    header[11] = (_bsn >> 0) & 0xFF;
+    header[12] = (_fsn >> 24) & 0xFF;
+    header[13] = (_fsn >> 16) & 0xFF;
+    header[14] = (_fsn >> 8) & 0xFF;
+    header[15] = (_fsn >> 0) & 0xFF;
+
+    _lastTxBsn = _bsn;
+    _lastTxFsn = _fsn;
+
+    NSMutableData *sctpData = [[NSMutableData alloc]initWithBytes:&header length:sizeof(header)];
+    [_sctpLink dataFor:self
+                  data:sctpData
+              streamId:streamId
+            protocolId:SCTP_PROTOCOL_IDENTIFIER_M2PA
+            ackRequest:NULL];
     [_dataLock unlock];
     [_ackTimer start];
 }
