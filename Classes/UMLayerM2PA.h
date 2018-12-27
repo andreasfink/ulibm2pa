@@ -97,7 +97,7 @@
 /* 64k: 0.5-2s */
 /* 4.8k 4-6s */
 
-#define    M2PA_DEFAULT_ACK_TIMER    1.0 /* 1s */
+#define    M2PA_DEFAULT_ACK_TIMER    0.250 /* 250ms */
 
 /* how many outstanding unacknowledgedpackets are allowed */
 #define    M2PA_DEFAULT_WINDOW_SIZE     128
