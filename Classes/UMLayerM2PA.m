@@ -823,7 +823,7 @@
         NSData *msu = [[NSData alloc]init];
         [self sendData:msu
                 stream:M2PA_STREAM_USERDATA
-            ackRequest:ackRequest];
+            ackRequest:NULL];
     }
     [_seqNumLock unlock];
 }
