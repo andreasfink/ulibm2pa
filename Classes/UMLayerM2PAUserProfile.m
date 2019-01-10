@@ -24,6 +24,7 @@
         _m2paLinkstateMessages = YES;
         _dataMessages = YES;
         _processorOutageMessages = YES;
+        _speedMessages = YES;
         _owner = YES;
     }
     return self;
@@ -65,4 +66,12 @@
     return NO;
 }
 
+- (BOOL) wantsSpeedMessages
+{
+    if((_allMessages) || (_speedMessages))
+    {
+        return YES;
+    }
+    return NO;
+}
 @end

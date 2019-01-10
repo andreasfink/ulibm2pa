@@ -19,18 +19,15 @@
 {
     UMLayerM2PAUserProfile *_profile;
     int _slc;
-    int _ni;
     NSString *_linkName;
 }
 @property (readwrite,strong) UMLayerM2PAUserProfile *profile;
 @property (readwrite,strong) NSString *linkName;
-@property (readwrite,assign) int ni;
 @property (readwrite,assign) int slc;
 
 - (UMM2PATask_AdminAttach *)initWithReceiver:(UMLayerM2PA *)rx
                                       sender:(id<UMLayerM2PAUserProtocol>)tx
                                      profile:(UMLayerM2PAUserProfile *)profile
-                                          ni:(int)xni
                                          slc:(int)xslc
 									linkName:(NSString *)xlinkName;
 - (void)main;

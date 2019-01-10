@@ -23,7 +23,7 @@ typedef	enum	M2PA_Status
     M2PA_STATUS_ALIGNED_NOT_READY	= 103,
     M2PA_STATUS_ALIGNED_READY		= 104,
     M2PA_STATUS_IS					= 105,
-    //	M2PA_STATUS_PROCESSOR_OUTAGE 	= 106,
+    M2PA_STATUS_PROCESSOR_OUTAGE 	= 106,
     
     /* according to Q.703 Page 16 section 7.2 */
     //	M2PA_STATUS_IDLE				=107,

@@ -18,7 +18,6 @@
 - (UMM2PATask_AdminAttach *)initWithReceiver:(UMLayerM2PA *)rx
 									  sender:(id<UMLayerM2PAUserProtocol>)tx
 									 profile:(UMLayerM2PAUserProfile *)p
-										  ni:(int)xni
 										 slc:(int)xslc
 									linkName:(NSString *)xlinkName
 {
@@ -29,7 +28,6 @@
         {
             p = [[UMLayerM2PAUserProfile alloc]initWithDefaultProfile];
         }
-        self.ni = xni;
         self.profile = p;
         self.slc = xslc;
 		self.linkName = xlinkName;
