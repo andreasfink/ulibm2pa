@@ -303,6 +303,7 @@
 {
 	[_controlLock lock];
     [self logInfo:@"sctpReportsDown"];
+
     self.m2pa_status = M2PA_STATUS_OFF;
     /* we now wait for MTP3 to tell us to start the link again */
     _lscState  = [_lscState eventPowerOff:self];
