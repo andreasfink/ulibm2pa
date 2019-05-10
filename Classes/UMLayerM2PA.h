@@ -449,6 +449,10 @@ typedef enum PocStatus
 -(void)iacEmergencyCeases;
 -(void)iacStart;
 -(void)iacStop;
+-(void)iacSIO;
+-(void)iacSIE;
+-(void)iacSIN;
+
 -(void)iacAlignmentNotPossible;
 
 -(void)lscNoProcessorOutage;

@@ -1665,7 +1665,6 @@
 -(void)txcSendSIO
 {
     [self sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT];
-  
 }
 
 -(void)txcSendSIN
@@ -1701,6 +1700,21 @@
 -(void)iacStart
 {
     _iacState=[_iacState eventStart:self];
+}
+
+- (void)iacSIO
+{
+    _iacState=[_iacState eventSIO:self];
+}
+
+- (void)iacSIE
+{
+    _iacState=[_iacState eventSIE:self];
+}
+
+- (void)iacSIN
+{
+    _iacState=[_iacState eventSIN:self];
 }
 
 -(void)iacStop

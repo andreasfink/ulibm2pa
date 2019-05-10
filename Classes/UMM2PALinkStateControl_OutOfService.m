@@ -9,9 +9,9 @@
 // Version 3 from 29 June 2007 and other commercial licenses available by
 // the author.
 
-#import "UMM2PALinkStateControl_AllStates.h"
 #import "UMLayerM2PA.h"
-
+#import "UMM2PALinkStateControl_AllStates.h"
+#import "UMM2PAInitialAlignmentControl_AllStates.h"
 
 @implementation UMM2PALinkStateControl_OutOfService
 
@@ -45,9 +45,10 @@
     {
         [link iacEmergency];
     }
+    link.lscState = [[UMM2PALinkStateControl_InitialAlignment alloc]initWithLink:link];
+    link.iacState = [[UMM2PAInitialAlignmentControl_Idle alloc]initWithLink:link];
     [link iacStart];
-    
-    return [[UMM2PALinkStateControl_InitialAlignment alloc]initWithLink:link];
+    return link.lscState;
 }
 
 - (UMM2PALinkStateControl_State *)eventStart:(UMLayerM2PA *)link
@@ -58,9 +59,10 @@
     {
         [link iacEmergency];
     }
+    link.lscState = [[UMM2PALinkStateControl_InitialAlignment alloc]initWithLink:link];
+    link.iacState = [[UMM2PAInitialAlignmentControl_Idle alloc]initWithLink:link];
     [link iacStart];
-
-    return [[UMM2PALinkStateControl_InitialAlignment alloc]initWithLink:link];
+    return link.lscState;
 }
 
 - (UMM2PALinkStateControl_State *)eventEmergency:(UMLayerM2PA *)link
