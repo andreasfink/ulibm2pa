@@ -7,11 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A604D06A19B999400090FC94 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A604D06919B999400090FC94 /* XCTest.framework */; };
 		A604D06E19B999400090FC94 /* ulibm2pa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A604D05119B999400090FC94 /* ulibm2pa.framework */; };
 		A604D07419B999400090FC94 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A604D07219B999400090FC94 /* InfoPlist.strings */; };
 		A604D07619B999400090FC94 /* ulibm2paTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A604D07519B999400090FC94 /* ulibm2paTests.m */; };
-		A615D9091B4D5ED900854472 /* ulib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A615D9081B4D5ED900854472 /* ulib.framework */; };
 		A634B48F1A2E7AE900854472 /* UMLayerM2PAUser.h in Headers */ = {isa = PBXBuildFile; fileRef = A634B48D1A2E7AE900854472 /* UMLayerM2PAUser.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A634B4901A2E7AE900854472 /* UMLayerM2PAUser.m in Sources */ = {isa = PBXBuildFile; fileRef = A634B48E1A2E7AE900854472 /* UMLayerM2PAUser.m */; };
 		A634B4911A2E7AE900854472 /* UMLayerM2PAUser.m in Sources */ = {isa = PBXBuildFile; fileRef = A634B48E1A2E7AE900854472 /* UMLayerM2PAUser.m */; };
@@ -33,7 +31,6 @@
 		A6817F4A21AFF99900B2BF25 /* UMM2PAInitialAlignmentControl_BothProcessorsOut.h in Headers */ = {isa = PBXBuildFile; fileRef = A6817F4821AFF99900B2BF25 /* UMM2PAInitialAlignmentControl_BothProcessorsOut.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A6817F4B21AFF99900B2BF25 /* UMM2PAInitialAlignmentControl_BothProcessorsOut.m in Sources */ = {isa = PBXBuildFile; fileRef = A6817F4921AFF99900B2BF25 /* UMM2PAInitialAlignmentControl_BothProcessorsOut.m */; };
 		A6827E0E1E37FC6B00F3048B /* UMLayerM2PAApplicationContextProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = A6827E0C1E37FC6B00F3048B /* UMLayerM2PAApplicationContextProtocol.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A689741C1A2CF3C100854472 /* ulibsctp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A689741B1A2CF3C100854472 /* ulibsctp.framework */; };
 		A689741D1A2CF49C00854472 /* ulibsctp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A689741B1A2CF3C100854472 /* ulibsctp.framework */; };
 		A68974201A2D0BB500854472 /* ulibm2pa.h in Headers */ = {isa = PBXBuildFile; fileRef = A604D06119B999400090FC94 /* ulibm2pa.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A689742A1A2D274100854472 /* UMM2PATask_AdminInit.h in Headers */ = {isa = PBXBuildFile; fileRef = A68974291A2D274100854472 /* UMM2PATask_AdminInit.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -108,6 +105,8 @@
 		A6DA2B8C1A2E02F00090FC94 /* UMM2PATask_TimerEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = A6DA2B8A1A2E02F00090FC94 /* UMM2PATask_TimerEvent.m */; };
 		A6DA2B8D1A2E02F00090FC94 /* UMM2PATask_TimerEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = A6DA2B8A1A2E02F00090FC94 /* UMM2PATask_TimerEvent.m */; };
 		A6DE3DF91A31F9400090FC94 /* UMM2PALinkStateControl_AllStates.h in Headers */ = {isa = PBXBuildFile; fileRef = A6DE3DF81A31F9400090FC94 /* UMM2PALinkStateControl_AllStates.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A6E3D78C22BABD7800D5B1B6 /* ulibsctp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A689741B1A2CF3C100854472 /* ulibsctp.framework */; };
+		A6E3D78D22BABD8800D5B1B6 /* ulib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A615D9081B4D5ED900854472 /* ulib.framework */; };
 		A6E93D2F1A2CE59700854472 /* UMLayerM2PA.h in Headers */ = {isa = PBXBuildFile; fileRef = A6E93D2D1A2CE59700854472 /* UMLayerM2PA.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A6E93D301A2CE59700854472 /* UMLayerM2PA.m in Sources */ = {isa = PBXBuildFile; fileRef = A6E93D2E1A2CE59700854472 /* UMLayerM2PA.m */; };
 		A6E93D311A2CE59700854472 /* UMLayerM2PA.m in Sources */ = {isa = PBXBuildFile; fileRef = A6E93D2E1A2CE59700854472 /* UMLayerM2PA.m */; };
@@ -134,11 +133,10 @@
 		A604D06019B999400090FC94 /* ulibm2pa-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ulibm2pa-Prefix.pch"; sourceTree = "<group>"; };
 		A604D06119B999400090FC94 /* ulibm2pa.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ulibm2pa.h; sourceTree = "<group>"; };
 		A604D06819B999400090FC94 /* ulibm2paTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ulibm2paTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		A604D06919B999400090FC94 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		A604D07119B999400090FC94 /* ulibm2paTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ulibm2paTests-Info.plist"; sourceTree = "<group>"; };
 		A604D07319B999400090FC94 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A604D07519B999400090FC94 /* ulibm2paTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ulibm2paTests.m; sourceTree = "<group>"; };
-		A615D9081B4D5ED900854472 /* ulib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ulib.framework; path = /Library/Frameworks/ulib.framework; sourceTree = "<absolute>"; };
+		A615D9081B4D5ED900854472 /* ulib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ulib.framework; path = "/Library/Application Support/FinkTelecomServices/frameworks/ulib.framework"; sourceTree = "<absolute>"; };
 		A632209B20610A81006CC06A /* rfc4165-m2pa.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "rfc4165-m2pa.pdf"; sourceTree = "<group>"; };
 		A632209C20610A81006CC06A /* Q-702 (Signalling Data Link).PDF */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Q-702 (Signalling Data Link).PDF"; sourceTree = "<group>"; };
 		A632209D20610A81006CC06A /* Q-703 (Signalling Link).PDF */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Q-703 (Signalling Link).PDF"; sourceTree = "<group>"; };
@@ -168,7 +166,7 @@
 		A6817F4821AFF99900B2BF25 /* UMM2PAInitialAlignmentControl_BothProcessorsOut.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UMM2PAInitialAlignmentControl_BothProcessorsOut.h; sourceTree = "<group>"; };
 		A6817F4921AFF99900B2BF25 /* UMM2PAInitialAlignmentControl_BothProcessorsOut.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UMM2PAInitialAlignmentControl_BothProcessorsOut.m; sourceTree = "<group>"; };
 		A6827E0C1E37FC6B00F3048B /* UMLayerM2PAApplicationContextProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMLayerM2PAApplicationContextProtocol.h; sourceTree = "<group>"; };
-		A689741B1A2CF3C100854472 /* ulibsctp.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ulibsctp.framework; path = /Library/Frameworks/ulibsctp.framework; sourceTree = "<absolute>"; };
+		A689741B1A2CF3C100854472 /* ulibsctp.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ulibsctp.framework; path = "/Library/Application Support/FinkTelecomServices/frameworks/ulibsctp.framework"; sourceTree = "<absolute>"; };
 		A68974291A2D274100854472 /* UMM2PATask_AdminInit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMM2PATask_AdminInit.h; sourceTree = "<group>"; };
 		A689742B1A2D275600854472 /* UMM2PATask_AdminSetConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMM2PATask_AdminSetConfig.h; sourceTree = "<group>"; };
 		A689742C1A2D275600854472 /* UMM2PATask_AdminSetConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UMM2PATask_AdminSetConfig.m; sourceTree = "<group>"; };
@@ -258,8 +256,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A615D9091B4D5ED900854472 /* ulib.framework in Frameworks */,
-				A689741C1A2CF3C100854472 /* ulibsctp.framework in Frameworks */,
+				A6E3D78D22BABD8800D5B1B6 /* ulib.framework in Frameworks */,
+				A6E3D78C22BABD7800D5B1B6 /* ulibsctp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -269,7 +267,6 @@
 			files = (
 				A689741D1A2CF49C00854472 /* ulibsctp.framework in Frameworks */,
 				A604D06E19B999400090FC94 /* ulibm2pa.framework in Frameworks */,
-				A604D06A19B999400090FC94 /* XCTest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -309,7 +306,6 @@
 			children = (
 				A615D9081B4D5ED900854472 /* ulib.framework */,
 				A689741B1A2CF3C100854472 /* ulibsctp.framework */,
-				A604D06919B999400090FC94 /* XCTest.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -755,6 +751,7 @@
 				DSTROOT = /;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "\"/Library/Application Support/FinkTelecomServices/frameworks\"";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -771,7 +768,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				INSTALL_PATH = "/Library/Application Support/FinkTelecomServices/frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -815,6 +812,7 @@
 				DSTROOT = /;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = "\"/Library/Application Support/FinkTelecomServices/frameworks\"";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -824,7 +822,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				INSTALL_PATH = "/Library/Application Support/FinkTelecomServices/frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				SDKROOT = macosx;
 				STRIP_INSTALLED_PRODUCT = NO;
@@ -841,6 +839,8 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+					"$(LOCAL_LIBRARY_DIR)/Application\\ Support/FinkTelecomServices/frameworks",
+					"$(LOCAL_LIBRARY_DIR)/Application\\ Support/FinkTelecomServices/frameworks",
 				);
 				FRAMEWORK_VERSION = A;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -863,6 +863,8 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+					"$(LOCAL_LIBRARY_DIR)/Application\\ Support/FinkTelecomServices/frameworks",
+					"$(LOCAL_LIBRARY_DIR)/Application\\ Support/FinkTelecomServices/frameworks",
 				);
 				FRAMEWORK_VERSION = A;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
