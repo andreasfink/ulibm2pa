@@ -40,8 +40,6 @@
     return self;
 }
 
-
-
 - (UMM2PAInitialAlignmentControl_State *)eventStart:(UMLayerM2PA *)link
 {
 	[self logEvent:@(__func__)];

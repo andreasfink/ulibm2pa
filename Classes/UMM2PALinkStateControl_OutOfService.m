@@ -25,6 +25,7 @@
     self =[super initWithLink:link];
     if(self)
     {
+        [link notifyMtp3OutOfService];
         [link.t2 start];
     }
     return self;

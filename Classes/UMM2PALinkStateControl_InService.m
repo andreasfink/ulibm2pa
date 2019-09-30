@@ -69,15 +69,16 @@
     [link rcStop];
     [link txcSendSIOS];
     [link cancelEmergency];
-    
     return [[UMM2PALinkStateControl_OutOfService alloc]initWithLink:link];
 }
 
 - (UMM2PALinkStateControl_State *)eventLinkFailure:(UMLayerM2PA *)link
 {
     [link notifyMtp3OutOfService];
+    [link iacStop];
     return [self eventStop:link];
 }
+
 
 - (UMM2PALinkStateControl_State *)eventSIO:(UMLayerM2PA *)link
 {

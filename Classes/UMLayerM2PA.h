@@ -387,8 +387,6 @@ typedef enum PocStatus
            data:(NSData *)sendingData
      ackRequest:(NSDictionary *)ack;
 
-- (void)queueTimerEvent:(id<UMLayerM2PAUserProtocol>)caller timerName:(NSString *)tname;
-
 - (void)powerOnFor:(id<UMLayerM2PAUserProtocol>)caller;
 - (void)powerOffFor:(id<UMLayerM2PAUserProtocol>)caller;
 - (void)emergencyFor:(id<UMLayerM2PAUserProtocol>)caller;
@@ -487,5 +485,6 @@ typedef enum PocStatus
 - (void)resetSequenceNumbers;
 - (NSDictionary *)apiStatus;
 - (void)stopDetachAndDestroy;
+- (void)queueTimerEvent:(id)caller timerName:(NSString *)tname;
 
 @end

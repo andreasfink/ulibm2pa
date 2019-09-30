@@ -965,7 +965,7 @@
     [self queueFromUpperWithPriority:task];
 }
 
-- (void)queueTimerEvent:(id<UMLayerM2PAUserProtocol>)caller timerName:(NSString *)tname
+- (void)queueTimerEvent:(id)caller timerName:(NSString *)tname
 {
     UMLayerTask *task = [[UMM2PATask_TimerEvent alloc]initWithReceiver:self sender:caller timerName:tname];
     [self queueFromAdmin:task];

@@ -21,7 +21,7 @@
 
 @property(readwrite,strong) NSString *timerName;
 
-- (UMM2PATask_TimerEvent *)initWithReceiver:(UMLayerM2PA *)rx sender:(id<UMLayerM2PAUserProtocol>)tx timerName:(NSString *)tname;
+- (UMM2PATask_TimerEvent *)initWithReceiver:(UMLayerM2PA *)rx sender:(id)caller timerName:(NSString *)tname;
 - (void)main;
 
 @end
