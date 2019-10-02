@@ -278,7 +278,7 @@ typedef enum PocStatus
 @property(readwrite,strong)     UMTimer  *ackTimer;
 @property(readwrite,assign)     NSTimeInterval      t4n;
 @property(readwrite,assign)     NSTimeInterval      t4e;
-@property(readwrite,assign,atomic) M2PA_Status m2pa_status;
+//@property(readwrite,assign,atomic) M2PA_Status m2pa_status; // this one has proper getter and setter 
 @property(readwrite,assign,atomic) SCTP_Status sctp_status;
 @property(readwrite,strong,atomic)  UMThroughputCounter *inboundThroughputPackets;
 @property(readwrite,strong,atomic)  UMThroughputCounter *outboundThroughputPackets;
@@ -482,6 +482,7 @@ typedef enum PocStatus
 
 -(void)protocolViolation;
 -(void)setM2pa_status:(M2PA_Status)status;
+- (M2PA_Status)m2pa_status;
 - (void)resetSequenceNumbers;
 - (NSDictionary *)apiStatus;
 - (void)stopDetachAndDestroy;
