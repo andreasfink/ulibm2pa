@@ -182,7 +182,7 @@
         _m2pa_status = M2PA_STATUS_OFF;
 
         _autostart = NO;
-        _link_restarts = NO;
+        _link_restarts = 0;
         _ready_received = 0;
         _ready_sent = 0;
         _paused = NO;
@@ -2041,7 +2041,7 @@
     d[@"emergency"] = _emergency ? @(YES) : @(NO);
     d[@"autostart"] = _autostart ? @(YES) : @(NO);
     d[@"paused"] = _paused ? @(YES) : @(NO);
-    d[@"link-restarts"] = _link_restarts ? @(YES) : @(NO);
+    d[@"link-restarts"] = @(_link_restarts);
     d[@"ready-received"] = @(_ready_received);
     d[@"ready-sent"] = @(_ready_sent);
     d[@"reception-enabled"] = _receptionEnabled ? @(YES) : @(NO);
