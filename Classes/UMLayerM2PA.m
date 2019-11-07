@@ -102,7 +102,6 @@
 - (void)setM2pa_status:(M2PA_Status)status
 {
     M2PA_Status old_status = _m2pa_status;
-
     if(old_status == status)
     {
         return;
@@ -1428,7 +1427,7 @@
     if(self.m2pa_status != M2PA_STATUS_OOS)
     {
         [self logMajorError:@"can not start if link is not in status OOS. Going to OFF state"];
-        self.m2pa_status =M2PA_STATUS_OFF;
+        self.m2pa_status = M2PA_STATUS_OFF;
         return;
     }
     
@@ -1436,15 +1435,16 @@
     {
         [self logDebug:@"Sending LINKSTATE_ALIGNMENT"];
     }
+    [self sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE];
     [self sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT];
 
-    if(_t4.seconds == 0)
-    {
-        _t4.seconds = _t4n;
-    }
     if(_emergency)
     {
         _t4.seconds = _t4e;
+    }
+    else
+    {
+        _t4.seconds = _t4n;
     }
     [_t2 start];
     [_t4 start];
