@@ -46,6 +46,7 @@
     {
         [link iacEmergency];
     }
+
     link.lscState = [[UMM2PALinkStateControl_InitialAlignment alloc]initWithLink:link];
     link.iacState = [[UMM2PAInitialAlignmentControl_Idle alloc]initWithLink:link];
     [link iacStart];
