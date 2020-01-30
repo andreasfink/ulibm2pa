@@ -180,7 +180,6 @@
         _sctp_status = SCTP_STATUS_OOS;
         _m2pa_status = M2PA_STATUS_OFF;
 
-        _autostart = NO;
         _link_restarts = 0;
         _ready_received = 0;
         _ready_sent = 0;
@@ -197,6 +196,8 @@
         _t6 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires6) object:NULL seconds:M2PA_DEFAULT_T6 name:@"t6" repeats:NO runInForeground:YES];
         _t7 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires7) object:NULL seconds:M2PA_DEFAULT_T7 name:@"t7" repeats:NO runInForeground:YES];
         _ackTimer = [[UMTimer alloc]initWithTarget:self selector:@selector(ackTimerFires) object:NULL seconds:M2PA_DEFAULT_ACK_TIMER name:@"ack-timer" repeats:YES runInForeground:YES];
+
+        _startTimer = [[UMTimer alloc]initWithTarget:self selector:@selector(startTimerFires) object:NULL seconds:M2PA_DEFAULT_START_TIMER name:@"start-timer" repeats:NO runInForeground:YES];
 
         _t4n = M2PA_DEFAULT_T4_N;
         _t4e = M2PA_DEFAULT_T4_E;
@@ -225,6 +226,8 @@
                        userId:(id)uid
                        status:(SCTP_Status)s
 {
+    
+    
     UMM2PATask_sctpStatusIndication *task = [[UMM2PATask_sctpStatusIndication alloc]initWithReceiver:self
                                                                                               sender:caller
                                                                                               userId:uid
@@ -268,6 +271,7 @@
 
 - (void)sctpReportsUp
 {
+    [_startTimer stop];
     /***************************************************************************
      **
      ** m2pa_up
@@ -313,6 +317,7 @@
 - (void) _sctpStatusIndicationTask:(UMM2PATask_sctpStatusIndication *)task
 {
     self.sctp_status = task.status;
+
 }
 
 - (SCTP_Status)sctp_status
@@ -822,6 +827,15 @@
     [_dataLock unlock];
 }
 
+- (void)startTimerFires
+{
+    if(_m2pa_status != M2PA_STATUS_OFF)
+    {
+        return;
+    }
+    [self powerOff];
+    [self powerOn];
+}
 
 - (void)_timerFires1
 {
@@ -1396,6 +1410,7 @@
 	_iacState = [[UMM2PAInitialAlignmentControl_Idle alloc]initWithLink:self];
 
    // self.m2pa_status = M2PA_STATUS_OOS; // this is being set once SCTP is established
+    [_startTimer start];
     [_sctpLink openFor:self];
 
     /* we do additinoal stuff for power on in sctpReportsUp */
@@ -1907,7 +1922,6 @@
     NSMutableDictionary *config = [[NSMutableDictionary alloc]init];
     [self addLayerConfig:config];
     config[@"attach-to"] = _sctpLink.layerName;
-    config[@"autostart"] = _autostart ? @YES : @ NO;
     config[@"window-size"] = @(_window_size);
     config[@"speed"] = @(_speed);
     config[@"t1"] =@(_t1.seconds);
@@ -1941,10 +1955,6 @@
                                            reason:s
                                          userInfo:NULL]);
         }
-    }
-    if(cfg[@"autostart"])
-    {
-        _autostart =  [cfg[@"autostart"] boolValue];
     }
     if(cfg[@"window-size"])
     {
@@ -2039,7 +2049,6 @@
     }
     d[@"congested"] = _congested ? @(YES) : @(NO);
     d[@"emergency"] = _emergency ? @(YES) : @(NO);
-    d[@"autostart"] = _autostart ? @(YES) : @(NO);
     d[@"paused"] = _paused ? @(YES) : @(NO);
     d[@"link-restarts"] = @(_link_restarts);
     d[@"ready-received"] = @(_ready_received);

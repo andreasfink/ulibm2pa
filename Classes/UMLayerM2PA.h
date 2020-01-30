@@ -97,12 +97,14 @@
 /* 64k: 0.5-2s */
 /* 4.8k 4-6s */
 
+#define    M2PA_DEFAULT_START_TIMER    30.0 /* 30s */
+
 #define    M2PA_DEFAULT_ACK_TIMER    0.250 /* 250ms */
 
 /* how many outstanding unacknowledgedpackets are allowed */
 #define    M2PA_DEFAULT_WINDOW_SIZE     128
 
-//Request for Comments: 4165 B. Bidulock
+// RFC4165
 
 #define	SCTP_PROTOCOL_IDENTIFIER_M2PA	5
 
@@ -204,6 +206,7 @@ typedef enum PocStatus
 		/* A timing mechanism, timer T7, shall be provided which generates an indication of excessive delay of acknowledgement if, assuming that there is at least one outstanding MSU in the retransmission buffer, no new acknowledgement has been received within a time-out T7 (see 12.3). In the case of excessive delay in the reception of acknowledgements, a link failure indications is given to level 3. */
 
     UMTimer    *_ackTimer;    /* if no MSU is being sent and there is outstanding ACKs from the other side we have to send empty MSUs */
+    UMTimer    *_startTimer;    /* time between SCTP power on retries in case SCTP doesnt come up */
 
     
     SCTP_Status _sctp_status;
@@ -211,7 +214,7 @@ typedef enum PocStatus
 
     BOOL    _congested;
     BOOL    _emergency;
-    BOOL    _autostart;
+    //BOOL    _autostart;
     int     _link_restarts;
     int     _ready_received;
     int     _ready_sent;
@@ -256,7 +259,6 @@ typedef enum PocStatus
 @property(readwrite,assign)     BOOL    level3Indication;
 
 @property(readwrite,assign)     BOOL    emergency;
-@property(readwrite,assign)     BOOL    autostart;
 @property(readwrite,assign)     int     link_restarts;
 @property(readwrite,assign)     int     ready_received;
 @property(readwrite,assign)     int     ready_sent;
