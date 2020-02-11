@@ -1443,6 +1443,8 @@
     {
         [self logMajorError:@"can not start if link is not in status OOS. Going to OFF state"];
         self.m2pa_status = M2PA_STATUS_OFF;
+        _iacState = [[UMM2PAInitialAlignmentControl_Idle alloc]initWithLink:self];
+
         return;
     }
     
@@ -1452,7 +1454,6 @@
     }
     [self sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE];
     [self sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT];
-
     if(_emergency)
     {
         _t4.seconds = _t4e;
@@ -1465,6 +1466,7 @@
     [_t4 start];
     [_t4r start];
     self.m2pa_status = M2PA_STATUS_INITIAL_ALIGNMENT;
+    _iacState = [[UMM2PAInitialAlignmentControl_NotAligned alloc]initWithLink:self];
 }
 
 - (void)stop
@@ -1476,6 +1478,8 @@
 
     }
     [self sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE];
+    _lscState = [[UMM2PALinkStateControl_PowerOff alloc]initWithLink:self];
+    _iacState = [[UMM2PAInitialAlignmentControl_Idle alloc]initWithLink:self];
     self.m2pa_status = M2PA_STATUS_OOS;
 }
 
@@ -1649,6 +1653,7 @@
 
 -(void)txcStart
 {
+    
 }
 
 -(void)txcSendSIOS
