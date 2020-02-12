@@ -24,7 +24,8 @@
     self =[super initWithLink:link];
     if(self)
     {
-		link.alignmentsReceived=0;
+        link.alignmentsReceived=0;
+        link.alignmentsSent=0;
     }
     return self;
 }
@@ -128,7 +129,6 @@
 }
 - (UMM2PALinkStateControl_State *)eventSIO:(UMLayerM2PA *)link
 {
-	link.alignmentsReceived++;
 	return self;
 }
 

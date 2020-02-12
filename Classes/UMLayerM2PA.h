@@ -71,8 +71,8 @@
 /* 1-2s */
 
 #define	M2PA_DEFAULT_T4_N	8.0		/* normal proving period  3-70s  8s */
-#define	M2PA_DEFAULT_T4_E	0.5        /* emergency proving period  0.4s - 0.6s : 0.5s*/
-#define	M2PA_DEFAULT_T4_R	2.0		/* resending timer of link status proving every 2 seconds */
+#define	M2PA_DEFAULT_T4_E	0.6     /* emergency proving period  0.4s - 0.6s : 0.5s*/
+#define	M2PA_DEFAULT_T4_R	0.25		/* resending timer of link status proving 4x per seconds */
 /*T4: proving period normal */
 /*  highspeed: 3-70s */
 /*  64k:	7.5-9.5s, nominal 8.5s */
@@ -143,7 +143,10 @@ typedef enum PocStatus
     UMMutex 							*_dataLock;
     UMMutex 							*_controlLock;
     UMMutex 							*_incomingDataBufferLock;
-	int									_alignmentsReceived;
+    int                                 _alignmentsReceived;
+    int                                 _alignmentsSent;
+    int                                 _provingReceived;
+    int                                 _provingSent;
     BOOL    							_local_processor_outage;
     BOOL    							_remote_processor_outage;
     BOOL    							_level3Indication;
@@ -288,6 +291,9 @@ typedef enum PocStatus
 @property(readwrite,strong,atomic)  UMThroughputCounter *outboundThroughputBytes;
 @property(readwrite,assign,atomic)  SpeedStatus speed_status;
 @property(readwrite,assign,atomic)  int alignmentsReceived;
+@property(readwrite,assign,atomic)  int alignmentsSent;
+@property(readwrite,assign,atomic)  int provingReceived;
+@property(readwrite,assign,atomic)  int provingSent;
 
 - (UMLayerM2PA *)initWithTaskQueueMulti:(UMTaskQueueMulti *)tq;
 - (UMLayerM2PA *)initWithTaskQueueMulti:(UMTaskQueueMulti *)tq name:(NSString *)name;
