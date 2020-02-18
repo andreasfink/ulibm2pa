@@ -617,6 +617,9 @@
 	[_controlLock lock];
     _lscState  = [_lscState eventSIO:self];
     _iacState  = [_iacState eventSIO:self];
+    _alignmentsReceived++;
+    _provingReceived=0;
+    _provingSent=0;
 	[_controlLock unlock];
 
 }
@@ -627,6 +630,7 @@
 	[_controlLock lock];
     _lscState  = [_lscState eventSIN:self];
     _iacState  = [_iacState eventSIN:self];
+    _provingReceived++;
 	[_controlLock unlock];
 }
 
@@ -637,6 +641,7 @@
 	[_controlLock lock];
     _lscState  = [_lscState eventSIE:self];
     _iacState  = [_iacState eventSIE:self];
+    _provingReceived++;
 	[_controlLock unlock];
 }
 
@@ -1425,6 +1430,10 @@
     _outstanding = 0;
     _ready_received = 0;
     _ready_sent = 0;
+    _alignmentsReceived=0;
+    _alignmentsSent=0;
+    _provingReceived=0;
+    _provingSent=0;
 
     [_speedometer clear];
     [_submission_speed clear];
@@ -1708,6 +1717,8 @@
 -(void)txcSendSIO
 {
     [self sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT];
+    _alignmentsSent++;
+
 }
 
 -(void)txcSendSIN
