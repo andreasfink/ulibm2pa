@@ -47,6 +47,7 @@
 
 - (UMM2PALinkStateControl_State *)eventFisu:(UMLayerM2PA *)link
 {
+    [link sendLinkstatus:M2PA_LINKSTATE_READY];
     return [self eventMsu:link];
 }
 

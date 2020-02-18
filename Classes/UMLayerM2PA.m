@@ -372,8 +372,6 @@
 
 - (void) _sctpDataIndicationTask:(UMM2PATask_sctpDataIndication *)task
 {
-    NSData *data;
-    
     if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:@"sctpDataIndication:"];
@@ -388,27 +386,42 @@
         return;
     }
 
-    switch(task.streamId)
+    const uint8_t *dptr;
+    dptr = task.data.bytes;
+    if(task.data.length < 8)
     {
-        case M2PA_STREAM_LINKSTATE:
-            if(self.logLevel <= UMLOG_DEBUG)
-            {
-                [self logDebug:@"M2PA_STREAM_LINKSTATE received"];
-            }
-            data = task.data;
-            [self sctpIncomingLinkstateMessage:data];
-            break;
-        case M2PA_STREAM_USERDATA:
-            if(self.logLevel <= UMLOG_DEBUG)
-            {
-                [self logDebug:@"M2PA_STREAM_USERDATA received"];
-            }
-            data = task.data;
-            [self sctpIncomingDataMessage:data];
-            break;
-        default:
-            [self logMajorError:@"UNKNOWN STREAM IDENTIFIER"];
-            break;
+        NSString *e = [NSString stringWithFormat:@"received too short M2PA packet\n%@",task.data.hexString];
+        [self protocolViolation:e];
+    }
+    else
+    {
+        uint8_t version       =  (uint8_t) dptr[0];
+        uint8_t message_class =  (uint8_t) dptr[2];
+        uint8_t message_type  =  (uint8_t) dptr[3];
+        if(version !=1)
+        {
+            NSString *e = [NSString stringWithFormat:@"received M2PA packet with unknown version=%d\n%@",version,task.data.hexString];
+            [self protocolViolation:e];
+        }
+        else if(message_class !=11)
+        {
+            NSString *e = [NSString stringWithFormat:@"received M2PA packet with unknown message class=%d\n%@",message_class,task.data.hexString];
+            [self protocolViolation:e];
+        }
+
+        if((task.streamId == M2PA_STREAM_LINKSTATE) || ( message_type==2))
+        {
+            [self sctpIncomingLinkstateMessage:task.data];
+        }
+        else if((task.streamId == M2PA_STREAM_USERDATA) && ( message_type==1))
+        {
+            [self sctpIncomingDataMessage:task.data];
+        }
+        else
+        {
+            NSString *e = [NSString stringWithFormat:@"invalid M2PA packet received. StreamId=%u Version=%u, messageClass=%u messageType=%u\n%@",task.streamId,version,message_class,message_type,task.data.hexString];
+            [self protocolViolation:e];
+        }
     }
 }
 
@@ -417,16 +430,23 @@
     /* needs to be defined to comply with the API */
 }
 
+-(void) protocolViolation: (NSString *)reason
+{
+    NSString *e = [NSString stringWithFormat:@"PROTOCOL VIOLATION: %@",reason];
+    [self logMajorError:e];
+    [self powerOff];
+}
+
 -(void) protocolViolation
 {
-     [self powerOff];
+    [self logMajorError:@"PROTOCOL VIOLATION"];
+    [self powerOff];
 }
 
 - (void) sctpIncomingDataMessage:(NSData *)data
 {
     [_inboundThroughputPackets increaseBy:1];
     [_inboundThroughputBytes increaseBy:(uint32_t)data.length];
-
     u_int32_t len;
     
     const char *dptr;
@@ -437,9 +457,7 @@
         [_data_link_buffer appendData:data];
         while([_data_link_buffer length] >= 16)
         {
-            dptr = _data_link_buffer.bytes;
             len = ntohl(*(u_int32_t *)&dptr[4]);
-        
             if(_data_link_buffer.length < len)
             {
                 if(self.logLevel <=UMLOG_DEBUG)
@@ -605,6 +623,7 @@
 
 - (void) _proving_normal_received
 {
+    _provingReceived++;
 	[_controlLock lock];
     _lscState  = [_lscState eventSIN:self];
     _iacState  = [_iacState eventSIN:self];
@@ -613,6 +632,8 @@
 
 - (void) _proving_emergency_received
 {
+    _provingReceived++;
+    self.emergency = YES;
 	[_controlLock lock];
     _lscState  = [_lscState eventSIE:self];
     _iacState  = [_iacState eventSIE:self];
@@ -642,9 +663,7 @@
 	[_controlLock lock];
     _lscState  = [_lscState eventLocalProcessorRecovered:self];
     _iacState  = [_iacState eventLocalProcessorRecovered:self];
-
 	[_controlLock unlock];
-
 }
 
 - (void) _linkstate_busy_received
@@ -1328,6 +1347,7 @@
     }
     _emergency = YES;
 }
+
 - (void)_emergencyCheasesTask:(UMM2PATask_EmergencyCheases *)task
 {
     if(self.logLevel <= UMLOG_DEBUG)
@@ -1394,7 +1414,10 @@
 - (void)powerOn
 {
     self.m2pa_status = M2PA_STATUS_OFF;
-	self.alignmentsReceived = 0;
+    _alignmentsReceived = 0;
+    _alignmentsSent = 0;
+    _provingSent = 0;
+    _provingReceived = 0;
     _local_processor_outage = NO;
     _remote_processor_outage = NO;
     _emergency = NO;
@@ -1690,11 +1713,13 @@
 -(void)txcSendSIN
 {
     [self sendLinkstatus:M2PA_LINKSTATE_PROVING_NORMAL];
+    _provingSent++;
 }
 
 -(void)txcSendSIE
 {
     [self sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY];
+    _provingSent++;
 }
 
 -(void)txcSendFISU

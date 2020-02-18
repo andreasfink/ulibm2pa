@@ -143,7 +143,10 @@ typedef enum PocStatus
     UMMutex 							*_dataLock;
     UMMutex 							*_controlLock;
     UMMutex 							*_incomingDataBufferLock;
-	int									_alignmentsReceived;
+    int                                 _alignmentsReceived;
+    int                                 _alignmentsSent;
+    int                                 _provingReceived;
+    int                                 _provingSent;
     BOOL    							_local_processor_outage;
     BOOL    							_remote_processor_outage;
     BOOL    							_level3Indication;
@@ -265,7 +268,6 @@ typedef enum PocStatus
 @property(readwrite,assign)     BOOL    paused;
 @property(readwrite,assign)     double  speed;
 @property(readwrite,assign)     int     window_size;
-@property(readwrite,assign)     int     provingCounter;
 @property(readwrite,assign)     BOOL    furtherProving;
 @property(readwrite,assign)     u_int32_t outstanding;
 
@@ -288,6 +290,9 @@ typedef enum PocStatus
 @property(readwrite,strong,atomic)  UMThroughputCounter *outboundThroughputBytes;
 @property(readwrite,assign,atomic)  SpeedStatus speed_status;
 @property(readwrite,assign,atomic)  int alignmentsReceived;
+@property(readwrite,assign,atomic)  int alignmentsSent;
+@property(readwrite,assign,atomic)  int provingSent;
+@property(readwrite,assign,atomic)  int provingReceived;
 
 - (UMLayerM2PA *)initWithTaskQueueMulti:(UMTaskQueueMulti *)tq;
 - (UMLayerM2PA *)initWithTaskQueueMulti:(UMTaskQueueMulti *)tq name:(NSString *)name;
@@ -482,6 +487,7 @@ typedef enum PocStatus
 -(void)lscAlignmentNotPossible;
 -(void)lscAlignmentComplete;
 
+-(void)protocolViolation:(NSString *)reason;
 -(void)protocolViolation;
 -(void)setM2pa_status:(M2PA_Status)status;
 - (M2PA_Status)m2pa_status;

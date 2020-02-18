@@ -15,7 +15,7 @@
 
 @interface UMM2PATask_sctpStatusIndication : UMLayerTask
 {
-    id userId;
+    id          userId;
     SCTP_Status status;
 }
 
