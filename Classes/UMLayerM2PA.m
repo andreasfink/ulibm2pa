@@ -1476,7 +1476,6 @@
         [self logMajorError:@"can not start if link is not in status OOS. Going to OFF state"];
         self.m2pa_status = M2PA_STATUS_OFF;
         _iacState = [[UMM2PAInitialAlignmentControl_Idle alloc]initWithLink:self];
-
         return;
     }
     
