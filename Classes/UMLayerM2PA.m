@@ -455,6 +455,7 @@
     @try
     {
         [_data_link_buffer appendData:data];
+        dptr = _data_link_buffer.bytes;
         while([_data_link_buffer length] >= 16)
         {
             len = ntohl(*(u_int32_t *)&dptr[4]);
