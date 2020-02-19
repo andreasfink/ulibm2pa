@@ -1480,13 +1480,9 @@
         _iacState = [[UMM2PAInitialAlignmentControl_Idle alloc]initWithLink:self];
         return;
     }
-    
-    if(self.logLevel <= UMLOG_DEBUG)
-    {
-        [self logDebug:@"Sending LINKSTATE_ALIGNMENT"];
-    }
-    [self sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE];
-    [self sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT];
+
+    [self txcSendSIOS]; /*  Out of Service */
+
     if(_emergency)
     {
         _t4.seconds = _t4e;
@@ -1498,8 +1494,11 @@
     [_t2 start];
     [_t4 start];
     [_t4r start];
-    self.m2pa_status = M2PA_STATUS_INITIAL_ALIGNMENT;
+    self.m2pa_status = M2PA_STATUS_OOS;
+    [self txcSendSIO]; /* Alignment */
     _iacState = [[UMM2PAInitialAlignmentControl_NotAligned alloc]initWithLink:self];
+
+    /* this will send SIOS (Out of Service) & SIO (Alignment) */
 }
 
 - (void)stop
@@ -1587,7 +1586,6 @@
 - (void)sendLinkstatus:(M2PA_linkstate_message)linkstate
 {
     NSString *ls = [self linkStatusString:linkstate];
-
     switch(self.sctp_status)
     {
         case SCTP_STATUS_OFF:
@@ -1601,6 +1599,10 @@
             return;
         default:
             break;
+    }
+    if(_logLevel<=UMLOG_DEBUG)
+    {
+        [self logDebug:[NSString stringWithFormat:@"Sending Linkstatus %@",ls ]];
     }
 
 #define	M2PA_LINKSTATE_PACKETLEN	20
