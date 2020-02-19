@@ -72,7 +72,7 @@
 
 #define	M2PA_DEFAULT_T4_N	8.0		/* normal proving period  3-70s  8s */
 #define	M2PA_DEFAULT_T4_E	0.6     /* emergency proving period  0.4s - 0.6s : 0.5s*/
-#define	M2PA_DEFAULT_T4_R	0.25		/* resending timer of link status proving 4x per seconds */
+#define	M2PA_DEFAULT_T4_R	0.100		/* resending timer of link status proving 10x per seconds */
 /*T4: proving period normal */
 /*  highspeed: 3-70s */
 /*  64k:	7.5-9.5s, nominal 8.5s */

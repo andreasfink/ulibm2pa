@@ -64,11 +64,11 @@
 	[self logEvent:@(__func__)];
     if(link.emergency==NO)
     {
-        [link sendLinkstatus:M2PA_LINKSTATE_PROVING_NORMAL];
+        [link txcSendSIN];
     }
     else
     {
-        [link sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY];
+        [link txcSendSIE];
     }
     return self;
 }

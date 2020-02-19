@@ -86,7 +86,7 @@
 
 - (UMM2PALinkStateControl_State *)eventAbortProving:(UMLayerM2PA *)link
 {
-	if(link.provingSent > 5)
+	if(link.provingSent > 7)
 	{
 		[link lscAlignmentNotPossible];
 		[link.t4 stop];

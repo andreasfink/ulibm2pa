@@ -878,16 +878,12 @@
 
 - (void)_timerFires4
 {
-    [_controlLock unlock];
 	IAC_ASSIGN_AND_LOG(_iacState,[_iacState eventTimer4:self]);
-    [_controlLock unlock];
 }
 
 - (void)_timerFires4r
 {
-    [_controlLock unlock];
     IAC_ASSIGN_AND_LOG(_iacState,[_iacState eventTimer4r:self]);
-    [_controlLock unlock];
 }
 
 - (void)_timerFires5
@@ -1378,6 +1374,7 @@
 
 - (void)_timerEventTask:(UMM2PATask_TimerEvent *)task
 {
+    [_controlLock lock];
 	NSString *timerName = task.timerName;
 	if([timerName isEqualToString:@"t1"])
 	{
@@ -1415,6 +1412,7 @@
 	{
 		UMAssert(0,@"Unknown timer fires: '%@'",timerName);
 	}
+    [_controlLock unlock];
 }
 
 #pragma mark -
