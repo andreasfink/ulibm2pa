@@ -46,7 +46,14 @@
 - (UMM2PAInitialAlignmentControl_State *)eventStart:(UMLayerM2PA *)link
 {
 	[self logEvent:@(__func__)];
-    [link txcSendSIO];
+    if(link.emergency)
+    {
+        [link txcSendSIN];
+    }
+    else
+    {
+        [link txcSendSIE];
+    }
 	[link.t2 start];
 	[link.t4r start];
     return [[UMM2PAInitialAlignmentControl_NotAligned alloc]initWithLink:link];

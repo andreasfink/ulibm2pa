@@ -1520,16 +1520,16 @@
     switch(linkstate)
     {
         case M2PA_LINKSTATE_ALIGNMENT:
-            return @"ALIGNMENT";
+            return @"ALIGNMENT (SIO)";
             break;
         case M2PA_LINKSTATE_PROVING_NORMAL:
-            return @"PROVING_NORMAL";
+            return @"PROVING_NORMAL (SIN)";
             break;
         case M2PA_LINKSTATE_PROVING_EMERGENCY:
-            return @"PROVING_EMERGENCY";
+            return @"PROVING_EMERGENCY (SIE)";
             break;
         case M2PA_LINKSTATE_READY:
-            return @"READY";
+            return @"READY (FISU)";
             break;
         case M2PA_LINKSTATE_PROCESSOR_OUTAGE:
             return @"PROCESSOR_OUTAGE";
