@@ -627,22 +627,20 @@
 
 - (void) _proving_normal_received
 {
+    [_controlLock lock];
     _provingReceived++;
-	[_controlLock lock];
     _lscState  = [_lscState eventSIN:self];
     _iacState  = [_iacState eventSIN:self];
-    _provingReceived++;
 	[_controlLock unlock];
 }
 
 - (void) _proving_emergency_received
 {
+	[_controlLock lock];
     _provingReceived++;
     self.emergency = YES;
-	[_controlLock lock];
     _lscState  = [_lscState eventSIE:self];
     _iacState  = [_iacState eventSIE:self];
-    _provingReceived++;
 	[_controlLock unlock];
 }
 
@@ -1728,19 +1726,26 @@
 
 -(void)txcSendSIN
 {
-    [self sendLinkstatus:M2PA_LINKSTATE_PROVING_NORMAL];
+    [_controlLock lock];
     _provingSent++;
+    [self sendLinkstatus:M2PA_LINKSTATE_PROVING_NORMAL];
+    [_controlLock unlock];
 }
 
 -(void)txcSendSIE
 {
-    [self sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY];
+    [_controlLock lock];
     _provingSent++;
+    [self sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY];
+    [_controlLock unlock];
 }
 
 -(void)txcSendFISU
 {
+    [_controlLock lock];
     [self sendLinkstatus:M2PA_LINKSTATE_READY];
+    [_controlLock unlock];
+
 }
 
 -(void)txcFlushBuffers
