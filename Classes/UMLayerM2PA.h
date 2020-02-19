@@ -226,7 +226,6 @@ typedef enum PocStatus
     BOOL    _receptionEnabled;
     double  _speed;
     int     _window_size;
-	int		_provingCounter;
 	PocStatus	_pocStatus;
 
     UMThroughputCounter	*_speedometer;
