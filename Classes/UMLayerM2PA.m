@@ -42,7 +42,7 @@
 	UMM2PAInitialAlignmentControl_State *n = newstatus;\
 	if((oldstatus != n) && (self.logLevel <= UMLOG_DEBUG)) \
 	{ \
-		if(![oldstatus.description isEqualToString: n.description]); \
+		if(![oldstatus.description isEqualToString: n.description]) \
 		{ \
 			[self.logFeed debugText:[NSString stringWithFormat:@"IAC Status change %@->%@",oldstatus.description, n.description]]; \
 		} \
@@ -55,7 +55,7 @@
 	UMM2PALinkStateControl_State  *n = newstatus;\
 	if((oldstatus != n) && (self.logLevel <= UMLOG_DEBUG))\
 	{ \
-		if(![oldstatus.description isEqualToString: n.description]); \
+		if(![oldstatus.description isEqualToString: n.description]) \
 		{ \
 			[self.logFeed debugText:[NSString stringWithFormat:@"LSC Status change %@->%@",oldstatus.description, n.description]]; \
 		} \
@@ -880,12 +880,16 @@
 
 - (void)_timerFires4
 {
+    [_controlLock unlock];
 	IAC_ASSIGN_AND_LOG(_iacState,[_iacState eventTimer4:self]);
+    [_controlLock unlock];
 }
 
 - (void)_timerFires4r
 {
-	IAC_ASSIGN_AND_LOG(_iacState,[_iacState eventTimer4r:self]);
+    [_controlLock unlock];
+    IAC_ASSIGN_AND_LOG(_iacState,[_iacState eventTimer4r:self]);
+    [_controlLock unlock];
 }
 
 - (void)_timerFires5
@@ -896,10 +900,11 @@
 - (void)_timerFires6
 {
 	/* Figure 13/Q.703 (sheet 2 of 7) */
-
+    [_controlLock unlock];
 	LSC_ASSIGN_AND_LOG(_lscState,[_lscState eventLinkFailure:self]);
 	_linkstate_busy = NO;
 	[_t7 stop];
+    [_controlLock unlock];
 }
 - (void)_timerFires7
 {
