@@ -2054,6 +2054,8 @@
     [self adminAttachOrder:_sctpLink];
 }
 
+static NSDateFormatter *dateFormatter = NULL;
+
 - (NSDictionary *)apiStatus
 {
     NSMutableDictionary *d = [[NSMutableDictionary alloc]init];
@@ -2110,9 +2112,6 @@
     d[@"current-speed"] =   [_speedometer getSpeedTripleJson];
     d[@"submission-speed"] =   [_submission_speed getSpeedTripleJson];
 
-
-    static NSDateFormatter *dateFormatter = NULL;
-    
     if(dateFormatter==NULL)
     {
         dateFormatter = [[NSDateFormatter alloc] init];
