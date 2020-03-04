@@ -856,7 +856,6 @@
     {
         return;
     }
-    [self powerOff];
     [self powerOn];
 }
 
