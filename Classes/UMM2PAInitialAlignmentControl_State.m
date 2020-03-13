@@ -55,7 +55,7 @@
 - (UMM2PAInitialAlignmentControl_State *)eventSIO:(UMLayerM2PA *)link
 {
 	[self logEvent:@(__func__)];
-    return [[UMM2PAInitialAlignmentControl_State alloc]initWithLink:link];
+    return [[UMM2PAInitialAlignmentControl_Idle alloc]initWithLink:link];
 }
 
 - (UMM2PAInitialAlignmentControl_State *)eventSIN:(UMLayerM2PA *)link
