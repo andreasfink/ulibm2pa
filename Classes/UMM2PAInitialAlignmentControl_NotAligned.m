@@ -111,7 +111,22 @@
 {
 	[self logEvent:@(__func__)];
 
-	[link.t2 stop];
+    [link.t2 stop];
+    link.emergency = YES;
+    if((link.t4.seconds != link.t4e) || ([link.t4 isRunning]==NO))
+    {
+        link.emergency = YES;
+        [link.t4 stop];
+        link.t4.seconds = link.t4e;
+        [link aermStop];
+        [link aermSetTe]; /****/
+        [link aermStart];
+        [link.t4 start];
+    }
+    [link.t4r start];
+    /* shorten the timer maybe ? */
+    return [[UMM2PAInitialAlignmentControl_Proving alloc]initWithLink:link];
+
 	if(link.emergency)
 	{
 		/* use emergency proving period */
@@ -129,7 +144,7 @@
 		[link txcSendSIN];
 	}
 	[link.t3 start];
-	return [[UMM2PAInitialAlignmentControl_Aligned alloc]initWithLink:link];
+	return [[UMM2PAInitialAlignmentControl_Proving alloc]initWithLink:link];
 }
 
 - (UMM2PAInitialAlignmentControl_State *)eventEmergency:(UMLayerM2PA *)link

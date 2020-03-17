@@ -76,17 +76,18 @@
 - (UMM2PAInitialAlignmentControl_State *)eventSIE:(UMLayerM2PA *)link
 {
 	[self logEvent:@(__func__)];
-    if(link.t4.seconds != link.t4e)
+    link.emergency = YES;
+    if((link.t4.seconds != link.t4e) || ([link.t4 isRunning]==NO))
     {
+        link.emergency = YES;
         [link.t4 stop];
         link.t4.seconds = link.t4e;
         [link aermStop];
         [link aermSetTe]; /****/
         [link aermStart];
         [link.t4 start];
-        [link.t4r start];
     }
-    link.emergency = YES;
+    [link.t4r start];
     /* shorten the timer maybe ? */
     return self; /* we stay in proving */
 }
