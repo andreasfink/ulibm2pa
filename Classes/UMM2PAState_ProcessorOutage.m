@@ -17,6 +17,10 @@
     return @"processor-outage";
 }
 
+- (M2PA_Status)statusCode
+{
+    return M2PA_STATUS_PROCESSOR_OUTAGE;
+}
 
 - (UMM2PAState *)eventStop
 {

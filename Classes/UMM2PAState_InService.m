@@ -17,6 +17,10 @@
     return @"in-service";
 }
 
+- (M2PA_Status)statusCode
+{
+    return M2PA_STATUS_IS;
+}
 
 - (UMM2PAState *)eventStop
 {

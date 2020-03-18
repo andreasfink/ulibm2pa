@@ -13,23 +13,24 @@
 
 typedef	enum	M2PA_Status
 {
-    M2PA_STATUS_UNUSED				= -1,
-    M2PA_STATUS_OFF					= 100,
+    M2PA_STATUS_UNUSED				 = -1,
+    M2PA_STATUS_OFF					 = 100,
     /* SCTP is established but M2PA has not started yet */
     /* requires MTP3 order to start */
-    M2PA_STATUS_OOS					= 101,
+    M2PA_STATUS_OOS					 = 101,
     /* SCTP is established. MTP3 knows this link now */
-    M2PA_STATUS_INITIAL_ALIGNMENT	= 102,
-    M2PA_STATUS_ALIGNED_NOT_READY	= 103,
-    M2PA_STATUS_ALIGNED_READY		= 104,
-    M2PA_STATUS_IS					= 105,
-    M2PA_STATUS_PROCESSOR_OUTAGE 	= 106,
-    
+    M2PA_STATUS_INITIAL_ALIGNMENT	 = 102,
+    M2PA_STATUS_ALIGNED_NOT_READY	 = 103,
+    M2PA_STATUS_ALIGNED_READY		 = 104,
+    M2PA_STATUS_IS					 = 105,
+    M2PA_STATUS_PROCESSOR_OUTAGE     = 106,
+    M2PA_STATUS_BUSY                 = 107,
+
     /* according to Q.703 Page 16 section 7.2 */
-    //	M2PA_STATUS_IDLE				=107,
-    //	M2PA_STATUS_OUT_OF_ALIGNMENT	=108,
-    //	M2PA_STATUS_ALIGNED				=109,
-    //	M2PA_STATUS_EMERGENCY			=110,
+    //	M2PA_STATUS_IDLE				=108,
+    //	M2PA_STATUS_OUT_OF_ALIGNMENT	=109,
+    //	M2PA_STATUS_ALIGNED				=110,
+    //	M2PA_STATUS_EMERGENCY			=111,
 } M2PA_Status;
 
 

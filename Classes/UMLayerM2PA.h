@@ -217,8 +217,10 @@ typedef enum PocStatus
 
     
     SCTP_Status _sctp_status;
+#if defined(OLD_IMPLEMENTATION)
     M2PA_Status _m2pa_status;
-
+#endif
+    
     BOOL    _congested;
     BOOL    _emergency;
     //BOOL    _autostart;
@@ -501,12 +503,14 @@ typedef enum PocStatus
 
 -(void)protocolViolation:(NSString *)reason;
 -(void)protocolViolation;
+#if defined(OLD_IMPLEMENTATION)
 -(void)setM2pa_status:(M2PA_Status)status;
 - (M2PA_Status)m2pa_status;
+#endif
 - (void)resetSequenceNumbers;
 - (NSDictionary *)apiStatus;
 - (void)stopDetachAndDestroy;
 - (void)queueTimerEvent:(id)caller timerName:(NSString *)tname;
 - (void)startupInitialisation;
-
+- (void)deliverUserDataToUpperLayer:(NSData *)userData;
 @end

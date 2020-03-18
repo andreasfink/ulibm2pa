@@ -1,5 +1,5 @@
 //
-//  UMM2PAState_Proving.m
+//  UMM2PAInitialAlignmentControl_Proving.m
 //  ulibm2pa
 //
 //  Created by Andreas Fink on 05/12/14.
@@ -9,6 +9,7 @@
 // Version 3 from 29 June 2007 and other commercial licenses available by
 // the author.
 
+#if 0
 #import "UMM2PAInitialAlignmentControl_Proving.h"
 #import "UMM2PAInitialAlignmentControl_AllStates.h"
 #import "UMLayerM2PA.h"
@@ -123,3 +124,4 @@
 
 @end
 
+#endif

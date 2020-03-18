@@ -73,7 +73,7 @@
 #pragma mark -
 #pragma mark Initializer
 
-
+#if defined(OLD_IMPLEMENTATION)
 + (NSString *)statusAsString:(M2PA_Status)s
 {
     switch(s)
@@ -97,12 +97,17 @@
     }
     return @"M2PA_STATUS_INVALID";
 }
+#endif
 
+#if defined(OLD_IMPLEMENTATION)
 -(M2PA_Status)m2pa_status
 {
     return _m2pa_status;
 }
+#endif
 
+#if defined(OLD_IMPLEMENTATION)
+/* FIXME: this has to go into the state machine */
 - (void)setM2pa_status:(M2PA_Status)status
 {
     M2PA_Status old_status = _m2pa_status;
@@ -152,6 +157,7 @@
                               status:_m2pa_status];
     }
 }
+#endif
 
 - (UMLayerM2PA *)init
 {
@@ -177,6 +183,7 @@
 #if defined(OLD_IMPLEMENTATION)
         _lscState = [[UMM2PALinkStateControl_PowerOff alloc]initWithLink:self];
         _iacState = [[UMM2PAInitialAlignmentControl_Idle alloc] initWithLink:self];
+        _m2pa_status = M2PA_STATUS_OFF;
 #else
         _state = [[UMM2PAState_Off alloc]initWithLink:self];
 #endif
@@ -186,7 +193,6 @@
         _local_processor_outage = NO;
         _remote_processor_outage = NO;
         _sctp_status = SCTP_STATUS_OOS;
-        _m2pa_status = M2PA_STATUS_OFF;
 
         _link_restarts = 0;
         _ready_received = 0;
@@ -534,24 +540,18 @@
 
             NSData *userData = [NSData dataWithBytes:&dptr[16] length:userDataLen];
             
+#if defined(OLD_IMPLEMENTATION)
             if (self.m2pa_status!=M2PA_STATUS_IS)
             {
                 self.m2pa_status = M2PA_STATUS_IS;
             }
-            NSArray *usrs = [_users arrayCopy];
-            for(UMLayerM2PAUser *u in usrs)
-            {
-                UMLayerM2PAUserProfile *profile = u.profile;
-                if([profile wantsDataMessages])
-                {
-                    id user = u.user;
-                    [user m2paDataIndication:self
-                                         slc:_slc
-								mtp3linkName:u.linkName
-                                        data:userData];
+            [self deliverUserDataToUpperLayer:userData];
+#else
+            [_controlLock lock];
+            [_state eventUserData:userData];
+            [_controlLock unlock];
+#endif
 
-                }
-            }
             [_data_link_buffer replaceBytesInRange: NSMakeRange(0,len) withBytes:"" length:0];
         }
     }
@@ -561,6 +561,23 @@
     }
 }
 
+- (void)deliverUserDataToUpperLayer:(NSData *)userData
+{
+    NSArray *usrs = [_users arrayCopy];
+    for(UMLayerM2PAUser *u in usrs)
+    {
+        UMLayerM2PAUserProfile *profile = u.profile;
+        if([profile wantsDataMessages])
+        {
+            id user = u.user;
+            [user m2paDataIndication:self
+                                 slc:_slc
+                        mtp3linkName:u.linkName
+                                data:userData];
+
+        }
+    }
+}
 - (void) sctpIncomingLinkstateMessage:(NSData *)data
 {
     M2PA_linkstate_message linkstatus;
@@ -638,23 +655,32 @@
 - (void) _oos_received
 {
 	[_controlLock lock];
+#if defined(OLD_IMPLEMENTATION)
     if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:@"Received M2PA_LINKSTATE_OUT_OF_SERVICE"];
     }
     _lscState  = [_lscState eventSIOS:self];
     _iacState  = [_iacState eventSIOS:self];
+#else
+    [_state eventLinkstatusOutOfService];
+#endif
 	[_controlLock unlock];
 }
 
 - (void) _alignment_received
 {
 	[_controlLock lock];
+#if defined(OLD_IMPLEMENTATION)
     _lscState  = [_lscState eventSIO:self];
     _iacState  = [_iacState eventSIO:self];
+#else
+    [_state eventLinkstatusAlignment];
+#endif
     _alignmentsReceived++;
     _provingReceived=0;
     _provingSent=0;
+
 	[_controlLock unlock];
 
 }
@@ -663,8 +689,13 @@
 {
     [_controlLock lock];
     _provingReceived++;
+#if defined(OLD_IMPLEMENTATION)
+
     _lscState  = [_lscState eventSIN:self];
     _iacState  = [_iacState eventSIN:self];
+#else
+    [_state eventLinkstatusProvingNormal];
+#endif
 	[_controlLock unlock];
 }
 
@@ -673,8 +704,12 @@
 	[_controlLock lock];
     _provingReceived++;
     self.emergency = YES;
+#if defined(OLD_IMPLEMENTATION)
     _lscState  = [_lscState eventSIE:self];
     _iacState  = [_iacState eventSIE:self];
+#else
+    [_state eventLinkstatusProvingNormal];
+#endif
 	[_controlLock unlock];
 }
 
@@ -682,8 +717,12 @@
 - (void) _linkstate_ready_received
 {
 	[_controlLock lock];
+#if defined(OLD_IMPLEMENTATION)
     _lscState  = [_lscState eventFisu:self];
     _iacState  = [_iacState eventProvingEnds:self];
+#else
+    [_state eventLinkstatusReady];
+#endif
 	[_controlLock unlock];
 }
 
@@ -691,37 +730,54 @@
 {
 
 	[_controlLock lock];
+#if defined(OLD_IMPLEMENTATION)
     _lscState  = [_lscState eventLocalProcessorOutage:self];
     _iacState  = [_iacState eventLocalProcessorOutage:self];
+#else
+    [_state eventLinkstatusProcessorOutage];
+#endif
 	[_controlLock unlock];
 }
 
 - (void) _linkstate_processor_recovered_received
 {
 	[_controlLock lock];
+#if defined(OLD_IMPLEMENTATION)
     _lscState  = [_lscState eventLocalProcessorRecovered:self];
     _iacState  = [_iacState eventLocalProcessorRecovered:self];
+#else
+    [_state eventLinkstatusProcessorRecovered];
+#endif
 	[_controlLock unlock];
 }
 
 - (void) _linkstate_busy_received
 {
 	[_controlLock lock];
+#if defined(OLD_IMPLEMENTATION)
     _lscState  = [_lscState eventSIB:self];
     //_iacState  = [_iacState eventSIB:self];
+#else
+    [_state eventLinkstatusBusy];
+#endif
 	[_controlLock unlock];
 }
 
 - (void) _linkstate_busy_ended_received
 {
 	[_controlLock lock];
+#if defined(OLD_IMPLEMENTATION)
     _lscState  = [_lscState eventContinue:self];
     //_iacState  = [_iacState eventContinue:self];
-	[_controlLock unlock];
+#else
+    [_state eventLinkstatusBusyEnded];
+#endif
 
     _link_congestion_cleared_time = [NSDate date];
     _congested = NO;
     [_t6 stop];
+	[_controlLock unlock];
+
     [self sendCongestionClearedIndication];
     if([_waitingMessages count]>0)
     {
@@ -869,11 +925,15 @@
 
 - (void)ackTimerFires
 {
+#if defined(OLD_IMPLEMENTATION)
     if(_m2pa_status != M2PA_STATUS_IS)
+#else
+    if(_state.statusCode != M2PA_STATUS_IS)
+#endif
     {
         return;
     }
-
+    
     [_dataLock lock];
     [_seqNumLock lock];
     if(_lastRxFsn != _lastTxBsn) /* we have unacked received packets, lets send empty packet to ack it */
@@ -886,7 +946,11 @@
 
 - (void)startTimerFires
 {
+#if defined(OLD_IMPLEMENTATION)
     if(_m2pa_status != M2PA_STATUS_OFF)
+#else
+    if(_state.statusCode != M2PA_STATUS_OFF)
+#endif
     {
         return;
     }
@@ -895,46 +959,60 @@
 
 - (void)_timerFires1
 {
-    
+    [_controlLock lock];
+    [_state eventTimer1];
+    [_controlLock unlock];
 }
 - (void)_timerFires2
 {
-    
+    [_controlLock lock];
+    [_state eventTimer2];
+    [_controlLock unlock];
 }
 
 - (void)_timerFires3
 {
+    [_controlLock lock];
+    [_state eventTimer3];
+    [_controlLock unlock];
+
 }
-
-
-
 
 - (void)_timerFires4
 {
-	IAC_ASSIGN_AND_LOG(_iacState,[_iacState eventTimer4:self]);
+    [_controlLock lock];
+    [_state eventTimer4];
+    [_controlLock unlock];
 }
 
 - (void)_timerFires4r
 {
-    IAC_ASSIGN_AND_LOG(_iacState,[_iacState eventTimer4r:self]);
+    [_controlLock lock];
+    [_state eventTimer4r];
+    [_controlLock unlock];
 }
 
 - (void)_timerFires5
 {
-
+    [_controlLock lock];
+    [_state eventTimer5];
+    [_controlLock unlock];
 }
 
 - (void)_timerFires6
 {
 	/* Figure 13/Q.703 (sheet 2 of 7) */
-    [_controlLock unlock];
-	LSC_ASSIGN_AND_LOG(_lscState,[_lscState eventLinkFailure:self]);
+    [_controlLock lock];
+    [_state eventTimer6];
 	_linkstate_busy = NO;
 	[_t7 stop];
     [_controlLock unlock];
 }
 - (void)_timerFires7
 {
+    [_controlLock lock];
+    [_state eventTimer7];
+    [_controlLock unlock];
 }
 
 
@@ -1453,7 +1531,9 @@
 
 - (void)startupInitialisation
 {
+#if defined(OLD_IMPLEMENTATION)
     self.m2pa_status = M2PA_STATUS_OFF;
+#endif
     _alignmentsReceived = 0;
     _alignmentsSent = 0;
     _provingSent = 0;
@@ -1497,28 +1577,35 @@
 
 - (void)powerOff
 {
+    
+#if defined(OLD_IMPLEMENTATION)
     if(self.m2pa_status != M2PA_STATUS_OFF)
     {
         [self stop];
     }
     self.m2pa_status = M2PA_STATUS_OFF;
     [_sctpLink closeFor:self];
-
-#if defined(OLD_IMPLEMENTATION)
-
     [self resetSequenceNumbers];
     _ready_received = NO;
     _ready_sent = NO;
     [_speedometer clear];
     [_submission_speed clear];
 #else
-    _state = [[UMM2PAState_Off alloc]initWithLink:self];
+    [_controlLock lock];
+    [_state eventStop];
+    [_speedometer clear];
+    [_submission_speed clear];
+    [self resetSequenceNumbers];
+    _ready_received = NO;
+    _ready_sent = NO;
+    [_controlLock unlock];
 #endif
 
 }
 
 - (void)start
 {
+#if defined (OLD_IMPLEMENTATION)
     if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:@"start"];
@@ -1550,10 +1637,16 @@
     _iacState = [[UMM2PAInitialAlignmentControl_NotAligned alloc]initWithLink:self];
 
     /* this will send SIOS (Out of Service) & SIO (Alignment) */
+#else
+    [_controlLock lock];
+    [_state eventStart];
+    [_controlLock unlock];
+#endif
 }
 
 - (void)stop
 {
+#if defined(OLD_IMPLEMENTATION)
     if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:@"stop"];
@@ -1564,6 +1657,11 @@
     _lscState = [[UMM2PALinkStateControl_PowerOff alloc]initWithLink:self];
     _iacState = [[UMM2PAInitialAlignmentControl_Idle alloc]initWithLink:self];
     self.m2pa_status = M2PA_STATUS_OOS;
+#else
+    [_controlLock lock];
+    [_state eventStop];
+    [_controlLock unlock];
+#endif
 }
 
 - (NSString *)linkStatusString:(M2PA_linkstate_message) linkstate
@@ -1803,7 +1901,7 @@
 {
 }
 
-
+#if defined (OLD_IMPLEMENTATION)
 -(void)iacEmergency
 {
     _iacState =[_iacState eventEmergency:self];
@@ -1930,6 +2028,8 @@
 {
     
 }
+
+#endif // (OLD_IMPLEMENTATION)
 
 - (void)notifyMtp3OutOfService
 {
@@ -2112,8 +2212,12 @@ static NSDateFormatter *dateFormatter = NULL;
     NSMutableDictionary *d = [[NSMutableDictionary alloc]init];
     
     d[@"name"] = self.layerName;
+#if defined (OLD_IMPLEMENTATION)
     d[@"link-state-control"] = [_lscState description];
     d[@"initial-alignment-control-state"] = [_iacState description];
+#else
+    d[@"state"] = [_state description];
+#endif
     d[@"attach-to"] = _sctpLink.layerName;
     d[@"local-processor-outage"] = _local_processor_outage ? @(YES) : @(NO);
     d[@"remote-processor-outage"] = _remote_processor_outage ? @(YES) : @(NO);
@@ -2124,6 +2228,7 @@ static NSDateFormatter *dateFormatter = NULL;
     d[@"bsn2"] = @(_bsn2);
     d[@"outstanding"] = @(_outstanding);
 
+#if defined (OLD_IMPLEMENTATION)
     switch(_m2pa_status)
     {
             
@@ -2151,6 +2256,7 @@ static NSDateFormatter *dateFormatter = NULL;
         default:
             d[@"m2pa-status"] = [NSString stringWithFormat:@"unknown(%d)",_m2pa_status];
     }
+#endif
     d[@"congested"] = _congested ? @(YES) : @(NO);
     d[@"emergency"] = _emergency ? @(YES) : @(NO);
     d[@"paused"] = _paused ? @(YES) : @(NO);

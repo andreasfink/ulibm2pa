@@ -17,6 +17,10 @@
     return @"aligned-ready";
 }
 
+- (M2PA_Status)statusCode
+{
+    return M2PA_STATUS_ALIGNED_READY;
+}
 
 - (UMM2PAState *)eventStop
 {

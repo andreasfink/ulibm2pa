@@ -8,6 +8,8 @@
 
 #import <ulib/ulib.h>
 
+#import "UMLayerM2PAStatus.h"
+
 @class UMLayerM2PA;
 
 @interface UMM2PAState : UMObject
@@ -18,6 +20,8 @@
 @property(readwrite,strong) UMLayerM2PA *link;
 
 - (NSString *)description;
+- (M2PA_Status)statusCode;
+
 - (UMM2PAState *)initWithLink:(UMLayerM2PA *)link;
 - (void)logStatemachineEvent:(const char *)func;
 
@@ -36,7 +40,17 @@
 - (UMM2PAState *)eventLinkstatusBusyEnded;
 - (UMM2PAState *)eventLinkstatusProcessorOutage;
 - (UMM2PAState *)eventLinkstatusProcessorRecovered;
+- (UMM2PAState *)eventUserData:(NSData *)data;
 - (UMM2PAState *)eventSctpError;
+
+- (UMM2PAState *)eventTimer1;
+- (UMM2PAState *)eventTimer2;
+- (UMM2PAState *)eventTimer3;
+- (UMM2PAState *)eventTimer4;
+- (UMM2PAState *)eventTimer4r;
+- (UMM2PAState *)eventTimer5;
+- (UMM2PAState *)eventTimer6;
+- (UMM2PAState *)eventTimer7;
 
 
 - (void) sendLinkstateAlignment;

@@ -65,6 +65,13 @@ NSString *UMM2PAState_currentMethodName(const char *funcName)
     return @"undefined-state";
 }
 
+- (M2PA_Status)statusCode
+{
+    return M2PA_STATUS_UNUSED;
+}
+
+#pragma mark -
+#pragma mark eventHandlers
 
 - (UMM2PAState *)eventStop
 {
@@ -163,6 +170,64 @@ NSString *UMM2PAState_currentMethodName(const char *funcName)
     _link.state = [[UMM2PAState_OutOfService alloc]initWithLink:_link];
     return _link.state;
 }
+
+- (UMM2PAState *)eventUserData:(NSData *)userData
+{
+    [self logStatemachineEvent:__func__];
+    [_link deliverUserDataToUpperLayer:userData];
+    return self;
+}
+
+- (UMM2PAState *)eventTimer1
+{
+    [self logStatemachineEvent:__func__];
+    return self;
+}
+
+- (UMM2PAState *)eventTimer2
+{
+    [self logStatemachineEvent:__func__];
+    return self;
+}
+
+- (UMM2PAState *)eventTimer3
+{
+    [self logStatemachineEvent:__func__];
+    return self;
+}
+
+- (UMM2PAState *)eventTimer4
+{
+    [self logStatemachineEvent:__func__];
+    return self;
+}
+
+- (UMM2PAState *)eventTimer4r
+{
+    [self logStatemachineEvent:__func__];
+    return self;
+}
+
+- (UMM2PAState *)eventTimer5
+{
+    [self logStatemachineEvent:__func__];
+    return self;
+}
+
+- (UMM2PAState *)eventTimer6
+{
+    [self logStatemachineEvent:__func__];
+    return self;
+}
+
+- (UMM2PAState *)eventTimer7
+{
+    [self logStatemachineEvent:__func__];
+    return self;
+}
+
+#pragma mark -
+#pragma mark actionHelpers
 
 - (void) sendLinkstateAlignment
 {

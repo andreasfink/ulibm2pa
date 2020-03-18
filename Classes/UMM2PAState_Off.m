@@ -18,6 +18,11 @@
     return @"off";
 }
 
+- (M2PA_Status)statusCode
+{
+    return M2PA_STATUS_OFF;
+}
+
 
 - (UMM2PAState *)eventStop
 {

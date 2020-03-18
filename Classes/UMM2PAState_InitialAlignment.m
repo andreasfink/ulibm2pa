@@ -17,6 +17,10 @@
     return @"initial-alignment";
 }
 
+- (M2PA_Status)statusCode
+{
+    return M2PA_STATUS_INITIAL_ALIGNMENT;
+}
 
 - (UMM2PAState *)eventStop
 {
