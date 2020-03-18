@@ -9,8 +9,12 @@
 // Version 3 from 29 June 2007 and other commercial licenses available by
 // the author.
 
+#if defined(OLD_IMPLMENETATION)
+
 #import "UMM2PAInitialAlignmentControl_State.h"
 
 @interface UMM2PAInitialAlignmentControl_Proving : UMM2PAInitialAlignmentControl_State
 
 @end
+#endif
+

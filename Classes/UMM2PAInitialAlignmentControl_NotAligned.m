@@ -9,6 +9,8 @@
 // Version 3 from 29 June 2007 and other commercial licenses available by
 // the author.
 
+#if defined(OLD_IMPLMENETATION)
+
 #import "UMM2PAInitialAlignmentControl_NotAligned.h"
 #import "UMM2PAInitialAlignmentControl_AllStates.h"
 #import "UMLayerM2PA.h"
@@ -154,3 +156,4 @@
 }
 
 @end
+#endif

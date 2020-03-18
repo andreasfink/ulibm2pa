@@ -11,8 +11,12 @@
 
 #import "UMM2PALinkStateControl_State.h"
 
+#if defined(OLD_IMPLMENETATION)
+
 @interface UMM2PALinkStateControl_PowerOff : UMM2PALinkStateControl_State
 
 - (UMM2PALinkStateControl_PowerOff *)initWithLink:(UMLayerM2PA *)link;
 
 @end
+#endif
+

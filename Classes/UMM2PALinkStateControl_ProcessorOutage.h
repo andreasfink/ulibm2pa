@@ -9,6 +9,8 @@
 // Version 3 from 29 June 2007 and other commercial licenses available by
 // the author.
 
+#if defined(OLD_IMPLMENETATION)
+
 #import "UMM2PALinkStateControl_State.h"
 
 @interface UMM2PALinkStateControl_ProcessorOutage : UMM2PALinkStateControl_State
@@ -16,3 +18,5 @@
 - (UMM2PALinkStateControl_ProcessorOutage *)initWithLink:(UMLayerM2PA *)link;
 
 @end
+#endif
+

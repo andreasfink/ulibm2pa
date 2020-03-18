@@ -6,6 +6,8 @@
 //  Copyright © 2018 Andreas Fink (andreas@fink.org). All rights reserved.
 //
 
+#if defined(OLD_IMPLMENETATION)
+
 #import "UMM2PALinkStateControl_Idle.h"
 #import "UMM2PALinkStateControl_AllStates.h"
 #import "UMLayerM2PA.h"
@@ -43,3 +45,4 @@
 
 
 @end
+#endif

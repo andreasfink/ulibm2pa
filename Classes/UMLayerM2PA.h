@@ -37,10 +37,8 @@
 @class UMLayerM2PAUserProfile;
 
 /* on Cisco ITP  the following values are default:
- 
- zurich3#show cs7 m2pa timers XG5
- 
- CS7 M2PA Timers for RFC    (85.195.192.42 : 3000)
+
+ CS7 M2PA Timers for RFC
  
  T1   (alignment ready)   : 45000    ms
  T2   (not aligned)       : 60000    ms
@@ -134,11 +132,17 @@ typedef enum PocStatus
 	PocStatus_inService,
 } PocStatus;
 
+@class UMM2PAState;
+
 @interface UMLayerM2PA : UMLayer<UMLayerSctpUserProtocol>
 {
     UMSynchronizedArray 				*_users;
+#if defined(OLD_IMPLEMENTATION)
     UMM2PALinkStateControl_State        *_lscState;
     UMM2PAInitialAlignmentControl_State *_iacState;
+#else
+    UMM2PAState                         *_state;
+#endif
     UMMutex 							*_seqNumLock;
     UMMutex 							*_dataLock;
     UMMutex 							*_controlLock;
@@ -249,8 +253,17 @@ typedef enum PocStatus
     UMQueue 		*_waitingMessages;
 }
 
+- (UMM2PAState *)state;
+- (void)setState:(UMM2PAState *)state;
+
+#if defined(OLD_IMPLMENETATION)
 @property(readwrite,strong)     UMM2PALinkStateControl_State        *lscState;
 @property(readwrite,strong)     UMM2PAInitialAlignmentControl_State *iacState;
+#else
+@property(readwrite,strong)     UMLayerSctp                         *sctpLink;
+@property(readwrite,strong)     UMTimer    *startTimer;    /* time between SCTP power on retries in case SCTP doesnt come up */
+#endif
+
 
 @property(readwrite,assign)     int slc;
 @property(readwrite,strong)     UMThroughputCounter *speedometer;
@@ -494,5 +507,6 @@ typedef enum PocStatus
 - (NSDictionary *)apiStatus;
 - (void)stopDetachAndDestroy;
 - (void)queueTimerEvent:(id)caller timerName:(NSString *)tname;
+- (void)startupInitialisation;
 
 @end

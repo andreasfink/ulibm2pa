@@ -6,6 +6,8 @@
 //  Copyright © 2018 Andreas Fink (andreas@fink.org). All rights reserved.
 //
 
+#if defined(OLD_IMPLMENETATION)
+
 #import "UMM2PALinkStateControl_State.h"
 
 
@@ -13,3 +15,4 @@
 
 @end
 
+#endif

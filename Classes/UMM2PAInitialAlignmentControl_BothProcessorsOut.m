@@ -5,6 +5,7 @@
 //  Created by Andreas Fink on 29.11.18.
 //  Copyright © 2018 Andreas Fink (andreas@fink.org). All rights reserved.
 //
+#if defined(OLD_IMPLMENETATION)
 
 #import "UMM2PAInitialAlignmentControl_BothProcessorsOut.h"
 #import "UMM2PAInitialAlignmentControl_AllStates.h"
@@ -40,3 +41,4 @@
 }
 
 @end
+#endif

@@ -37,6 +37,10 @@
 #import "UMM2PALinkStateControl_AllStates.h"
 #import "UMM2PAInitialAlignmentControl_AllStates.h"
 
+#if !defined(OLD_IMPLEMENTATION)
+#import "UMM2PAState_allStates.h"
+#endif
+
 #define IAC_ASSIGN_AND_LOG(oldstatus,newstatus) \
 { \
 	UMM2PAInitialAlignmentControl_State *n = newstatus;\
@@ -170,8 +174,12 @@
         _controlLock = [[UMMutex alloc]initWithName:@"m2pa-control-mutex"];
         _incomingDataBufferLock = [[UMMutex alloc]initWithName:@"m2pa-incoming-data-mutex"];
 
+#if defined(OLD_IMPLEMENTATION)
         _lscState = [[UMM2PALinkStateControl_PowerOff alloc]initWithLink:self];
         _iacState = [[UMM2PAInitialAlignmentControl_Idle alloc] initWithLink:self];
+#else
+        _state = [[UMM2PAState_Off alloc]initWithLink:self];
+#endif
         _slc = 0;
         _emergency = NO;
         _congested = NO;
@@ -186,7 +194,6 @@
         _paused = NO;
         _speed = 0; /* unlimited */
         _window_size = M2PA_DEFAULT_WINDOW_SIZE;
-        
         _t1 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires1) object:NULL seconds:M2PA_DEFAULT_T1 name:@"t1" repeats:NO runInForeground:YES];
         _t2 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires2) object:NULL seconds:M2PA_DEFAULT_T2 name:@"t2" repeats:NO runInForeground:YES];
         _t3 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires3) object:NULL seconds:M2PA_DEFAULT_T3 name:@"t3" repeats:NO runInForeground:YES];
@@ -215,8 +222,22 @@
     return self;
 }
 
-#pragma mark -
-#pragma mark SCTP Callbacks
+- (UMM2PAState *)state
+{
+    return _state;
+}
+
+- (void)setState:(UMM2PAState *)state
+{
+    if(_logLevel <=UMLOG_DEBUG)
+    {
+        NSString *s = [NSString stringWithFormat:@"StateChange: %@->%@",_state.description,state.description];
+        [self logDebug:s];
+    }
+    UMM2PAState *oldstate = _state;
+    _state = state;
+    oldstate.link = NULL;
+}
 
 #pragma mark -
 #pragma mark SCTP Callbacks
@@ -271,6 +292,7 @@
 
 - (void)sctpReportsUp
 {
+#if defined(OLD_IMPLEMENTATION)
     [_startTimer stop];
     /***************************************************************************
      **
@@ -299,11 +321,17 @@
     [_submission_speed clear];
     _lscState  = [_lscState eventPowerOn:self];
 	[_controlLock unlock];
+#else
+    [_controlLock lock];
+    [_state eventSctpUp];
+    [_controlLock unlock];
+#endif
 
 }
 
 - (void)sctpReportsDown
 {
+#if defined(OLD_IMPLEMENTATION)
 	[_controlLock lock];
     [self logInfo:@"sctpReportsDown"];
 
@@ -312,6 +340,12 @@
     _lscState  = [_lscState eventPowerOff:self];
     _iacState  = [_iacState eventPowerOff:self];
 	[_controlLock unlock];
+#else
+    [_controlLock lock];
+    [_state eventSctpDown];
+    [_controlLock unlock];
+#endif
+
 }
 
 - (void) _sctpStatusIndicationTask:(UMM2PATask_sctpStatusIndication *)task
@@ -1417,7 +1451,7 @@
 #pragma mark -
 #pragma mark Helpers
 
-- (void)powerOn
+- (void)startupInitialisation
 {
     self.m2pa_status = M2PA_STATUS_OFF;
     _alignmentsReceived = 0;
@@ -1435,16 +1469,28 @@
     _alignmentsSent=0;
     _provingReceived=0;
     _provingSent=0;
-
     [_speedometer clear];
     [_submission_speed clear];
+}
 
+
+- (void)powerOn
+{
+#if defined(OLD_IMPLEMENTATION)
+    [self startupInitialisation];
 	_lscState = [[UMM2PALinkStateControl_PowerOff alloc]initWithLink:self];
 	_iacState = [[UMM2PAInitialAlignmentControl_Idle alloc]initWithLink:self];
+    // self.m2pa_status = M2PA_STATUS_OOS; // this is being set once SCTP is established
+     [_sctpLink openFor:self];
 
-   // self.m2pa_status = M2PA_STATUS_OOS; // this is being set once SCTP is established
+#else
     [_startTimer start];
-    [_sctpLink openFor:self];
+    [_controlLock lock];
+    _state = [[UMM2PAState_Off alloc]initWithLink:self];
+    [_state eventStart];
+    [_controlLock unlock];
+#endif
+
 
     /* we do additinoal stuff for power on in sctpReportsUp */
  }
@@ -1458,11 +1504,17 @@
     self.m2pa_status = M2PA_STATUS_OFF;
     [_sctpLink closeFor:self];
 
+#if defined(OLD_IMPLEMENTATION)
+
     [self resetSequenceNumbers];
     _ready_received = NO;
     _ready_sent = NO;
     [_speedometer clear];
     [_submission_speed clear];
+#else
+    _state = [[UMM2PAState_Off alloc]initWithLink:self];
+#endif
+
 }
 
 - (void)start
