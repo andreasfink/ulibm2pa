@@ -9,7 +9,7 @@
 // Version 3 from 29 June 2007 and other commercial licenses available by
 // the author.
 
-#if defined(OLD_IMPLMENETATION)
+#if defined(OLD_IMPLEMENTATION)
 
 #import "UMM2PALinkStateControl_AllStates.h"
 #import "UMLayerM2PA.h"
@@ -51,7 +51,7 @@
     [link.t1 stop];
     [link.t4 stop];
     [link.t4r stop];
-    [link setM2pa_status:M2PA_STATUS_IS];
+//    [link setM2pa_status:M2PA_STATUS_IS];
     [link resetSequenceNumbers];
 	return [[UMM2PALinkStateControl_InService alloc]initWithLink:link];
 }
@@ -61,7 +61,7 @@
     [link.t1 stop];
     [link.t4 stop];
     [link.t4r stop];
-    [link setM2pa_status:M2PA_STATUS_IS];
+//    [link setM2pa_status:M2PA_STATUS_IS];
     [link resetSequenceNumbers];
     return [[UMM2PALinkStateControl_InService alloc]initWithLink:link];
 }

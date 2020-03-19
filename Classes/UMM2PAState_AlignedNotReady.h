@@ -8,7 +8,6 @@
 
 #import "UMM2PAState.h"
 
-
 @interface UMM2PAState_AlignedNotReady : UMM2PAState
 
 @end

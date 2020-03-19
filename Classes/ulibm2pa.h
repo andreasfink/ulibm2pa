@@ -37,3 +37,7 @@
 #import "UMM2PATask_Start.h"
 #import "UMM2PATask_Stop.h"
 #import "UMM2PATask_TimerEvent.h"
+
+#import "UMM2PALinkStateControl_State.h"
+#import "UMM2PAInitialAlignmentControl_State.h"
+

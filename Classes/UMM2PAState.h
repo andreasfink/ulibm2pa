@@ -25,34 +25,37 @@
 - (UMM2PAState *)initWithLink:(UMLayerM2PA *)link;
 - (void)logStatemachineEvent:(const char *)func;
 
-- (UMM2PAState *)eventStop;
-- (UMM2PAState *)eventStart;
-- (UMM2PAState *)eventSctpUp;
-- (UMM2PAState *)eventSctpDown;
-- (UMM2PAState *)eventLinkstatusOutOfService;
-- (UMM2PAState *)eventEmergency;
-- (UMM2PAState *)eventEmergencyCeases;
-- (UMM2PAState *)eventLinkstatusAlignment;
-- (UMM2PAState *)eventLinkstatusProvingNormal;
-- (UMM2PAState *)eventLinkstatusProvingEmergency;
-- (UMM2PAState *)eventLinkstatusReady;
-- (UMM2PAState *)eventLinkstatusBusy;
-- (UMM2PAState *)eventLinkstatusBusyEnded;
-- (UMM2PAState *)eventLinkstatusProcessorOutage;
-- (UMM2PAState *)eventLinkstatusProcessorRecovered;
-- (UMM2PAState *)eventUserData:(NSData *)data;
-- (UMM2PAState *)eventSctpError;
+- (UMM2PAState *)eventPowerOn;                      /* switch on the wire */
+- (UMM2PAState *)eventPowerOff;                     /* switch off the wire */
+- (UMM2PAState *)eventStart;                        /* start the alignment process */
+- (UMM2PAState *)eventStop;                         /* stop the link */
+- (UMM2PAState *)eventSctpUp;                       /* SCTP reports the 'wire' has come up*/
+- (UMM2PAState *)eventSctpDown;                     /* SCTP reports the conncetion is lost */
+- (UMM2PAState *)eventSctpError;                    /* SCTP reports an error */
+- (UMM2PAState *)eventEmergency;                    /* MTP3 tells his is an emergency link */
+- (UMM2PAState *)eventEmergencyCeases;              /* MTP3 tells his is not an emergency link */
+- (UMM2PAState *)eventLinkstatusOutOfService;       /* other side sent us linkstatus out of service */
+- (UMM2PAState *)eventLinkstatusAlignment;          /* other side sent us linkstatus alignment */
+- (UMM2PAState *)eventLinkstatusProvingNormal;      /* other side sent us linkstatus proving normal */
+- (UMM2PAState *)eventLinkstatusProvingEmergency;   /* other side sent us linkstatus emergency normal */
+- (UMM2PAState *)eventLinkstatusReady;              /* other side sent us linkstatus ready */
+- (UMM2PAState *)eventLinkstatusBusy;               /* other side sent us linkstatus busy */
+- (UMM2PAState *)eventLinkstatusBusyEnded;          /* other side sent us linkstatus busy ended */
+- (UMM2PAState *)eventLinkstatusProcessorOutage;    /* other side sent us linkstatus processor outage */
+- (UMM2PAState *)eventLinkstatusProcessorRecovered; /* other side sent us linkstatus processor recovered */
+- (UMM2PAState *)eventUserData:(NSData *)data;      /* other side sent us a MSU */
 
-- (UMM2PAState *)eventTimer1;
-- (UMM2PAState *)eventTimer2;
-- (UMM2PAState *)eventTimer3;
-- (UMM2PAState *)eventTimer4;
-- (UMM2PAState *)eventTimer4r;
-- (UMM2PAState *)eventTimer5;
-- (UMM2PAState *)eventTimer6;
-- (UMM2PAState *)eventTimer7;
+- (UMM2PAState *)eventTimer1;                       /* timer 1 fired (alignment ready timer) */
+- (UMM2PAState *)eventTimer2;                       /* timer 2 fired (not aligned timer) */
+- (UMM2PAState *)eventTimer3;                       /* timer 3 fired (waiting for first proving. alignment timer) */
+- (UMM2PAState *)eventTimer4;                       /* timer 4 fired (proving period) */
+- (UMM2PAState *)eventTimer4r;                      /* timer 4r fired (time between proving packets being sent) */
+- (UMM2PAState *)eventTimer5;                       /* timer 5 fired */
+- (UMM2PAState *)eventTimer6;                       /* timer 6 fired (remote congestion timer.
+                                                            if remote stays longer than this, we go OOS) */
+- (UMM2PAState *)eventTimer7;                       /* timer 7 fired ((excessive delay of acknowledgement) */
 
-
+/* actions */
 - (void) sendLinkstateAlignment;
 - (void) sendLinkstateProvingNormal;
 - (void) sendLinkstateProvingEmergency;

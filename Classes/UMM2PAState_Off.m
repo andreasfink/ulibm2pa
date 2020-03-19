@@ -24,6 +24,22 @@
 }
 
 
+- (UMM2PAState *)eventPowerOff
+{
+    [self logStatemachineEvent:__func__];
+    [_link.sctpLink closeFor:_link];
+    return self;
+}
+
+- (UMM2PAState *)eventPowerOn
+{
+    [self logStatemachineEvent:__func__];
+    [_link startupInitialisation];
+    [_link.startTimer start];
+    [_link.sctpLink openFor:_link];
+    return self;
+}
+
 - (UMM2PAState *)eventStop
 {
     [self logStatemachineEvent:__func__];
@@ -33,27 +49,35 @@
 - (UMM2PAState *)eventStart
 {
     [self logStatemachineEvent:__func__];
-    [_link startupInitialisation];
-    [_link.startTimer start];
-    [_link.sctpLink openFor:_link];
     return self;
 }
 
 - (UMM2PAState *)eventSctpUp
 {
     [self logStatemachineEvent:__func__];
-    return self;
+    [_link.startTimer stop];
+    [_link startupInitialisation];
+    _link.state = [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+    [self sendLinkstateOutOfService];
+    [_link notifyMtp3OutOfService];
+    return _link.state;
 }
 
 - (UMM2PAState *)eventSctpDown
 {
     [self logStatemachineEvent:__func__];
+    [_link.startTimer stop];
+    [_link notifyMtp3Stop];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusOutOfService
 {
     [self logStatemachineEvent:__func__];
+    [_link.startTimer stop];
+    [_link startupInitialisation];
+    _link.state = [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+    [_link notifyMtp3OutOfService];
     return self;
 }
 
@@ -61,12 +85,14 @@
 - (UMM2PAState *)eventEmergency
 {
     [self logStatemachineEvent:__func__];
+    _link.emergency = YES;
     return self;
 }
 
 - (UMM2PAState *)eventEmergencyCeases
 {
     [self logStatemachineEvent:__func__];
+    _link.emergency = NO;
     return self;
 }
 

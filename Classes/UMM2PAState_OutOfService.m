@@ -31,16 +31,15 @@
 - (UMM2PAState *)eventStart
 {
     [self logStatemachineEvent:__func__];
+    [_link.t2 start];
+    [self sendLinkstateAlignment];
+    _link.state = [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
     return self;
 }
 
 - (UMM2PAState *)eventSctpUp
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService];
-    [self sendLinkstateAlignment];
-    [_link.t2 start];
-    _link.state = [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
     return self;
 }
 
@@ -48,7 +47,6 @@
 {
     [self logStatemachineEvent:__func__];
     _link.state = [[UMM2PAState_Off alloc]initWithLink:_link];
-
     return self;
 }
 
@@ -57,7 +55,6 @@
     [self logStatemachineEvent:__func__];
     return self;
 }
-
 
 - (UMM2PAState *)eventEmergency
 {

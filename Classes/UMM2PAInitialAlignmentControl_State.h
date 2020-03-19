@@ -8,7 +8,6 @@
 // This source is dual licensed either under the GNU GENERAL PUBLIC LICENSE
 // Version 3 from 29 June 2007 and other commercial licenses available by
 // the author.
-#if defined(OLD_IMPLMENETATION)
 
 #import <ulib/ulib.h>
 @class UMLayerM2PA;
@@ -42,4 +41,3 @@
 - (void)logEvent:(NSString *)event;
 
 @end
-#endif

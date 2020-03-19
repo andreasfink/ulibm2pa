@@ -7,7 +7,7 @@
 //
 
 #import "UMM2PAState_AlignedNotReady.h"
-#import "UMM2PALinkStateControl_AllStates.h"
+#import "UMM2PAState_allStates.h"
 #import "UMLayerM2PA.h"
 
 @implementation UMM2PAState_AlignedNotReady
@@ -74,19 +74,22 @@
 - (UMM2PAState *)eventLinkstatusProvingNormal
 {
     [self logStatemachineEvent:__func__];
+    _link.provingReceived++;
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusProvingEmergency
 {
     [self logStatemachineEvent:__func__];
+    _link.provingReceived++;
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusReady
 {
     [self logStatemachineEvent:__func__];
-    return self;
+    _link.state = [[UMM2PAState_AlignedReady alloc]initWithLink:_link];
+    return _link.state;
 }
 
 - (UMM2PAState *)eventLinkstatusBusy

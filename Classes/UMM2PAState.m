@@ -67,11 +67,23 @@ NSString *UMM2PAState_currentMethodName(const char *funcName)
 
 - (M2PA_Status)statusCode
 {
-    return M2PA_STATUS_UNUSED;
+    return M2PA_STATUS_UNDEFINED;
 }
 
 #pragma mark -
 #pragma mark eventHandlers
+
+- (UMM2PAState *)eventPowerOn
+{
+    [self logStatemachineEvent:__func__];
+    return self;
+}
+
+- (UMM2PAState *)eventPowerOff
+{
+    [self logStatemachineEvent:__func__];
+    return self;
+}
 
 - (UMM2PAState *)eventStop
 {
@@ -167,14 +179,15 @@ NSString *UMM2PAState_currentMethodName(const char *funcName)
 - (UMM2PAState *)eventSctpError
 {
     [self logStatemachineEvent:__func__];
-    _link.state = [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+    [_link.sctpLink closeFor:_link];
+    _link.state = [[UMM2PAState_Off alloc]initWithLink:_link];
     return _link.state;
 }
 
 - (UMM2PAState *)eventUserData:(NSData *)userData
 {
     [self logStatemachineEvent:__func__];
-    [_link deliverUserDataToUpperLayer:userData];
+    [_link notifyMtp3UserData:userData];
     return self;
 }
 
@@ -232,16 +245,19 @@ NSString *UMM2PAState_currentMethodName(const char *funcName)
 - (void) sendLinkstateAlignment
 {
     [_link sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT];
+    _link.alignmentsSent++;
 }
 
 - (void) sendLinkstateProvingNormal
 {
     [_link sendLinkstatus:M2PA_LINKSTATE_PROVING_NORMAL];
+    _link.provingSent++;
 }
 
 - (void) sendLinkstateProvingEmergency
 {
     [_link sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY];
+    _link.provingSent++;
 }
 
 - (void) sendLinkstateReady

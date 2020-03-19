@@ -1,5 +1,5 @@
 //
-//  UMM2PAState_InitialAlignment.m
+//  UMM2PAState_AlignedNotReady.m
 //  ulibm2pa
 //
 //  Created by Andreas Fink on 17.03.20.
@@ -68,6 +68,20 @@
 - (UMM2PAState *)eventLinkstatusAlignment
 {
     [self logStatemachineEvent:__func__];
+    [_link.t2 stop];
+    if(_link.emergency)
+    {
+        [self sendLinkstateProvingEmergency];
+        _link.t4.seconds = _link.t4e;
+    }
+    else
+    {
+        [self sendLinkstateProvingNormal];
+        _link.t4.seconds = _link.t4n;
+    }
+    [_link.t4 start];
+    [_link.t4r start];
+    _link.state = [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link];
     return self;
 }
 

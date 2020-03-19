@@ -9,9 +9,9 @@
 // Version 3 from 29 June 2007 and other commercial licenses available by
 // the author.
 
-#import "UMM2PALinkStateControl_State.h"
+#if defined(OLD_IMPLEMENTATION)
 
-#if defined(OLD_IMPLMENETATION)
+#import "UMM2PALinkStateControl_State.h"
 
 @interface UMM2PALinkStateControl_PowerOff : UMM2PALinkStateControl_State
 

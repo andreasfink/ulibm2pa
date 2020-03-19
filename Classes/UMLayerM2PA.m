@@ -214,15 +214,15 @@
 
         _t4n = M2PA_DEFAULT_T4_N;
         _t4e = M2PA_DEFAULT_T4_E;
-        _speedometer = [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
-        _control_link_buffer = [[NSMutableData alloc] init];
-        _data_link_buffer = [[NSMutableData alloc] init];
-        _waitingMessages = [[UMQueue alloc]init];
 
-        _inboundThroughputPackets =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
-        _outboundThroughputPackets =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
-        _inboundThroughputBytes =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
-        _outboundThroughputBytes =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
+        _control_link_buffer        = [[NSMutableData alloc] init];
+        _data_link_buffer           = [[NSMutableData alloc] init];
+        _waitingMessages            = [[UMQueue alloc]init];
+
+        _inboundThroughputPackets   =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
+        _outboundThroughputPackets  =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
+        _inboundThroughputBytes     =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
+        _outboundThroughputBytes    =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
 
     }
     return self;
@@ -561,7 +561,7 @@
     }
 }
 
-- (void)deliverUserDataToUpperLayer:(NSData *)userData
+- (void)notifyMtp3UserData:(NSData *)userData
 {
     NSArray *usrs = [_users arrayCopy];
     for(UMLayerM2PAUser *u in usrs)
@@ -1241,7 +1241,7 @@
     else
     {
         _speed_status = SPEED_WITHIN_LIMIT;
-        current_speed = [_speedometer getSpeedForSeconds:3];
+        current_speed = [_outboundThroughputPackets getSpeedForSeconds:3];
         if(_speed <= 0)
         {
             _speed_status = SPEED_WITHIN_LIMIT;
@@ -1321,13 +1321,11 @@
 
     NSMutableData *sctpData = [[NSMutableData alloc]initWithBytes:&header length:sizeof(header)];
     [sctpData appendData:data];
-
     [_sctpLink dataFor:self
                  data:sctpData
              streamId:streamId
            protocolId:SCTP_PROTOCOL_IDENTIFIER_M2PA
            ackRequest:ackRequest];
-    [_speedometer increase];
     [_dataLock unlock];
     [_ackTimer start];
 }
@@ -1531,6 +1529,7 @@
 
 - (void)startupInitialisation
 {
+
 #if defined(OLD_IMPLEMENTATION)
     self.m2pa_status = M2PA_STATUS_OFF;
 #endif
@@ -1549,7 +1548,10 @@
     _alignmentsSent=0;
     _provingReceived=0;
     _provingSent=0;
-    [_speedometer clear];
+    [_inboundThroughputPackets clear];
+    [_inboundThroughputBytes clear];
+    [_outboundThroughputPackets clear];
+    [_outboundThroughputBytes clear];
     [_submission_speed clear];
 }
 
@@ -1564,10 +1566,9 @@
      [_sctpLink openFor:self];
 
 #else
-    [_startTimer start];
     [_controlLock lock];
     _state = [[UMM2PAState_Off alloc]initWithLink:self];
-    [_state eventStart];
+    [_state eventPowerOn];
     [_controlLock unlock];
 #endif
 
@@ -1593,11 +1594,7 @@
 #else
     [_controlLock lock];
     [_state eventStop];
-    [_speedometer clear];
-    [_submission_speed clear];
-    [self resetSequenceNumbers];
-    _ready_received = NO;
-    _ready_sent = NO;
+    [self startupInitialisation];
     [_controlLock unlock];
 #endif
 
@@ -1705,11 +1702,11 @@
 {
     switch(linkstate)
     {
-        case M2PA_STATUS_UNUSED:
-            return @"UNUSED";
+        case M2PA_STATUS_UNDEFINED:
+            return @"UNDEFINED";
             break;
         case M2PA_STATUS_OFF:
-            return @"POWEROFF";
+            return @"OFF";
             break;
         case M2PA_STATUS_OOS:
             return @"OOS";
@@ -2266,7 +2263,10 @@ static NSDateFormatter *dateFormatter = NULL;
     d[@"reception-enabled"] = _receptionEnabled ? @(YES) : @(NO);
     d[@"configured-speed"] = @(_speed);
     d[@"window-size"] = @(_window_size);
-    d[@"current-speed"] =   [_speedometer getSpeedTripleJson];
+    d[@"current-speed-tx-packets"] =   [_outboundThroughputPackets getSpeedTripleJson];
+    d[@"current-speed-tx-bytes"] =   [_outboundThroughputBytes getSpeedTripleJson];
+    d[@"current-speed-rx-packets"] =   [_inboundThroughputPackets getSpeedTripleJson];
+    d[@"current-speed-rx-bytes"] =   [_inboundThroughputBytes getSpeedTripleJson];
     d[@"submission-speed"] =   [_submission_speed getSpeedTripleJson];
 
     if(dateFormatter==NULL)

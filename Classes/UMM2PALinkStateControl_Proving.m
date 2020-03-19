@@ -6,7 +6,7 @@
 //  Copyright © 2018 Andreas Fink (andreas@fink.org). All rights reserved.
 //
 
-#if defined(OLD_IMPLMENETATION)
+#if defined(OLD_IMPLEMENTATION)
 
 #import "UMM2PALinkStateControl_Proving.h"
 #import "UMM2PALinkStateControl_AllStates.h"

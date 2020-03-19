@@ -86,7 +86,9 @@
 - (UMM2PAState *)eventLinkstatusReady
 {
     [self logStatemachineEvent:__func__];
-    return self;
+    _link.state = [[UMM2PAState_InService alloc]initWithLink:_link];
+    [_link.t1 stop];
+    return _link.state;
 }
 
 - (UMM2PAState *)eventLinkstatusBusy

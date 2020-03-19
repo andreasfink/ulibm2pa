@@ -9,6 +9,8 @@
 // Version 3 from 29 June 2007 and other commercial licenses available by
 // the author.
 
+#if defined(OLD_IMPLEMENTATION)
+
 #import "UMM2PAInitialAlignmentControl_State.h"
 
 @interface UMM2PAInitialAlignmentControl_Idle : UMM2PAInitialAlignmentControl_State
@@ -17,3 +19,4 @@
 - (UMM2PAInitialAlignmentControl_State *)eventStart:(UMLayerM2PA *)link;
 
 @end
+#endif

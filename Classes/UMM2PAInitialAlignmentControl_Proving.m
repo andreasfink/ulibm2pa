@@ -9,7 +9,7 @@
 // Version 3 from 29 June 2007 and other commercial licenses available by
 // the author.
 
-#if 0
+#if defined(OLD_IMPLEMENTATION)
 #import "UMM2PAInitialAlignmentControl_Proving.h"
 #import "UMM2PAInitialAlignmentControl_AllStates.h"
 #import "UMLayerM2PA.h"

@@ -232,11 +232,9 @@ typedef enum PocStatus
     BOOL    _receptionEnabled;
     double  _speed;
     int     _window_size;
-	PocStatus	_pocStatus;
+	PocStatus	        _pocStatus;
 
-    UMThroughputCounter	*_speedometer;
-    UMThroughputCounter	*_submission_speed;
-
+    UMThroughputCounter	*_submission_speed; /* how fast MTP3 sends us data */
     UMThroughputCounter *_inboundThroughputPackets;
     UMThroughputCounter *_outboundThroughputPackets;
     UMThroughputCounter *_inboundThroughputBytes;
@@ -258,17 +256,19 @@ typedef enum PocStatus
 - (UMM2PAState *)state;
 - (void)setState:(UMM2PAState *)state;
 
-#if defined(OLD_IMPLMENETATION)
 @property(readwrite,strong)     UMM2PALinkStateControl_State        *lscState;
 @property(readwrite,strong)     UMM2PAInitialAlignmentControl_State *iacState;
-#else
+
 @property(readwrite,strong)     UMLayerSctp                         *sctpLink;
 @property(readwrite,strong)     UMTimer    *startTimer;    /* time between SCTP power on retries in case SCTP doesnt come up */
-#endif
 
 
 @property(readwrite,assign)     int slc;
-@property(readwrite,strong)     UMThroughputCounter *speedometer;
+@property(readwrite,strong)     UMThroughputCounter *inboundThroughputPackets;
+@property(readwrite,strong)     UMThroughputCounter *outboundThroughputPackets;
+@property(readwrite,strong)     UMThroughputCounter *inboundThroughputBytes;
+@property(readwrite,strong)     UMThroughputCounter *outboundThroughputBytes;
+@property(readwrite,strong)     UMThroughputCounter *submission_speed;
 
 @property(readwrite,assign)     BOOL    congested;
 @property(readwrite,assign)     BOOL    local_processor_outage;
@@ -298,10 +298,6 @@ typedef enum PocStatus
 @property(readwrite,assign)     NSTimeInterval      t4e;
 //@property(readwrite,assign,atomic) M2PA_Status m2pa_status; // this one has proper getter and setter 
 @property(readwrite,assign,atomic) SCTP_Status sctp_status;
-@property(readwrite,strong,atomic)  UMThroughputCounter *inboundThroughputPackets;
-@property(readwrite,strong,atomic)  UMThroughputCounter *outboundThroughputPackets;
-@property(readwrite,strong,atomic)  UMThroughputCounter *inboundThroughputBytes;
-@property(readwrite,strong,atomic)  UMThroughputCounter *outboundThroughputBytes;
 @property(readwrite,assign,atomic)  SpeedStatus speed_status;
 @property(readwrite,assign,atomic)  int alignmentsReceived;
 @property(readwrite,assign,atomic)  int alignmentsSent;
@@ -492,25 +488,24 @@ typedef enum PocStatus
 
 -(void)rcRejectMsuFisu;
 -(void)rcAcceptMsuFisu;
--(void)notifyMtp3OutOfService;
--(void)notifyMtp3RemoteProcessorOutage;
--(void)notifyMtp3RemoteProcessorRecovered;
--(void)notifyMtp3InService;
--(void)notifyMtp3Stop;
+
+- (void)notifyMtp3UserData:(NSData *)userData;
+- (void)notifyMtp3OutOfService;
+- (void)notifyMtp3RemoteProcessorOutage;
+- (void)notifyMtp3RemoteProcessorRecovered;
+- (void)notifyMtp3InService;
+- (void)notifyMtp3Stop;
 
 -(void)lscAlignmentNotPossible;
 -(void)lscAlignmentComplete;
 
 -(void)protocolViolation:(NSString *)reason;
 -(void)protocolViolation;
-#if defined(OLD_IMPLEMENTATION)
--(void)setM2pa_status:(M2PA_Status)status;
+- (void)setM2pa_status:(M2PA_Status)status;
 - (M2PA_Status)m2pa_status;
-#endif
 - (void)resetSequenceNumbers;
 - (NSDictionary *)apiStatus;
 - (void)stopDetachAndDestroy;
 - (void)queueTimerEvent:(id)caller timerName:(NSString *)tname;
 - (void)startupInitialisation;
-- (void)deliverUserDataToUpperLayer:(NSData *)userData;
 @end
