@@ -89,12 +89,18 @@
 - (UMM2PAState *)eventLinkstatusProvingNormal
 {
     [self logStatemachineEvent:__func__];
+    [self sendLinkstateOutOfService];
+    [self sendLinkstateAlignment];
+    [_link.t2 start];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusProvingEmergency
 {
     [self logStatemachineEvent:__func__];
+    [self sendLinkstateOutOfService];
+    [self sendLinkstateAlignment];
+    [_link.t2 start];
     return self;
 }
 

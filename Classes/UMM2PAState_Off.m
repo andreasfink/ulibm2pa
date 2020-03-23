@@ -59,8 +59,9 @@
     [_link startupInitialisation];
     [self sendLinkstateOutOfService];
     [_link notifyMtp3OutOfService];
-    UMM2PAState  *state2 = [[UMM2PAState_OutOfService alloc]initWithLink:_link];
-    return state2;
+    [self sendLinkstateAlignment];
+    [_link.t2 start];
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventSctpDown

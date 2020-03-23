@@ -69,21 +69,27 @@
 {
     [self logStatemachineEvent:__func__];
     [self sendLinkstateOutOfService];
-    return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+    [self sendLinkstateAlignment];
+    [_link.t2 start];
+    return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal
 {
     [self logStatemachineEvent:__func__];
     [self sendLinkstateOutOfService];
-    return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+    [self sendLinkstateAlignment];
+    [_link.t2 start];
+    return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventLinkstatusProvingEmergency
 {
     [self logStatemachineEvent:__func__];
     [self sendLinkstateOutOfService];
-    return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+    [self sendLinkstateAlignment];
+    [_link.t2 start];
+    return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventLinkstatusReady
