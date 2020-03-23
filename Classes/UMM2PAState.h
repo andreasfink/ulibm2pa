@@ -43,7 +43,9 @@
 - (UMM2PAState *)eventLinkstatusBusyEnded;          /* other side sent us linkstatus busy ended */
 - (UMM2PAState *)eventLinkstatusProcessorOutage;    /* other side sent us linkstatus processor outage */
 - (UMM2PAState *)eventLinkstatusProcessorRecovered; /* other side sent us linkstatus processor recovered */
-- (UMM2PAState *)eventUserData:(NSData *)data;      /* other side sent us a MSU */
+- (UMM2PAState *)eventSendUserData:(NSData *)data ackRequest:(NSDictionary *)ackRequest;
+- (UMM2PAState *)eventReceiveUserData:(NSData *)userData;
+
 
 - (UMM2PAState *)eventTimer1;                       /* timer 1 fired (alignment ready timer) */
 - (UMM2PAState *)eventTimer2;                       /* timer 2 fired (not aligned timer) */

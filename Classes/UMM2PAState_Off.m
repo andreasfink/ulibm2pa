@@ -57,10 +57,10 @@
     [self logStatemachineEvent:__func__];
     [_link.startTimer stop];
     [_link startupInitialisation];
-    _link.state = [[UMM2PAState_OutOfService alloc]initWithLink:_link];
     [self sendLinkstateOutOfService];
     [_link notifyMtp3OutOfService];
-    return _link.state;
+    UMM2PAState  *state2 = [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+    return state2;
 }
 
 - (UMM2PAState *)eventSctpDown
@@ -76,9 +76,8 @@
     [self logStatemachineEvent:__func__];
     [_link.startTimer stop];
     [_link startupInitialisation];
-    _link.state = [[UMM2PAState_OutOfService alloc]initWithLink:_link];
     [_link notifyMtp3OutOfService];
-    return self;
+    return  [[UMM2PAState_OutOfService alloc]initWithLink:_link];
 }
 
 

@@ -41,6 +41,7 @@ NSString *UMM2PAState_currentMethodName(const char *funcName)
 
 - (UMM2PAState *)initWithLink:(UMLayerM2PA *)link
 {
+    NSAssert(link!=NULL,@"link can not be NULL");
     self = [super init];
     if(self)
     {
@@ -152,27 +153,33 @@ NSString *UMM2PAState_currentMethodName(const char *funcName)
     return self;
 }
 
+
 - (UMM2PAState *)eventLinkstatusBusy
 {
     [self logStatemachineEvent:__func__];
+    _link.congested = YES;
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusBusyEnded
 {
     [self logStatemachineEvent:__func__];
+    _link.congested = NO;
     return self;
 }
+
 
 - (UMM2PAState *)eventLinkstatusProcessorOutage
 {
     [self logStatemachineEvent:__func__];
+    _link.remote_processor_outage = YES;
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusProcessorRecovered
 {
     [self logStatemachineEvent:__func__];
+    _link.remote_processor_outage = NO;
     return self;
 }
 
@@ -180,11 +187,19 @@ NSString *UMM2PAState_currentMethodName(const char *funcName)
 {
     [self logStatemachineEvent:__func__];
     [_link.sctpLink closeFor:_link];
-    _link.state = [[UMM2PAState_Off alloc]initWithLink:_link];
-    return _link.state;
+    return [[UMM2PAState_Off alloc]initWithLink:_link];
 }
 
-- (UMM2PAState *)eventUserData:(NSData *)userData
+
+- (UMM2PAState *)eventSendUserData:(NSData *)data ackRequest:(NSDictionary *)ackRequest
+{
+    [_link sendData:data
+             stream:M2PA_STREAM_USERDATA
+         ackRequest:ackRequest];
+    return self;
+}
+
+- (UMM2PAState *)eventReceiveUserData:(NSData *)userData
 {
     [self logStatemachineEvent:__func__];
     [_link notifyMtp3UserData:userData];

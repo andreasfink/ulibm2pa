@@ -99,12 +99,15 @@
 }
 #endif
 
-#if defined(OLD_IMPLEMENTATION)
 -(M2PA_Status)m2pa_status
 {
+#if defined(OLD_IMPLEMENTATION)
     return _m2pa_status;
-}
+#else
+    return _state.statusCode;
 #endif
+}
+
 
 #if defined(OLD_IMPLEMENTATION)
 /* FIXME: this has to go into the state machine */
@@ -156,6 +159,11 @@
                               userId:u.linkName
                               status:_m2pa_status];
     }
+}
+#else
+- (void)setM2pa_status:(M2PA_Status)status
+{
+    NSAssert(0,@"we should not use setM2pa_status anymore\n");
 }
 #endif
 
@@ -235,14 +243,14 @@
 
 - (void)setState:(UMM2PAState *)state
 {
+    [_controlLock lock];
     if(_logLevel <=UMLOG_DEBUG)
     {
         NSString *s = [NSString stringWithFormat:@"StateChange: %@->%@",_state.description,state.description];
         [self logDebug:s];
     }
-    UMM2PAState *oldstate = _state;
     _state = state;
-    oldstate.link = NULL;
+    [_controlLock unlock];
 }
 
 #pragma mark -
@@ -329,7 +337,8 @@
 	[_controlLock unlock];
 #else
     [_controlLock lock];
-    [_state eventSctpUp];
+    
+    self.state = [_state eventSctpUp];
     [_controlLock unlock];
 #endif
 
@@ -348,7 +357,7 @@
 	[_controlLock unlock];
 #else
     [_controlLock lock];
-    [_state eventSctpDown];
+    self.state = [_state eventSctpDown];
     [_controlLock unlock];
 #endif
 
@@ -548,7 +557,7 @@
             [self deliverUserDataToUpperLayer:userData];
 #else
             [_controlLock lock];
-            [_state eventUserData:userData];
+            self.state = [_state eventReceiveUserData:userData];
             [_controlLock unlock];
 #endif
 
@@ -663,7 +672,7 @@
     _lscState  = [_lscState eventSIOS:self];
     _iacState  = [_iacState eventSIOS:self];
 #else
-    [_state eventLinkstatusOutOfService];
+    self.state = [_state eventLinkstatusOutOfService];
 #endif
 	[_controlLock unlock];
 }
@@ -675,7 +684,7 @@
     _lscState  = [_lscState eventSIO:self];
     _iacState  = [_iacState eventSIO:self];
 #else
-    [_state eventLinkstatusAlignment];
+    self.state = [_state eventLinkstatusAlignment];
 #endif
     _alignmentsReceived++;
     _provingReceived=0;
@@ -694,7 +703,7 @@
     _lscState  = [_lscState eventSIN:self];
     _iacState  = [_iacState eventSIN:self];
 #else
-    [_state eventLinkstatusProvingNormal];
+    self.state = [_state eventLinkstatusProvingNormal];
 #endif
 	[_controlLock unlock];
 }
@@ -708,7 +717,7 @@
     _lscState  = [_lscState eventSIE:self];
     _iacState  = [_iacState eventSIE:self];
 #else
-    [_state eventLinkstatusProvingNormal];
+    self.state = [_state eventLinkstatusProvingNormal];
 #endif
 	[_controlLock unlock];
 }
@@ -721,7 +730,7 @@
     _lscState  = [_lscState eventFisu:self];
     _iacState  = [_iacState eventProvingEnds:self];
 #else
-    [_state eventLinkstatusReady];
+    self.state = [_state eventLinkstatusReady];
 #endif
 	[_controlLock unlock];
 }
@@ -734,7 +743,7 @@
     _lscState  = [_lscState eventLocalProcessorOutage:self];
     _iacState  = [_iacState eventLocalProcessorOutage:self];
 #else
-    [_state eventLinkstatusProcessorOutage];
+    self.state = [_state eventLinkstatusProcessorOutage];
 #endif
 	[_controlLock unlock];
 }
@@ -746,7 +755,7 @@
     _lscState  = [_lscState eventLocalProcessorRecovered:self];
     _iacState  = [_iacState eventLocalProcessorRecovered:self];
 #else
-    [_state eventLinkstatusProcessorRecovered];
+    self.state = [_state eventLinkstatusProcessorRecovered];
 #endif
 	[_controlLock unlock];
 }
@@ -758,7 +767,7 @@
     _lscState  = [_lscState eventSIB:self];
     //_iacState  = [_iacState eventSIB:self];
 #else
-    [_state eventLinkstatusBusy];
+    self.state = [_state eventLinkstatusBusy];
 #endif
 	[_controlLock unlock];
 }
@@ -770,7 +779,7 @@
     _lscState  = [_lscState eventContinue:self];
     //_iacState  = [_iacState eventContinue:self];
 #else
-    [_state eventLinkstatusBusyEnded];
+    self.state = [_state eventLinkstatusBusyEnded];
 #endif
 
     _link_congestion_cleared_time = [NSDate date];
@@ -960,20 +969,20 @@
 - (void)_timerFires1
 {
     [_controlLock lock];
-    [_state eventTimer1];
+    self.state = [_state eventTimer1];
     [_controlLock unlock];
 }
 - (void)_timerFires2
 {
     [_controlLock lock];
-    [_state eventTimer2];
+    self.state = [_state eventTimer2];
     [_controlLock unlock];
 }
 
 - (void)_timerFires3
 {
     [_controlLock lock];
-    [_state eventTimer3];
+    self.state = [_state eventTimer3];
     [_controlLock unlock];
 
 }
@@ -981,21 +990,21 @@
 - (void)_timerFires4
 {
     [_controlLock lock];
-    [_state eventTimer4];
+    self.state = [_state eventTimer4];
     [_controlLock unlock];
 }
 
 - (void)_timerFires4r
 {
     [_controlLock lock];
-    [_state eventTimer4r];
+    self.state = [_state eventTimer4r];
     [_controlLock unlock];
 }
 
 - (void)_timerFires5
 {
     [_controlLock lock];
-    [_state eventTimer5];
+    self.state = [_state eventTimer5];
     [_controlLock unlock];
 }
 
@@ -1003,7 +1012,7 @@
 {
 	/* Figure 13/Q.703 (sheet 2 of 7) */
     [_controlLock lock];
-    [_state eventTimer6];
+    self.state = [_state eventTimer6];
 	_linkstate_busy = NO;
 	[_t7 stop];
     [_controlLock unlock];
@@ -1011,7 +1020,7 @@
 - (void)_timerFires7
 {
     [_controlLock lock];
-    [_state eventTimer7];
+    self.state = [_state eventTimer7];
     [_controlLock unlock];
 }
 
@@ -1217,6 +1226,40 @@
     }
 }
 
+
+- (void)notifyMtp3Congestion
+{
+    NSArray *usrs = [_users arrayCopy];
+    for(UMLayerM2PAUser *u in usrs)
+    {
+        if([u.profile wantsSpeedMessages])
+        {
+            [u.user m2paCongestion:self
+                               slc:_slc
+                            userId:u.linkName];
+        }
+    }
+}
+
+- (void)notifyMtp3CongestionCleared
+{
+    /* if we drop out of speed excess we can resume. however if we are still in congestion status
+     we have to wait it to clear */
+    //   time(&link->link_speed_excess_cleared_time);
+    //   m2pa_send_speed_exceeded_cleared_indication_to_mtp3(link);
+
+    NSArray *usrs = [_users arrayCopy];
+    for(UMLayerM2PAUser *u in usrs)
+    {
+        if([u.profile wantsSpeedMessages])
+        {
+            [u.user m2paCongestionCleared:self
+                                      slc:_slc
+                                   userId:u.linkName];
+        }
+    }
+}
+
 - (void)checkSpeed
 {
     int last_speed_status;
@@ -1399,9 +1442,9 @@
     }
     else
     {
-        [self sendData:mtp3_data
-                stream:M2PA_STREAM_USERDATA
-            ackRequest:task.ackRequest];
+        [_controlLock lock];
+        [_state eventSendUserData:mtp3_data ackRequest:task.ackRequest];
+        [_controlLock unlock];
     }
 }
 
@@ -1567,8 +1610,10 @@
 
 #else
     [_controlLock lock];
-    _state = [[UMM2PAState_Off alloc]initWithLink:self];
-    [_state eventPowerOn];
+
+    
+    self.state = [[UMM2PAState_Off alloc]initWithLink:self];
+    self.state = [_state eventPowerOn];
     [_controlLock unlock];
 #endif
 
@@ -1593,7 +1638,7 @@
     [_submission_speed clear];
 #else
     [_controlLock lock];
-    [_state eventStop];
+    self.state = [_state eventStop];
     [self startupInitialisation];
     [_controlLock unlock];
 #endif
@@ -1636,7 +1681,7 @@
     /* this will send SIOS (Out of Service) & SIO (Alignment) */
 #else
     [_controlLock lock];
-    [_state eventStart];
+    self.state = [_state eventStart];
     [_controlLock unlock];
 #endif
 }
@@ -1656,7 +1701,7 @@
     self.m2pa_status = M2PA_STATUS_OOS;
 #else
     [_controlLock lock];
-    [_state eventStop];
+    self.state = [_state eventStop];
     [_controlLock unlock];
 #endif
 }

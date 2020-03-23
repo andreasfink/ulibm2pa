@@ -81,20 +81,19 @@
     }
     [_link.t4 start];
     [_link.t4r start];
-    _link.state = [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link];
-    return self;
+    return [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal
 {
     [self logStatemachineEvent:__func__];
-    return self;
+    return [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventLinkstatusProvingEmergency
 {
     [self logStatemachineEvent:__func__];
-    return self;
+    return [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventLinkstatusReady

@@ -447,6 +447,8 @@ typedef enum PocStatus
 -(void)cancelEmergency;
 -(void)markFurtherProving;
 -(void)cancelFurtherProving;
+
+#if defined(OLD_IMPLEMENTATION)
 -(void)rcStart;
 -(void)rcStop;
 
@@ -459,7 +461,6 @@ typedef enum PocStatus
 -(void)txcSendSIN;
 -(void)txcSendSIE;
 -(void)txcFlushBuffers;
-
 -(void)iacEmergency;
 -(void)iacEmergencyCeases;
 -(void)iacStart;
@@ -467,6 +468,7 @@ typedef enum PocStatus
 -(void)iacSIO;
 -(void)iacSIE;
 -(void)iacSIN;
+#endif
 
 -(void)iacAlignmentNotPossible;
 
@@ -493,6 +495,8 @@ typedef enum PocStatus
 - (void)notifyMtp3OutOfService;
 - (void)notifyMtp3RemoteProcessorOutage;
 - (void)notifyMtp3RemoteProcessorRecovered;
+- (void)notifyMtp3Congestion;
+- (void)notifyMtp3CongestionCleared;
 - (void)notifyMtp3InService;
 - (void)notifyMtp3Stop;
 
@@ -508,4 +512,8 @@ typedef enum PocStatus
 - (void)stopDetachAndDestroy;
 - (void)queueTimerEvent:(id)caller timerName:(NSString *)tname;
 - (void)startupInitialisation;
+- (void)sendData:(NSData *)data
+          stream:(uint16_t)streamId
+      ackRequest:(NSDictionary *)ackRequest;
+
 @end

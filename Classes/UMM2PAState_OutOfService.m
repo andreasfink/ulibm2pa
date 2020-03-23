@@ -33,8 +33,7 @@
     [self logStatemachineEvent:__func__];
     [_link.t2 start];
     [self sendLinkstateAlignment];
-    _link.state = [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
-    return self;
+    return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventSctpUp
@@ -46,8 +45,7 @@
 - (UMM2PAState *)eventSctpDown
 {
     [self logStatemachineEvent:__func__];
-    _link.state = [[UMM2PAState_Off alloc]initWithLink:_link];
-    return self;
+    return [[UMM2PAState_Off alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventLinkstatusOutOfService
@@ -71,7 +69,21 @@
 - (UMM2PAState *)eventLinkstatusAlignment
 {
     [self logStatemachineEvent:__func__];
-    return self;
+    [self sendLinkstateAlignment];
+    [_link.t2 stop];
+    if(_link.emergency)
+    {
+        [self sendLinkstateProvingEmergency];
+        _link.t4.seconds = _link.t4e;
+    }
+    else
+    {
+        [self sendLinkstateProvingNormal];
+        _link.t4.seconds = _link.t4n;
+    }
+    [_link.t4 start];
+    [_link.t4r start];
+    return [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal

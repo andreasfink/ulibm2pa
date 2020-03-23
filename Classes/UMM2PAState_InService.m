@@ -68,19 +68,22 @@
 - (UMM2PAState *)eventLinkstatusAlignment
 {
     [self logStatemachineEvent:__func__];
-    return self;
+    [self sendLinkstateOutOfService];
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal
 {
     [self logStatemachineEvent:__func__];
-    return self;
+    [self sendLinkstateOutOfService];
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventLinkstatusProvingEmergency
 {
     [self logStatemachineEvent:__func__];
-    return self;
+    [self sendLinkstateOutOfService];
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventLinkstatusReady
@@ -92,24 +95,32 @@
 - (UMM2PAState *)eventLinkstatusBusy
 {
     [self logStatemachineEvent:__func__];
+    _link.congested = YES;
+    [_link notifyMtp3Congestion];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusBusyEnded
 {
     [self logStatemachineEvent:__func__];
+    _link.congested = NO;
+    [_link notifyMtp3CongestionCleared];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusProcessorOutage
 {
     [self logStatemachineEvent:__func__];
+    _link.remote_processor_outage = YES;
+    [_link notifyMtp3RemoteProcessorOutage];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusProcessorRecovered
 {
     [self logStatemachineEvent:__func__];
+    _link.remote_processor_outage = NO;
+    [_link notifyMtp3RemoteProcessorRecovered];
     return self;
 }
 

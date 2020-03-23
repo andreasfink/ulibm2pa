@@ -13,5 +13,3 @@
 #import "UMM2PAState_AlignedNotReady.h"
 #import "UMM2PAState_AlignedReady.h"
 #import "UMM2PAState_InService.h"
-#import "UMM2PAState_ProcessorOutage.h"
-#import "UMM2PAState_Busy.h"
