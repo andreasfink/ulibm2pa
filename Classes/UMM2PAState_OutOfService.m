@@ -134,4 +134,11 @@
     return self;
 }
 
+- (UMM2PAState *)eventTimer2
+{
+    [self logStatemachineEvent:__func__];
+    [self sendLinkstateAlignment];
+    [_link.t2 start];
+    return self;
+}
 @end
