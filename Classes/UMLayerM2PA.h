@@ -137,12 +137,7 @@ typedef enum PocStatus
 @interface UMLayerM2PA : UMLayer<UMLayerSctpUserProtocol>
 {
     UMSynchronizedArray 				*_users;
-#if defined(OLD_IMPLEMENTATION)
-    UMM2PALinkStateControl_State        *_lscState;
-    UMM2PAInitialAlignmentControl_State *_iacState;
-#else
     UMM2PAState                         *_state;
-#endif
     UMMutex 							*_seqNumLock;
     UMMutex 							*_dataLock;
     UMMutex 							*_controlLock;
@@ -217,9 +212,6 @@ typedef enum PocStatus
 
     
     SCTP_Status _sctp_status;
-#if defined(OLD_IMPLEMENTATION)
-    M2PA_Status _m2pa_status;
-#endif
     
     BOOL    _congested;
     BOOL    _emergency;
@@ -255,9 +247,6 @@ typedef enum PocStatus
 
 - (UMM2PAState *)state;
 - (void)setState:(UMM2PAState *)state;
-
-@property(readwrite,strong)     UMM2PALinkStateControl_State        *lscState;
-@property(readwrite,strong)     UMM2PAInitialAlignmentControl_State *iacState;
 
 @property(readwrite,strong)     UMLayerSctp                         *sctpLink;
 @property(readwrite,strong)     UMTimer    *startTimer;    /* time between SCTP power on retries in case SCTP doesnt come up */
@@ -448,49 +437,6 @@ typedef enum PocStatus
 -(void)markFurtherProving;
 -(void)cancelFurtherProving;
 
-#if defined(OLD_IMPLEMENTATION)
--(void)rcStart;
--(void)rcStop;
-
--(void)txcStart;
--(void)txcSendSIOS;
--(void)txcSendSIPO;
--(void)txcSendFISU;
--(void)txcSendMSU:(NSData *)msu ackRequest:(NSDictionary *)ackRequest;
--(void)txcSendSIO;
--(void)txcSendSIN;
--(void)txcSendSIE;
--(void)txcFlushBuffers;
--(void)iacEmergency;
--(void)iacEmergencyCeases;
--(void)iacStart;
--(void)iacStop;
--(void)iacSIO;
--(void)iacSIE;
--(void)iacSIN;
-#endif
-
--(void)iacAlignmentNotPossible;
-
--(void)lscNoProcessorOutage;
-
--(void)suermStart;
--(void)suermStop;
-
--(void)aermStop;
--(void)aermStart;
--(void)aermSetTe;
-
--(void)pocLocalProcessorOutage;
--(void)pocRemoteProcessorOutage;
--(void)pocLocalProcessorRecovered;
--(void)pocRemoteProcessorRecovered;
--(void)pocStart;
--(void)pocStop;
-
--(void)rcRejectMsuFisu;
--(void)rcAcceptMsuFisu;
-
 - (void)notifyMtp3UserData:(NSData *)userData;
 - (void)notifyMtp3OutOfService;
 - (void)notifyMtp3RemoteProcessorOutage;
@@ -499,9 +445,6 @@ typedef enum PocStatus
 - (void)notifyMtp3CongestionCleared;
 - (void)notifyMtp3InService;
 - (void)notifyMtp3Stop;
-
--(void)lscAlignmentNotPossible;
--(void)lscAlignmentComplete;
 
 -(void)protocolViolation:(NSString *)reason;
 -(void)protocolViolation;
