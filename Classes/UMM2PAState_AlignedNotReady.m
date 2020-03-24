@@ -68,6 +68,22 @@
 - (UMM2PAState *)eventLinkstatusAlignment
 {
     [self logStatemachineEvent:__func__];
+    [_link.t2 stop];
+    if(_link.emergency)
+    {
+        [self sendLinkstateProvingEmergency];
+        _link.t4.seconds = _link.t4e;
+    }
+    else
+    {
+        [self sendLinkstateProvingNormal];
+        _link.t4.seconds = _link.t4n;
+    }
+    if([_link.t4 isRunning]==NO)
+    {
+        [_link.t4 start];
+    }
+    [_link.t4r start];
     return self;
 }
 

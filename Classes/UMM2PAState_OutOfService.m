@@ -31,7 +31,10 @@
 - (UMM2PAState *)eventStart
 {
     [self logStatemachineEvent:__func__];
-    [_link.t2 start];
+    if([_link.t2 isRunning]==NO)
+    {
+        [_link.t2 start];
+    }
     [self sendLinkstateAlignment];
     return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
 }
@@ -91,7 +94,10 @@
     [self logStatemachineEvent:__func__];
     [self sendLinkstateOutOfService];
     [self sendLinkstateAlignment];
-    [_link.t2 start];
+    if([_link.t2 isRunning]==NO)
+    {
+        [_link.t2 start];
+    }
     return self;
 }
 
@@ -100,7 +106,10 @@
     [self logStatemachineEvent:__func__];
     [self sendLinkstateOutOfService];
     [self sendLinkstateAlignment];
-    [_link.t2 start];
+    if([_link.t2 isRunning]==NO)
+    {
+        [_link.t2 start];
+    }
     return self;
 }
 
@@ -144,7 +153,10 @@
 {
     [self logStatemachineEvent:__func__];
     [self sendLinkstateAlignment];
-    [_link.t2 start];
+    if([_link.t2 isRunning]==NO)
+    {
+        [_link.t2 start];
+    }
     return self;
 }
 @end

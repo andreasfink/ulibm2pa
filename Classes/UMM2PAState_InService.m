@@ -70,7 +70,10 @@
     [self logStatemachineEvent:__func__];
     [self sendLinkstateOutOfService];
     [self sendLinkstateAlignment];
-    [_link.t2 start];
+    if([_link.t2 isRunning]==NO)
+    {
+        [_link.t2 start];
+    }
     return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
 }
 
@@ -79,7 +82,10 @@
     [self logStatemachineEvent:__func__];
     [self sendLinkstateOutOfService];
     [self sendLinkstateAlignment];
-    [_link.t2 start];
+    if([_link.t2 isRunning]==NO)
+    {
+        [_link.t2 start];
+    }
     return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
 }
 
@@ -88,7 +94,10 @@
     [self logStatemachineEvent:__func__];
     [self sendLinkstateOutOfService];
     [self sendLinkstateAlignment];
-    [_link.t2 start];
+    if([_link.t2 isRunning]==NO)
+    {
+        [_link.t2 start];
+    }
     return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
 }
 
