@@ -1842,7 +1842,7 @@
     }
     if(cfg[@"state-machine-log"])
     {
-        NSString *fileName = [cfg[@"statemachine-log"] stringValue];
+        NSString *fileName = [cfg[@"state-machine-log"] stringValue];
         UMLogDestination *dst = [[UMLogFile alloc]initWithFileName:fileName];
         dst.level = UMLOG_DEBUG;
         UMLogHandler *handler = [[UMLogHandler alloc]init];
