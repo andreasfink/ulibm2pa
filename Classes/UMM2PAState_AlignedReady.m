@@ -87,6 +87,7 @@
 {
     [self logStatemachineEvent:__func__];
     [_link.t1 stop];
+    [_link.t2 stop];
     [_link.t4r stop];
     [_link.t4 stop];
     [_link notifyMtp3InService];
