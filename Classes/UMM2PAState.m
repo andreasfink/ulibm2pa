@@ -52,12 +52,20 @@ NSString *UMM2PAState_currentMethodName(const char *funcName)
 
 -(void) logStatemachineEvent:(const char *)func
 {
-    if(_link.logLevel <= UMLOG_DEBUG)
+    NSString *s;
+    if((_link.logLevel <= UMLOG_DEBUG) || (_link.stateMachineLogFeed!=NULL))
     {
-        NSString *s = [NSString stringWithFormat:@"EVENT %@ in STATE %@",
+        s = [NSString stringWithFormat:@"EVENT %@ in STATE %@",
                         UMM2PAState_currentMethodName(func),
                         [self description]];
+    }
+    if(_link.logLevel <= UMLOG_DEBUG)
+    {
         [_link logDebug:s];
+    }
+    if(_link.stateMachineLogFeed)
+    {
+        [_link.stateMachineLogFeed debugText:s];
     }
 }
 
@@ -186,6 +194,7 @@ NSString *UMM2PAState_currentMethodName(const char *funcName)
 - (UMM2PAState *)eventSctpError
 {
     [self logStatemachineEvent:__func__];
+    [_link.stateMachineLogFeed debugText:@"closing-sctp"];
     [_link.sctpLink closeFor:_link];
     return [[UMM2PAState_Off alloc]initWithLink:_link];
 }
@@ -196,6 +205,7 @@ NSString *UMM2PAState_currentMethodName(const char *funcName)
     [_link sendData:data
              stream:M2PA_STREAM_USERDATA
          ackRequest:ackRequest];
+    [_link.stateMachineLogFeed debugText:@"send-data"];
     return self;
 }
 
@@ -203,6 +213,7 @@ NSString *UMM2PAState_currentMethodName(const char *funcName)
 {
     [self logStatemachineEvent:__func__];
     [_link notifyMtp3UserData:userData];
+    [_link.stateMachineLogFeed debugText:@"receive-data"];
     return self;
 }
 
@@ -261,48 +272,64 @@ NSString *UMM2PAState_currentMethodName(const char *funcName)
 {
     [_link sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT];
     _link.alignmentsSent++;
+    [_link.stateMachineLogFeed debugText:@"sendLinkstateAlignment"];
 }
 
 - (void) sendLinkstateProvingNormal
 {
     [_link sendLinkstatus:M2PA_LINKSTATE_PROVING_NORMAL];
     _link.provingSent++;
+    [_link.stateMachineLogFeed debugText:@"sendLinkstateProvingNormal"];
+
 }
 
 - (void) sendLinkstateProvingEmergency
 {
     [_link sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY];
     _link.provingSent++;
+    [_link.stateMachineLogFeed debugText:@"sendLinkstateProvingEmergency"];
 }
 
 - (void) sendLinkstateReady
 {
     [_link sendLinkstatus:M2PA_LINKSTATE_READY];
+    [_link.stateMachineLogFeed debugText:@"sendLinkstateReady"];
+
 }
 
 - (void) sendLinkstateProcessorOutage
 {
     [_link sendLinkstatus:M2PA_LINKSTATE_PROCESSOR_OUTAGE];
+    [_link.stateMachineLogFeed debugText:@"sendLinkstateProcessorOutage"];
+
 }
 
 - (void) sendLinkstateProcessorRecovered
 {
     [_link sendLinkstatus:M2PA_LINKSTATE_PROCESSOR_RECOVERED];
+    [_link.stateMachineLogFeed debugText:@"sendLinkstateProcessorRecovered"];
+
 }
 
 - (void) sendLinkstateBusy
 {
     [_link sendLinkstatus:M2PA_LINKSTATE_BUSY];
+    [_link.stateMachineLogFeed debugText:@"sendLinkstateBusy"];
+
 }
 
 - (void) sendLinkstateBusyEnded
 {
     [_link sendLinkstatus:M2PA_LINKSTATE_BUSY_ENDED];
+    [_link.stateMachineLogFeed debugText:@"sendLinkstateBusyEnded"];
+
 }
 
 - (void) sendLinkstateOutOfService
 {
     [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE];
+    [_link.stateMachineLogFeed debugText:@"sendLinkstateOutOfService"];
+
 }
 
 @end

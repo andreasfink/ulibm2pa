@@ -151,10 +151,19 @@
 - (void)setState:(UMM2PAState *)state
 {
     [_controlLock lock];
-    if(_logLevel <=UMLOG_DEBUG)
+    
+    NSString *s;
+    if((_logLevel <=UMLOG_DEBUG) || (_stateMachineLogFeed))
     {
-        NSString *s = [NSString stringWithFormat:@"StateChange: %@->%@",_state.description,state.description];
-        [self logDebug:s];
+        s = [NSString stringWithFormat:@"StateChange: %@->%@",_state.description,state.description];
+        if(_logLevel <=UMLOG_DEBUG)
+        {
+            [self logDebug:s];
+        }
+        if(_stateMachineLogFeed)
+        {
+            [_stateMachineLogFeed debugText:s];
+        }
     }
     _state = state;
     [_controlLock unlock];
@@ -1830,6 +1839,15 @@
     if (cfg[@"t7"])
     {
         _t7.seconds = [cfg[@"t7"] doubleValue];
+    }
+    if(cfg[@"state-machine-log"])
+    {
+        NSString *fileName = [cfg[@"statemachine-log"] stringValue];
+        UMLogDestination *dst = [[UMLogFile alloc]initWithFileName:fileName];
+        dst.level = UMLOG_DEBUG;
+        UMLogHandler *handler = [[UMLogHandler alloc]init];
+        [handler addLogDestination:dst];
+        _stateMachineLogFeed = [[UMLogFeed alloc]initWithHandler:handler section:@"m2pa-state-machine"];
     }
     [self adminAttachOrder:_sctpLink];
 }

@@ -138,6 +138,7 @@ typedef enum PocStatus
 {
     UMSynchronizedArray 				*_users;
     UMM2PAState                         *_state;
+    UMLogFeed                           *_stateMachineLogFeed;
     UMMutex 							*_seqNumLock;
     UMMutex 							*_dataLock;
     UMMutex 							*_controlLock;
@@ -247,6 +248,7 @@ typedef enum PocStatus
 
 - (UMM2PAState *)state;
 - (void)setState:(UMM2PAState *)state;
+@property(readwrite,strong)     UMLogFeed *stateMachineLogFeed;
 
 @property(readwrite,strong)     UMLayerSctp                         *sctpLink;
 @property(readwrite,strong)     UMTimer    *startTimer;    /* time between SCTP power on retries in case SCTP doesnt come up */
