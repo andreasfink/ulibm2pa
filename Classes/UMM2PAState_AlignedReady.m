@@ -37,14 +37,15 @@
 - (UMM2PAState *)eventSctpUp
 {
     [self logStatemachineEvent:__func__];
-    return self;
+    return [super eventSctpUp];
 }
 
 - (UMM2PAState *)eventSctpDown
 {
     [self logStatemachineEvent:__func__];
-    return self;
+    return [super eventSctpDown];
 }
+
 
 - (UMM2PAState *)eventLinkstatusOutOfService
 {

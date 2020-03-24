@@ -106,15 +106,24 @@ NSString *UMM2PAState_currentMethodName(const char *funcName)
     return self;
 }
 
+
 - (UMM2PAState *)eventSctpUp
 {
     [self logStatemachineEvent:__func__];
-    return self;
+    [_link.startTimer stop];
+    [_link startupInitialisation];
+    [self sendLinkstateOutOfService];
+    [_link notifyMtp3OutOfService];
+    [self sendLinkstateAlignment];
+    [_link.t2 start];
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventSctpDown
 {
     [self logStatemachineEvent:__func__];
+    [_link.startTimer stop];
+    [_link notifyMtp3Stop];
     return self;
 }
 
