@@ -152,17 +152,20 @@
 {
     [_controlLock lock];
     
-    NSString *s;
     if((_logLevel <=UMLOG_DEBUG) || (_stateMachineLogFeed))
     {
-        s = [NSString stringWithFormat:@"StateChange: %@->%@",_state.description,state.description];
-        if(_logLevel <=UMLOG_DEBUG)
+        if(_state.statusCode != state.statusCode)
         {
-            [self logDebug:s];
-        }
-        if(_stateMachineLogFeed)
-        {
-            [_stateMachineLogFeed debugText:s];
+            NSString *s;
+            s = [NSString stringWithFormat:@"StateChange: %@->%@",_state.description,state.description];
+            if(_logLevel <=UMLOG_DEBUG)
+            {
+                [self logDebug:s];
+            }
+            if(_stateMachineLogFeed)
+            {
+                [_stateMachineLogFeed debugText:s];
+            }
         }
     }
     _state = state;
