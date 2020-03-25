@@ -90,14 +90,14 @@
 - (UMM2PAState *)eventLinkstatusProvingNormal
 {
     [self logStatemachineEvent:__func__];
-    _link.provingReceived++;
+    _link.linkstateProvingReceived++;
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusProvingEmergency
 {
     [self logStatemachineEvent:__func__];
-    _link.provingReceived++;
+    _link.linkstateProvingReceived++;
     return self;
 }
 

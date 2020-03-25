@@ -143,10 +143,29 @@ typedef enum PocStatus
     UMMutex 							*_dataLock;
     UMMutex 							*_controlLock;
     UMMutex 							*_incomingDataBufferLock;
-    int                                 _alignmentsReceived;
-    int                                 _alignmentsSent;
-    int                                 _provingReceived;
-    int                                 _provingSent;
+    int                                 _linkstateOutOfServiceReceived;
+    int                                 _linkstateOutOfServiceSent;
+    int                                 _linkstateAlignmentReceived;
+    int                                 _linkstateAlignmentSent;
+    int                                 _linkstateProvingReceived;
+    int                                 _linkstateProvingSent;
+    int                                 _linkstateProcessorOutageReceived;
+    int                                 _linkstateProcessorOutageSent;
+    int                                 _linkstateProcessorRecoveredReceived;
+    int                                 _linkstateProcessorRecoveredSent;
+    int                                 _linkstateBusyReceived;
+    int                                 _linkstateBusySent;
+    int                                 _linkstateBusyEndedReceived;
+    int                                 _linkstateBusyEndedSent;
+    int                                 _linkstateReadyReceived;
+    int                                 _linkstateReadySent;
+    int                                 _sctpUpReceived;
+    int                                 _sctpDownReceived;
+    int                                 _powerOnCounter;
+    int                                 _powerOffCounter;
+    int                                 _startCounter;
+    int                                 _stopCounter;
+
     BOOL    							_local_processor_outage;
     BOOL    							_remote_processor_outage;
     BOOL    							_level3Indication;
@@ -218,7 +237,6 @@ typedef enum PocStatus
     BOOL    _emergency;
     //BOOL    _autostart;
     int     _link_restarts;
-    int     _ready_received;
     int     _ready_sent;
     BOOL    _paused;
 	BOOL	_furtherProving;
@@ -268,7 +286,6 @@ typedef enum PocStatus
 
 @property(readwrite,assign)     BOOL    emergency;
 @property(readwrite,assign)     int     link_restarts;
-@property(readwrite,assign)     int     ready_received;
 @property(readwrite,assign)     int     ready_sent;
 @property(readwrite,assign)     BOOL    paused;
 @property(readwrite,assign)     double  speed;
@@ -290,10 +307,30 @@ typedef enum PocStatus
 //@property(readwrite,assign,atomic) M2PA_Status m2pa_status; // this one has proper getter and setter 
 @property(readwrite,assign,atomic) SCTP_Status sctp_status;
 @property(readwrite,assign,atomic)  SpeedStatus speed_status;
-@property(readwrite,assign,atomic)  int alignmentsReceived;
-@property(readwrite,assign,atomic)  int alignmentsSent;
-@property(readwrite,assign,atomic)  int provingSent;
-@property(readwrite,assign,atomic)  int provingReceived;
+
+@property(readwrite,assign,atomic)  int linkstateOutOfServiceReceived;
+@property(readwrite,assign,atomic)  int linkstateOutOfServiceSent;
+@property(readwrite,assign,atomic)  int linkstateAlignmentReceived;
+@property(readwrite,assign,atomic)  int linkstateAlignmentSent;
+@property(readwrite,assign,atomic)  int linkstateProvingReceived;
+@property(readwrite,assign,atomic)  int linkstateProvingSent;
+@property(readwrite,assign,atomic)  int linkstateProcessorOutageReceived;
+@property(readwrite,assign,atomic)  int linkstateProcessorOutageSent;
+@property(readwrite,assign,atomic)  int linkstateProcessorRecoveredReceived;
+@property(readwrite,assign,atomic)  int linkstateProcessorRecoveredSent;
+@property(readwrite,assign,atomic)  int linkstateBusyReceived;
+@property(readwrite,assign,atomic)  int linkstateBusySent;
+@property(readwrite,assign,atomic)  int linkstateBusyEndedReceived;
+@property(readwrite,assign,atomic)  int linkstateBusyEndedSent;
+@property(readwrite,assign,atomic)  int linkstateReadyReceived;
+@property(readwrite,assign,atomic)  int linkstateReadySent;
+@property(readwrite,assign,atomic)  int sctpUpReceived;
+@property(readwrite,assign,atomic)  int sctpDownReceived;
+@property(readwrite,assign,atomic)  int startCounter;
+@property(readwrite,assign,atomic)  int stopCounter;
+@property(readwrite,assign,atomic)  int powerOnCounter;
+@property(readwrite,assign,atomic)  int powerOffCounter;
+
 
 - (UMLayerM2PA *)initWithTaskQueueMulti:(UMTaskQueueMulti *)tq;
 - (UMLayerM2PA *)initWithTaskQueueMulti:(UMTaskQueueMulti *)tq name:(NSString *)name;

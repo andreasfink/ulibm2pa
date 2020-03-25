@@ -285,14 +285,14 @@ NSString *UMM2PAState_currentMethodName(const char *funcName)
 - (void) sendLinkstateAlignment
 {
     [_link sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT];
-    _link.alignmentsSent++;
+    _link.linkstateAlignmentSent++;
     [_link.stateMachineLogFeed debugText:@"sendLinkstateAlignment"];
 }
 
 - (void) sendLinkstateProvingNormal
 {
     [_link sendLinkstatus:M2PA_LINKSTATE_PROVING_NORMAL];
-    _link.provingSent++;
+    _link.linkstateProvingSent++;
     [_link.stateMachineLogFeed debugText:@"sendLinkstateProvingNormal"];
 
 }
@@ -300,13 +300,14 @@ NSString *UMM2PAState_currentMethodName(const char *funcName)
 - (void) sendLinkstateProvingEmergency
 {
     [_link sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY];
-    _link.provingSent++;
+    _link.linkstateProvingSent++;
     [_link.stateMachineLogFeed debugText:@"sendLinkstateProvingEmergency"];
 }
 
 - (void) sendLinkstateReady
 {
     [_link sendLinkstatus:M2PA_LINKSTATE_READY];
+    _link.linkstateReadySent++;
     [_link.stateMachineLogFeed debugText:@"sendLinkstateReady"];
 
 }
@@ -314,6 +315,7 @@ NSString *UMM2PAState_currentMethodName(const char *funcName)
 - (void) sendLinkstateProcessorOutage
 {
     [_link sendLinkstatus:M2PA_LINKSTATE_PROCESSOR_OUTAGE];
+    _link.linkstateProcessorOutageSent++;
     [_link.stateMachineLogFeed debugText:@"sendLinkstateProcessorOutage"];
 
 }
@@ -321,6 +323,7 @@ NSString *UMM2PAState_currentMethodName(const char *funcName)
 - (void) sendLinkstateProcessorRecovered
 {
     [_link sendLinkstatus:M2PA_LINKSTATE_PROCESSOR_RECOVERED];
+    _link.linkstateProcessorRecoveredSent++;
     [_link.stateMachineLogFeed debugText:@"sendLinkstateProcessorRecovered"];
 
 }
@@ -328,6 +331,7 @@ NSString *UMM2PAState_currentMethodName(const char *funcName)
 - (void) sendLinkstateBusy
 {
     [_link sendLinkstatus:M2PA_LINKSTATE_BUSY];
+    _link.linkstateBusySent++;
     [_link.stateMachineLogFeed debugText:@"sendLinkstateBusy"];
 
 }
@@ -335,6 +339,7 @@ NSString *UMM2PAState_currentMethodName(const char *funcName)
 - (void) sendLinkstateBusyEnded
 {
     [_link sendLinkstatus:M2PA_LINKSTATE_BUSY_ENDED];
+    _link.linkstateBusyEndedSent++;
     [_link.stateMachineLogFeed debugText:@"sendLinkstateBusyEnded"];
 
 }
@@ -342,6 +347,7 @@ NSString *UMM2PAState_currentMethodName(const char *funcName)
 - (void) sendLinkstateOutOfService
 {
     [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE];
+    _link.linkstateOutOfServiceSent++;
     [_link.stateMachineLogFeed debugText:@"sendLinkstateOutOfService"];
 
 }
