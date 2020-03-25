@@ -478,7 +478,7 @@
 
         if(self.logLevel <= UMLOG_DEBUG)
         {
-			NSString *ls = [self linkStatusString:linkstatus];
+			NSString *ls = [UMLayerM2PA linkStatusString:linkstatus];
             [self logDebug:[NSString stringWithFormat:@"Received %@",ls]];
         }
         switch(linkstatus)
@@ -1434,7 +1434,7 @@
     [_controlLock unlock];
 }
 
-- (NSString *)linkStatusString:(M2PA_linkstate_message) linkstate
++ (NSString *)linkStatusString:(M2PA_linkstate_message) linkstate
 {
     switch(linkstate)
     {
@@ -1471,12 +1471,15 @@
     }
 }
 
-- (NSString *)m2paStatusString:(M2PA_Status) linkstate
++ (NSString *)m2paStatusString:(M2PA_Status) linkstate
 {
     switch(linkstate)
     {
-        case M2PA_STATUS_UNDEFINED:
-            return @"UNDEFINED";
+        case M2PA_STATUS_FOOS:
+            return @"FORCED-OUT-OF-SERVICE";
+            break;
+        case M2PA_STATUS_DISCONNECTED:
+            return @"DISCONNECTED";
             break;
         case M2PA_STATUS_OFF:
             return @"OFF";
@@ -1485,16 +1488,16 @@
             return @"OOS";
             break;
         case M2PA_STATUS_INITIAL_ALIGNMENT:
-            return @"INITIAL_ALIGNMENT";
+            return @"INITIAL-ALIGNMENT";
             break;
         case M2PA_STATUS_ALIGNED_NOT_READY:
-            return @"ALIGNED_NOT_READY";
+            return @"ALIGNED-NOT-READY";
             break;
         case M2PA_STATUS_ALIGNED_READY:
-            return @"ALIGNED_READY";
+            return @"ALIGNED-READY";
             break;
         case M2PA_STATUS_IS:
-            return @"IS";
+            return @"IN-SERVICE";
             break;
         default:
             return @"UNKNOWN";
@@ -1504,7 +1507,7 @@
     
 - (void)sendLinkstatus:(M2PA_linkstate_message)linkstate
 {
-    NSString *ls = [self linkStatusString:linkstate];
+    NSString *ls = [UMLayerM2PA linkStatusString:linkstate];
     switch(self.sctp_status)
     {
         case SCTP_STATUS_OFF:
@@ -1671,6 +1674,20 @@
 {
 }
 
+- (void)notifyMtp3Off
+{
+    NSArray *usrs = [_users arrayCopy];
+    for(UMLayerM2PAUser *u in usrs)
+    {
+        if([u.profile wantsM2PALinkstateMessages])
+        {
+            [u.user m2paStatusIndication:self
+                                     slc:_slc
+                                  userId:u.linkName
+                                  status:M2PA_STATUS_OFF];
+        }
+    }
+}
 
 - (void)notifyMtp3OutOfService
 {
@@ -1709,10 +1726,7 @@
     {
         if([u.profile wantsM2PALinkstateMessages])
         {
-            [u.user m2paStatusIndication:self
-                                     slc:_slc
-                                  userId:u.linkName
-                                  status:M2PA_STATUS_PROCESSOR_OUTAGE];
+            [u.user m2paProcessorOutage:self slc:_slc userId:u.linkName];
         }
     }
 }
@@ -1724,10 +1738,7 @@
     {
         if([u.profile wantsM2PALinkstateMessages])
         {
-            [u.user m2paStatusIndication:self
-                                     slc:_slc
-                                  userId:u.linkName
-                                  status:M2PA_STATUS_IS]; /* FIXME: we might not go to IS here */
+            [u.user m2paProcessorRestored:self slc:_slc userId:u.linkName];
         }
     }
 }

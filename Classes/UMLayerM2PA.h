@@ -425,8 +425,8 @@ typedef enum PocStatus
 - (void) sendLinkstatus:(M2PA_linkstate_message)linkstate;
 - (void) sctpIncomingDataMessage:(NSData *)data;
 - (void) sctpIncomingLinkstateMessage:(NSData *)data;
-- (NSString *)linkStatusString:(M2PA_linkstate_message) linkstate;
-- (NSString *)m2paStatusString:(M2PA_Status) linkstate;
++ (NSString *)linkStatusString:(M2PA_linkstate_message) linkstate;
++ (NSString *)m2paStatusString:(M2PA_Status) linkstate;
 - (void) sendCongestionClearedIndication;
 - (void) sendCongestionIndication;
 

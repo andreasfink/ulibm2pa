@@ -76,7 +76,7 @@ NSString *UMM2PAState_currentMethodName(const char *funcName)
 
 - (M2PA_Status)statusCode
 {
-    return M2PA_STATUS_UNDEFINED;
+    return M2PA_STATUS_DISCONNECTED;
 }
 
 #pragma mark -
@@ -103,13 +103,6 @@ NSString *UMM2PAState_currentMethodName(const char *funcName)
 - (UMM2PAState *)eventStart
 {
     [self logStatemachineEvent:__func__];
-    return self;
-}
-
-
-- (UMM2PAState *)eventSctpUp
-{
-    [self logStatemachineEvent:__func__];
     [_link.startTimer stop];
     [_link startupInitialisation];
     [self sendLinkstateOutOfService];
@@ -117,6 +110,14 @@ NSString *UMM2PAState_currentMethodName(const char *funcName)
     [self sendLinkstateAlignment];
     [_link.t2 start];
     return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+    return self;
+}
+
+
+- (UMM2PAState *)eventSctpUp
+{
+    [self logStatemachineEvent:__func__];
+    return self;
 }
 
 - (UMM2PAState *)eventSctpDown
@@ -133,8 +134,8 @@ NSString *UMM2PAState_currentMethodName(const char *funcName)
     [_link.startTimer stop];
     [_link startupInitialisation];
     [_link notifyMtp3OutOfService];
-    [self sendLinkstateOutOfService];
-    return  [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+    [self sendLinkstateAlignment];
+    return  [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
 }
 
 
