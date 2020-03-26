@@ -110,7 +110,7 @@
         _sctp_status = SCTP_STATUS_OOS;
 
         _link_restarts = 0;
-        _ready_received = 0;
+        _linkstateReadyReceived = 0;
         _ready_sent = 0;
         _paused = NO;
         _speed = 0; /* unlimited */
@@ -226,6 +226,7 @@
 - (void)sctpReportsUp
 {
     [_controlLock lock];
+    _sctpUpReceived++;
     self.state = [_state eventSctpUp];
     [_controlLock unlock];
 }
@@ -233,6 +234,7 @@
 - (void)sctpReportsDown
 {
     [_controlLock lock];
+    _sctpDownReceived++;
     self.state = [_state eventSctpDown];
     [_controlLock unlock];
 }
@@ -478,7 +480,7 @@
 
         if(self.logLevel <= UMLOG_DEBUG)
         {
-			NSString *ls = [self linkStatusString:linkstatus];
+			NSString *ls = [UMLayerM2PA linkStatusString:linkstatus];
             [self logDebug:[NSString stringWithFormat:@"Received %@",ls]];
         }
         switch(linkstatus)
@@ -528,6 +530,7 @@
 - (void) _oos_received
 {
 	[_controlLock lock];
+    _linkstateOutOfServiceReceived++;
     self.state = [_state eventLinkstatusOutOfService];
 	[_controlLock unlock];
 }
@@ -536,9 +539,9 @@
 {
 	[_controlLock lock];
     self.state = [_state eventLinkstatusAlignment];
-    _alignmentsReceived++;
-    _provingReceived=0;
-    _provingSent=0;
+    _linkstateAlignmentReceived++;
+    _linkstateProvingReceived=0;
+    _linkstateProvingSent=0;
 	[_controlLock unlock];
 
 }
@@ -546,7 +549,7 @@
 - (void) _proving_normal_received
 {
     [_controlLock lock];
-    _provingReceived++;
+    _linkstateProvingReceived++;
     self.state = [_state eventLinkstatusProvingNormal];
 	[_controlLock unlock];
 }
@@ -554,9 +557,9 @@
 - (void) _proving_emergency_received
 {
 	[_controlLock lock];
-    _provingReceived++;
-    self.emergency = YES;
-    self.state = [_state eventLinkstatusProvingNormal];
+    _linkstateProvingReceived++;
+    _emergency = YES;
+    self.state = [_state eventLinkstatusProvingEmergency];
 	[_controlLock unlock];
 }
 
@@ -564,14 +567,15 @@
 - (void) _linkstate_ready_received
 {
 	[_controlLock lock];
+    _linkstateReadyReceived++;
     self.state = [_state eventLinkstatusReady];
 	[_controlLock unlock];
 }
 
 - (void) _linkstate_processor_outage_received
 {
-
 	[_controlLock lock];
+    _linkstateProcessorOutageReceived++;
     self.state = [_state eventLinkstatusProcessorOutage];
 	[_controlLock unlock];
 }
@@ -579,6 +583,7 @@
 - (void) _linkstate_processor_recovered_received
 {
 	[_controlLock lock];
+    _linkstateProcessorRecoveredReceived++;
     self.state = [_state eventLinkstatusProcessorRecovered];
 	[_controlLock unlock];
 }
@@ -586,6 +591,7 @@
 - (void) _linkstate_busy_received
 {
 	[_controlLock lock];
+    _linkstateBusyReceived++;
     self.state = [_state eventLinkstatusBusy];
 	[_controlLock unlock];
 }
@@ -593,6 +599,8 @@
 - (void) _linkstate_busy_ended_received
 {
 	[_controlLock lock];
+    _linkstateBusyEndedReceived++;
+
     self.state = [_state eventLinkstatusBusyEnded];
 /* FIXME: this belongs into the state machine now */
     _link_congestion_cleared_time = [NSDate date];
@@ -607,7 +615,7 @@
     }
 }
 
-- (void)startDequingMessages
+- (void)startDequeuingMessages
 {
     UMLayerTask *task = [_waitingMessages getFirst];
     while(task)
@@ -1378,21 +1386,21 @@
 - (void)startupInitialisation
 {
 
-    _alignmentsReceived = 0;
-    _alignmentsSent = 0;
-    _provingSent = 0;
-    _provingReceived = 0;
+    _linkstateAlignmentReceived = 0;
+    _linkstateAlignmentSent = 0;
+    _linkstateProvingSent = 0;
+    _linkstateProvingReceived = 0;
     _local_processor_outage = NO;
     _remote_processor_outage = NO;
     _emergency = NO;
     [self resetSequenceNumbers];
     _outstanding = 0;
-    _ready_received = 0;
+    _linkstateReadyReceived = 0;
     _ready_sent = 0;
-    _alignmentsReceived=0;
-    _alignmentsSent=0;
-    _provingReceived=0;
-    _provingSent=0;
+    _linkstateAlignmentReceived=0;
+    _linkstateAlignmentSent=0;
+    _linkstateProvingReceived=0;
+    _linkstateProvingSent=0;
     [_inboundThroughputPackets clear];
     [_inboundThroughputBytes clear];
     [_outboundThroughputPackets clear];
@@ -1404,6 +1412,7 @@
 - (void)powerOn
 {
     [_controlLock lock];
+    _powerOnCounter++;
     self.state = [[UMM2PAState_Off alloc]initWithLink:self];
     self.state = [_state eventPowerOn];
     [_controlLock unlock];
@@ -1415,6 +1424,7 @@
 {
     
     [_controlLock lock];
+    _powerOffCounter++;
     self.state = [_state eventStop];
     [self startupInitialisation];
     [_controlLock unlock];
@@ -1423,6 +1433,7 @@
 - (void)start
 {
     [_controlLock lock];
+    _startCounter++;
     self.state = [_state eventStart];
     [_controlLock unlock];
 }
@@ -1430,11 +1441,12 @@
 - (void)stop
 {
     [_controlLock lock];
+    _stopCounter++;
     self.state = [_state eventStop];
     [_controlLock unlock];
 }
 
-- (NSString *)linkStatusString:(M2PA_linkstate_message) linkstate
++ (NSString *)linkStatusString:(M2PA_linkstate_message) linkstate
 {
     switch(linkstate)
     {
@@ -1471,12 +1483,15 @@
     }
 }
 
-- (NSString *)m2paStatusString:(M2PA_Status) linkstate
++ (NSString *)m2paStatusString:(M2PA_Status) linkstate
 {
     switch(linkstate)
     {
-        case M2PA_STATUS_UNDEFINED:
-            return @"UNDEFINED";
+        case M2PA_STATUS_FOOS:
+            return @"FORCED-OUT-OF-SERVICE";
+            break;
+        case M2PA_STATUS_DISCONNECTED:
+            return @"DISCONNECTED";
             break;
         case M2PA_STATUS_OFF:
             return @"OFF";
@@ -1485,16 +1500,16 @@
             return @"OOS";
             break;
         case M2PA_STATUS_INITIAL_ALIGNMENT:
-            return @"INITIAL_ALIGNMENT";
+            return @"INITIAL-ALIGNMENT";
             break;
         case M2PA_STATUS_ALIGNED_NOT_READY:
-            return @"ALIGNED_NOT_READY";
+            return @"ALIGNED-NOT-READY";
             break;
         case M2PA_STATUS_ALIGNED_READY:
-            return @"ALIGNED_READY";
+            return @"ALIGNED-READY";
             break;
         case M2PA_STATUS_IS:
-            return @"IS";
+            return @"IN-SERVICE";
             break;
         default:
             return @"UNKNOWN";
@@ -1504,7 +1519,7 @@
     
 - (void)sendLinkstatus:(M2PA_linkstate_message)linkstate
 {
-    NSString *ls = [self linkStatusString:linkstate];
+    NSString *ls = [UMLayerM2PA linkStatusString:linkstate];
     switch(self.sctp_status)
     {
         case SCTP_STATUS_OFF:
@@ -1639,14 +1654,14 @@
 -(void)txcSendSIO
 {
     [self sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT];
-    _alignmentsSent++;
+    _linkstateAlignmentSent++;
 
 }
 
 -(void)txcSendSIN
 {
     [_controlLock lock];
-    _provingSent++;
+    _linkstateProvingSent++;
     [self sendLinkstatus:M2PA_LINKSTATE_PROVING_NORMAL];
     [_controlLock unlock];
 }
@@ -1654,7 +1669,7 @@
 -(void)txcSendSIE
 {
     [_controlLock lock];
-    _provingSent++;
+    _linkstateProvingSent++;
     [self sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY];
     [_controlLock unlock];
 }
@@ -1671,6 +1686,20 @@
 {
 }
 
+- (void)notifyMtp3Off
+{
+    NSArray *usrs = [_users arrayCopy];
+    for(UMLayerM2PAUser *u in usrs)
+    {
+        if([u.profile wantsM2PALinkstateMessages])
+        {
+            [u.user m2paStatusIndication:self
+                                     slc:_slc
+                                  userId:u.linkName
+                                  status:M2PA_STATUS_OFF];
+        }
+    }
+}
 
 - (void)notifyMtp3OutOfService
 {
@@ -1709,10 +1738,7 @@
     {
         if([u.profile wantsM2PALinkstateMessages])
         {
-            [u.user m2paStatusIndication:self
-                                     slc:_slc
-                                  userId:u.linkName
-                                  status:M2PA_STATUS_PROCESSOR_OUTAGE];
+            [u.user m2paProcessorOutage:self slc:_slc userId:u.linkName];
         }
     }
 }
@@ -1724,10 +1750,7 @@
     {
         if([u.profile wantsM2PALinkstateMessages])
         {
-            [u.user m2paStatusIndication:self
-                                     slc:_slc
-                                  userId:u.linkName
-                                  status:M2PA_STATUS_IS]; /* FIXME: we might not go to IS here */
+            [u.user m2paProcessorRestored:self slc:_slc userId:u.linkName];
         }
     }
 }
@@ -1876,7 +1899,7 @@ static NSDateFormatter *dateFormatter = NULL;
     d[@"emergency"] = _emergency ? @(YES) : @(NO);
     d[@"paused"] = _paused ? @(YES) : @(NO);
     d[@"link-restarts"] = @(_link_restarts);
-    d[@"ready-received"] = @(_ready_received);
+    d[@"ready-received"] = @(_linkstateReadyReceived);
     d[@"ready-sent"] = @(_ready_sent);
     d[@"reception-enabled"] = _receptionEnabled ? @(YES) : @(NO);
     d[@"configured-speed"] = @(_speed);

@@ -49,7 +49,9 @@
 - (UMM2PAState *)eventStart
 {
     [self logStatemachineEvent:__func__];
-    return self;
+    [self sendLinkstateAlignment];
+    [_link.t2 start];
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventSctpUp
@@ -59,9 +61,7 @@
     [_link startupInitialisation];
     [self sendLinkstateOutOfService];
     [_link notifyMtp3OutOfService];
-    [self sendLinkstateAlignment];
-    [_link.t2 start];
-    return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+    return self;
 }
 
 - (UMM2PAState *)eventSctpDown
@@ -149,5 +149,7 @@
     [self logStatemachineEvent:__func__];
     return self;
 }
+
+
 
 @end
