@@ -10,7 +10,9 @@
 #import "UMLayerM2PA.h"
 #import "UMM2PAState_allStates.h"
 
-NSString *UMM2PAState_currentMethodName(const char *funcName)
+static inline NSString *UMM2PAState_currentMethodName(const char *funcName);
+
+static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 {
     /* func name is something like "[UMM2PAState eventNew]" */
 
@@ -50,14 +52,14 @@ NSString *UMM2PAState_currentMethodName(const char *funcName)
     return self;
 }
 
--(void) logStatemachineEvent:(const char *)func
+- (void) logStatemachineEvent:(const char *)func
 {
     NSString *s;
     if((_link.logLevel <= UMLOG_DEBUG) || (_link.stateMachineLogFeed!=NULL))
     {
-        s = [NSString stringWithFormat:@"EVENT %@ in STATE %@",
-                        UMM2PAState_currentMethodName(func),
-                        [self description]];
+        /* func name is something like "[UMM2PAState eventNew]" */
+        NSString *functionName  = UMM2PAState_currentMethodName(func);
+        s = [NSString stringWithFormat:@"EVENT %@ in STATE %@",functionName,[self description]];
     }
     if(_link.logLevel <= UMLOG_DEBUG)
     {
