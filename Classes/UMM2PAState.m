@@ -10,7 +10,10 @@
 #import "UMLayerM2PA.h"
 #import "UMM2PAState_allStates.h"
 
-NSString *UMM2PAState_currentMethodName(const char *funcName)
+static NSString *UMM2PAState_currentMethodName(const char *funcName);
+
+
+static NSString *UMM2PAState_currentMethodName(const char *funcName)
 {
     /* func name is something like "[UMM2PAState eventNew]" */
 
