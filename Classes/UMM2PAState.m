@@ -132,8 +132,10 @@ NSString *UMM2PAState_currentMethodName(const char *funcName)
     [self logStatemachineEvent:__func__];
     [_link.startTimer stop];
     [_link startupInitialisation];
-    [_link notifyMtp3OutOfService];
     [self sendLinkstateOutOfService];
+    [_link notifyMtp3OutOfService];
+    [self sendLinkstateAlignment];
+    [_link.t2 start];
     return  [[UMM2PAState_OutOfService alloc]initWithLink:_link];
 }
 

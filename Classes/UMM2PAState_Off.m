@@ -78,7 +78,9 @@
     [_link.startTimer stop];
     [_link startupInitialisation];
     [_link notifyMtp3OutOfService];
-    return  [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+    [self sendLinkstateAlignment];
+    [_link.t2 start];
+    return  [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
 }
 
 
