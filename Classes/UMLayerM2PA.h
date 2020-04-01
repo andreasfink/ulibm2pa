@@ -231,7 +231,7 @@ typedef enum PocStatus
     UMTimer    *_startTimer;    /* time between SCTP power on retries in case SCTP doesnt come up */
 
     
-    SCTP_Status _sctp_status;
+    UMSocketStatus _sctp_status;
     
     BOOL    _congested;
     BOOL    _emergency;
@@ -305,7 +305,7 @@ typedef enum PocStatus
 @property(readwrite,assign)     NSTimeInterval      t4n;
 @property(readwrite,assign)     NSTimeInterval      t4e;
 //@property(readwrite,assign,atomic) M2PA_Status m2pa_status; // this one has proper getter and setter 
-@property(readwrite,assign,atomic) SCTP_Status sctp_status;
+@property(readwrite,assign,atomic) UMSocketStatus sctp_status;
 @property(readwrite,assign,atomic)  SpeedStatus speed_status;
 
 @property(readwrite,assign,atomic)  int linkstateOutOfServiceReceived;
@@ -341,7 +341,7 @@ typedef enum PocStatus
 
 - (void) sctpStatusIndication:(UMLayer *)caller
                        userId:(id)uid
-                       status:(SCTP_Status)s;
+                       status:(UMSocketStatus)s;
 
 - (void) sctpDataIndication:(UMLayer *)caller
                      userId:(id)uid

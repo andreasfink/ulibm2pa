@@ -107,7 +107,7 @@
         _congested = NO;
         _local_processor_outage = NO;
         _remote_processor_outage = NO;
-        _sctp_status = SCTP_STATUS_OOS;
+        _sctp_status = UMSOCKET_STATUS_OOS;
 
         _link_restarts = 0;
         _linkstateReadyReceived = 0;
@@ -178,7 +178,7 @@
 
 - (void) sctpStatusIndication:(UMLayer *)caller
                        userId:(id)uid
-                       status:(SCTP_Status)s
+                       status:(UMSocketStatus)s
 {
     
     
@@ -245,12 +245,12 @@
 
 }
 
-- (SCTP_Status)sctp_status
+- (UMSocketStatus)sctp_status
 {
     return _sctp_status;
 }
 
-- (void)setSctp_status:(SCTP_Status )newStatus;
+- (void)setSctp_status:(UMSocketStatus )newStatus;
 {
     int old_sctp_status = _sctp_status;
     _sctp_status = newStatus;
@@ -277,18 +277,18 @@
     }
 
     
-    if(	(old_sctp_status == SCTP_STATUS_IS)
-       && ((_sctp_status == SCTP_STATUS_OFF)
-           || (_sctp_status == SCTP_STATUS_OOS)) )
+    if(	(old_sctp_status == UMSOCKET_STATUS_IS)
+       && ((_sctp_status == UMSOCKET_STATUS_OFF)
+           || (_sctp_status == UMSOCKET_STATUS_OOS)) )
     {
         /* SCTP Link has died */
         [self sctpReportsDown];
         [_sctpLink openFor:self];
     }
     
-    if(((old_sctp_status == SCTP_STATUS_OOS)
-        || (old_sctp_status == SCTP_STATUS_OFF))
-       && (_sctp_status == SCTP_STATUS_IS))
+    if(((old_sctp_status == UMSOCKET_STATUS_OOS)
+        || (old_sctp_status == UMSOCKET_STATUS_OFF))
+       && (_sctp_status == UMSOCKET_STATUS_IS))
     {
         /* SCTP link came up properly. Lets start M2PA now on it */
         [self sctpReportsUp];
@@ -1522,14 +1522,14 @@
     NSString *ls = [UMLayerM2PA linkStatusString:linkstate];
     switch(self.sctp_status)
     {
-        case SCTP_STATUS_OFF:
-            [self logDebug:[NSString stringWithFormat:@"Can not send %@ due to SCTP_STATUS_OFF",ls ]];
+        case UMSOCKET_STATUS_OFF:
+            [self logDebug:[NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_OFF",ls ]];
             return;
-        case SCTP_STATUS_OOS:
-            [self logDebug:[NSString stringWithFormat:@"Can not send %@ due to SCTP_STATUS_OOS",ls ]];
+        case UMSOCKET_STATUS_OOS:
+            [self logDebug:[NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_OOS",ls ]];
             return;
-        case SCTP_STATUS_M_FOOS:
-            [self logDebug:[NSString stringWithFormat:@"Can not send %@ due to SCTP_STATUS_M_FOOS",ls ]];
+        case UMSOCKET_STATUS_FOOS:
+            [self logDebug:[NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_FOOS",ls ]];
             return;
         default:
             break;
