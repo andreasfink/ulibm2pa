@@ -1432,10 +1432,44 @@
 
 - (void)start
 {
+<<<<<<< Updated upstream
     [_controlLock lock];
     _startCounter++;
     self.state = [_state eventStart];
     [_controlLock unlock];
+=======
+    if(self.logLevel <= UMLOG_DEBUG)
+    {
+        [self logDebug:@"start"];
+    }
+
+    if(self.m2pa_status != M2PA_STATUS_OOS)
+    {
+        [self logMajorError:@"can not start if link is not in status OOS. Going to OFF state"];
+        self.m2pa_status = M2PA_STATUS_OFF;
+        _iacState = [[UMM2PAInitialAlignmentControl_Idle alloc]initWithLink:self];
+        return;
+    }
+
+    [self txcSendSIOS]; /*  Out of Service */
+
+    if(_emergency)
+    {
+        _t4.seconds = _t4e;
+    }
+    else
+    {
+        _t4.seconds = _t4n;
+    }
+    [_t2 start];
+    [_t4 start];
+    [_t4r start];
+    self.m2pa_status = M2PA_STATUS_OOS;
+    [self txcSendSIO]; /* Alignment */
+    _iacState = [[UMM2PAInitialAlignmentControl_NotAligned alloc]initWithLink:self];
+
+    /* this will send SIOS (Out of Service) & SIO (Alignment) */
+>>>>>>> Stashed changes
 }
 
 - (void)stop
@@ -1519,7 +1553,11 @@
     
 - (void)sendLinkstatus:(M2PA_linkstate_message)linkstate
 {
+<<<<<<< Updated upstream
     NSString *ls = [UMLayerM2PA linkStatusString:linkstate];
+=======
+    NSString *ls = [self linkStatusString:linkstate];
+>>>>>>> Stashed changes
     switch(self.sctp_status)
     {
         case UMSOCKET_STATUS_OFF:
