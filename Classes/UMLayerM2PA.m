@@ -890,7 +890,10 @@
                                                            sender:caller
                                                              data:sendingData
                                                        ackRequest:ack];
-    [self queueFromUpper:task];
+
+    /* we can not queue this as otherwise the sequence might been destroyed */
+    [task main];
+//    [self queueFromUpper:task];
 }
 
 - (void)powerOnFor:(id<UMLayerM2PAUserProtocol>)caller
