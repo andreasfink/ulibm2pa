@@ -37,8 +37,11 @@
 
 - (void)main
 {
-    UMLayerM2PA *link = (UMLayerM2PA *)self.receiver;
-    [link _adminAttachTask:self];
+    @autoreleasepool
+    {
+        UMLayerM2PA *link = (UMLayerM2PA *)self.receiver;
+        [link _adminAttachTask:self];
+    }
 }
 
 @end
