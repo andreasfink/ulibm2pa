@@ -892,8 +892,14 @@
                                                        ackRequest:ack];
 
     /* we can not queue this as otherwise the sequence might been destroyed */
-//    [task main];
+#if 0
+    @autoreleasepool
+    {
+            [task main];
+    }
+#else
     [self queueFromUpper:task];
+#endif
 }
 
 - (void)powerOnFor:(id<UMLayerM2PAUserProtocol>)caller
