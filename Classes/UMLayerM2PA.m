@@ -290,7 +290,7 @@
     {
         /* SCTP Link has died */
         [self sctpReportsDown];
-        [_sctpLink openFor:self];
+        [_sctpLink openFor:self sendAbortFirst:YES];
     }
     
     if(((old_sctp_status == UMSOCKET_STATUS_OOS)
