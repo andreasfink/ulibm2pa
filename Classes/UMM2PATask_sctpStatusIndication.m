@@ -33,8 +33,11 @@
 
 - (void)main
 {
-    UMLayerM2PA *link = (UMLayerM2PA *)self.receiver;
-    [link _sctpStatusIndicationTask:self];
+    @autoreleasepool
+    {
+        UMLayerM2PA *link = (UMLayerM2PA *)self.receiver;
+        [link _sctpStatusIndicationTask:self];
+    }
 }
 
 @end

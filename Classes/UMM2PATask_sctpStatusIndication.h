@@ -16,11 +16,11 @@
 @interface UMM2PATask_sctpStatusIndication : UMLayerTask
 {
     id          userId;
-    SCTP_Status status;
+    UMSocketStatus status;
 }
 
 @property(readwrite,strong) id userId;
-@property(readwrite,assign) SCTP_Status status;
+@property(readwrite,assign) UMSocketStatus status;
 
 - (UMM2PATask_sctpStatusIndication *)initWithReceiver:(UMLayerM2PA *)rx
                                                sender:(id)tx
