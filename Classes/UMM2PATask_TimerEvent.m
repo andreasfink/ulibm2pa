@@ -26,13 +26,16 @@
 
 - (void)main
 {
-	UMLayerM2PA *link = (UMLayerM2PA *)self.receiver;
+    @autoreleasepool
+    {
+        UMLayerM2PA *link = (UMLayerM2PA *)self.receiver;
 
-	if(link.logLevel <= UMLOG_DEBUG)
-	{
-		[link.logFeed debugText:[NSString stringWithFormat:@"Timer %@ fires",_timerName]];
-	}
-    [link _timerEventTask:self];
+        if(link.logLevel <= UMLOG_DEBUG)
+        {
+            [link.logFeed debugText:[NSString stringWithFormat:@"Timer %@ fires",_timerName]];
+        }
+        [link _timerEventTask:self];
+    }
 }
 
 @end

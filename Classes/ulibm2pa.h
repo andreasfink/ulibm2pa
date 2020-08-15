@@ -18,8 +18,6 @@
 #import "UMLayerM2PAUser.h"
 #import "UMLayerM2PAUserProfile.h"
 #import "UMLayerM2PAUserProtocol.h"
-#import "UMM2PAInitialAlignmentControl_AllStates.h"
-#import "UMM2PALinkStateControl_AllStates.h"
 #import "UMM2PATask_AdminAttach.h"
 #import "UMM2PATask_AdminAttachOrder.h"
 #import "UMM2PATask_AdminDetachOrder.h"
@@ -37,7 +35,4 @@
 #import "UMM2PATask_Start.h"
 #import "UMM2PATask_Stop.h"
 #import "UMM2PATask_TimerEvent.h"
-
-#import "UMM2PALinkStateControl_State.h"
-#import "UMM2PAInitialAlignmentControl_State.h"
 
