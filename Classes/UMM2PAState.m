@@ -30,8 +30,6 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     return func;
 }
 
-
-
 @implementation UMM2PAState
 
 - (UMM2PAState *)init

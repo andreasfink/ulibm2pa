@@ -145,4 +145,13 @@
     return self;
 }
 
+- (UMM2PAState *)eventReceiveUserData:(NSData *)userData
+{
+    [self logStatemachineEvent:__func__];
+    [_link notifyMtp3UserData:userData];
+    [_link.stateMachineLogFeed debugText:@"receive-data"];
+    return self;
+}
+
+
 @end

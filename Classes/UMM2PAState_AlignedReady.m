@@ -134,5 +134,16 @@
 }
 
 
+- (UMM2PAState *)eventReceiveUserData:(NSData *)userData
+{
+    [self logStatemachineEvent:__func__];
+    [_link.t1 stop];
+    [_link.t2 stop];
+    [_link.t4r stop];
+    [_link.t4 stop];
+    [_link notifyMtp3InService];
+    UMM2PAState *is_State =  [[UMM2PAState_InService alloc]initWithLink:_link];
+    return [is_State eventReceiveUserData:userData];
+}
 
 @end
