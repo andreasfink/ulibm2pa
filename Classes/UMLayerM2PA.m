@@ -1965,10 +1965,13 @@
         {
             NSString *fileName = [cfg[@"state-machine-log"] stringValue];
             UMLogDestination *dst = [[UMLogFile alloc]initWithFileName:fileName];
-            dst.level = UMLOG_DEBUG;
-            UMLogHandler *handler = [[UMLogHandler alloc]init];
-            [handler addLogDestination:dst];
-            _stateMachineLogFeed = [[UMLogFeed alloc]initWithHandler:handler section:@"m2pa-state-machine"];
+            if(dst)
+            {
+                dst.level = UMLOG_DEBUG;
+                UMLogHandler *handler = [[UMLogHandler alloc]init];
+                [handler addLogDestination:dst];
+                _stateMachineLogFeed = [[UMLogFeed alloc]initWithHandler:handler section:@"m2pa-state-machine"];
+            }
         }
         [self adminAttachOrder:_sctpLink];
     }
