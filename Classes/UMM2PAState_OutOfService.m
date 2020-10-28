@@ -12,6 +12,17 @@
 
 @implementation UMM2PAState_OutOfService
 
+
+- (UMM2PAState *)initWithLink:(UMLayerM2PA *)link
+{
+    self = [super initWithLink:link];
+    if(self)
+    {
+        [self sendLinkstateOutOfService];
+    }
+    return self;
+}
+
 - (NSString *)description
 {
     return @"out-of-service";
@@ -35,6 +46,7 @@
     {
         [_link.t2 start];
     }
+    _i_am_starting = YES;
     [self sendLinkstateAlignment];
     return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
 }
@@ -42,6 +54,7 @@
 - (UMM2PAState *)eventSctpUp
 {
     [self logStatemachineEvent:__func__];
+    [self sendLinkstateOutOfService];
     return self;
 }
 

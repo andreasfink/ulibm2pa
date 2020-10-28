@@ -89,6 +89,7 @@
 
 - (UMM2PAState *)eventEmergency
 {
+    [self sendLinkstateOutOfService];
     [self logStatemachineEvent:__func__];
     _link.emergency = YES;
     return self;
@@ -96,6 +97,7 @@
 
 - (UMM2PAState *)eventEmergencyCeases
 {
+    [self sendLinkstateOutOfService];
     [self logStatemachineEvent:__func__];
     _link.emergency = NO;
     return self;
@@ -103,54 +105,63 @@
 
 - (UMM2PAState *)eventLinkstatusAlignment
 {
+    [self sendLinkstateOutOfService];
     [self logStatemachineEvent:__func__];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal
 {
+    [self sendLinkstateOutOfService];
     [self logStatemachineEvent:__func__];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusProvingEmergency
 {
+    [self sendLinkstateOutOfService];
     [self logStatemachineEvent:__func__];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusReady
 {
+    [self sendLinkstateOutOfService];
     [self logStatemachineEvent:__func__];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusBusy
 {
+    [self sendLinkstateOutOfService];
     [self logStatemachineEvent:__func__];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusBusyEnded
 {
+    [self sendLinkstateOutOfService];
     [self logStatemachineEvent:__func__];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusProcessorOutage
 {
+    [self sendLinkstateOutOfService];
     [self logStatemachineEvent:__func__];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusProcessorRecovered
 {
+    [self sendLinkstateOutOfService];
     [self logStatemachineEvent:__func__];
     return self;
 }
 
 - (UMM2PAState *)eventError
 {
+    [self sendLinkstateOutOfService];
     [self logStatemachineEvent:__func__];
     return self;
 }
