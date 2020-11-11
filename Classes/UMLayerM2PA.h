@@ -52,7 +52,7 @@
  */
 
 /* default timer values */
-/* all timers are  in microseconds */
+/* all timers are  in seconds */
 #define	M2PA_DEFAULT_T1	45.000000 /* 45s */
 /* T1:  alignment ready */
 /*  highspeed: 25-350s */
