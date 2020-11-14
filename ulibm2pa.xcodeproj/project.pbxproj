@@ -729,6 +729,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2GSNWPNR77;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -743,6 +744,7 @@
 				GCC_PREFIX_HEADER = "SupportingFiles/ulibm2pa-Prefix.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/SupportingFiles/ulibm2pa-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.14.0;
 				PRODUCT_BUNDLE_IDENTIFIER = me.fink.ulibm2pa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = framework;
@@ -753,6 +755,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2GSNWPNR77;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -767,6 +770,7 @@
 				GCC_PREFIX_HEADER = "SupportingFiles/ulibm2pa-Prefix.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/SupportingFiles/ulibm2pa-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.14.0;
 				PRODUCT_BUNDLE_IDENTIFIER = me.fink.ulibm2pa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = framework;
