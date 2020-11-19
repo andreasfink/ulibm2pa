@@ -261,7 +261,7 @@ typedef enum PocStatus
     NSMutableData 	*_data_link_buffer;
     NSMutableData 	*_control_link_buffer;
     SpeedStatus 	_speed_status;
-    UMQueue 		*_waitingMessages;
+    UMQueueSingle   *_waitingMessages;
 }
 
 - (UMM2PAState *)state;

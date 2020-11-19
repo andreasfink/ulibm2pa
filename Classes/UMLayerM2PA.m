@@ -134,7 +134,7 @@
 
             _control_link_buffer        = [[NSMutableData alloc] init];
             _data_link_buffer           = [[NSMutableData alloc] init];
-            _waitingMessages            = [[UMQueue alloc]init];
+            _waitingMessages            = [[UMQueueSingle alloc]init];
 
             _inboundThroughputPackets   =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
             _outboundThroughputPackets  =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
