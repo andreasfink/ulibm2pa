@@ -389,7 +389,6 @@
 {
     @autoreleasepool
     {
-
         [_inboundThroughputPackets increaseBy:1];
         [_inboundThroughputBytes increaseBy:(uint32_t)data.length];
         u_int32_t len;
@@ -1202,8 +1201,8 @@
           stream:(uint16_t)streamId
       ackRequest:(NSDictionary *)ackRequest
 {
-    [_outboundThroughputBytes increaseBy:(uint32_t)data.length];
     [_outboundThroughputPackets increaseBy:1];
+    [_outboundThroughputBytes increaseBy:(uint32_t)data.length];
 
     [_dataLock lock];
     [_t1 stop]; /* alignment ready	*/
@@ -2006,11 +2005,11 @@ static NSDateFormatter *dateFormatter = NULL;
         d[@"reception-enabled"] = _receptionEnabled ? @(YES) : @(NO);
         d[@"configured-speed"] = @(_speed);
         d[@"window-size"] = @(_window_size);
-        d[@"current-speed-tx-packets"] =   [_outboundThroughputPackets getSpeedTripleJson];
-        d[@"current-speed-tx-bytes"] =   [_outboundThroughputBytes getSpeedTripleJson];
-        d[@"current-speed-rx-packets"] =   [_inboundThroughputPackets getSpeedTripleJson];
-        d[@"current-speed-rx-bytes"] =   [_inboundThroughputBytes getSpeedTripleJson];
-        d[@"submission-speed"] =   [_submission_speed getSpeedTripleJson];
+        d[@"current-speed-tx-packets"]  =   [_outboundThroughputPackets getSpeedTripleJson];
+        d[@"current-speed-tx-bytes"]    =   [_outboundThroughputBytes getSpeedTripleJson];
+        d[@"current-speed-rx-packets"]  =   [_inboundThroughputPackets getSpeedTripleJson];
+        d[@"current-speed-rx-bytes"]    =   [_inboundThroughputBytes getSpeedTripleJson];
+        d[@"submission-speed"]          =   [_submission_speed getSpeedTripleJson];
 
         if(dateFormatter==NULL)
         {
