@@ -283,19 +283,15 @@
         }
     }
 
-    
-    if(	(old_sctp_status == UMSOCKET_STATUS_IS)
-       && ((_sctp_status == UMSOCKET_STATUS_OFF)
-           || (_sctp_status == UMSOCKET_STATUS_OOS)) )
+    if(	(old_sctp_status != UMSOCKET_STATUS_OFF)
+       && (_sctp_status == UMSOCKET_STATUS_OFF))
     {
         /* SCTP Link has died */
         [self sctpReportsDown];
         [_sctpLink openFor:self sendAbortFirst:NO];
     }
-    
-    if(((old_sctp_status == UMSOCKET_STATUS_OOS)
-        || (old_sctp_status == UMSOCKET_STATUS_OFF))
-       && (_sctp_status == UMSOCKET_STATUS_IS))
+    if( (old_sctp_status != UMSOCKET_STATUS_IS)
+    && (_sctp_status == UMSOCKET_STATUS_IS))
     {
         /* SCTP link came up properly. Lets start M2PA now on it */
         [self sctpReportsUp];
