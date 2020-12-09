@@ -9,6 +9,9 @@
 #import "UMM2PAState.h"
 
 @interface UMM2PAState_AlignedNotReady : UMM2PAState
-
+{
+    BOOL _t4_expired;
+    BOOL _ready_received;
+}
 @end
 

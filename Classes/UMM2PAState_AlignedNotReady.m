@@ -145,6 +145,13 @@
 - (UMM2PAState *)eventTimer4r
 {
     [self logStatemachineEvent:__func__];
+
+    if((_t4_expired) && (_link.linkstateProvingSent > 5))
+    {
+        [self sendLinkstateReady];
+        return [[UMM2PAState_AlignedReady alloc]initWithLink:_link];
+    }
+
     if(_link.emergency)
     {
         [self sendLinkstateProvingEmergency];
@@ -159,8 +166,16 @@
 - (UMM2PAState *)eventTimer4
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateReady];
-    return [[UMM2PAState_AlignedReady alloc]initWithLink:_link];
+    if(    _link.linkstateProvingSent > 5)
+    {
+        [self sendLinkstateReady];
+        return [[UMM2PAState_AlignedReady alloc]initWithLink:_link];
+    }
+    else
+    {
+        _t4_expired = YES;
+    }
+    return self;
 }
 
 @end

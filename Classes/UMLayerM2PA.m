@@ -952,6 +952,15 @@
 
 - (void)powerOnFor:(id<UMLayerM2PAUserProtocol>)caller
 {
+    [self powerOnFor:caller forced:NO];
+}
+
+- (void)powerOnFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced
+{
+    if(forced)
+    {
+        _forcedOutOfService = NO;
+    }
     @autoreleasepool
     {
         UMLayerTask *task = [[UMM2PATask_PowerOn alloc]initWithReceiver:self sender:caller];
@@ -959,8 +968,15 @@
     }
 }
 
+
 - (void)powerOffFor:(id<UMLayerM2PAUserProtocol>)caller
 {
+    [self powerOffFor:caller forced:NO];
+}
+
+- (void)powerOffFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced
+{
+    _forcedOutOfService = forced;
     @autoreleasepool
     {
         UMLayerTask *task = [[UMM2PATask_PowerOff alloc]initWithReceiver:self sender:caller];
@@ -970,6 +986,15 @@
 
 - (void)startFor:(id<UMLayerM2PAUserProtocol>)caller
 {
+    [self startFor:caller forced:NO];
+}
+
+- (void)startFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced
+{
+    if(forced)
+    {
+        _forcedOutOfService = NO;
+    }
     @autoreleasepool
     {
         UMLayerTask *task = [[UMM2PATask_Start alloc]initWithReceiver:self sender:caller];
@@ -979,12 +1004,18 @@
 
 - (void)stopFor:(id<UMLayerM2PAUserProtocol>)caller
 {
+    [self stopFor:caller forced:NO];
+}
+
+- (void)stopFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced
+{
     @autoreleasepool
     {
         UMLayerTask *task = [[UMM2PATask_Stop alloc]initWithReceiver:self sender:caller];
         [self queueFromUpperWithPriority:task];
     }
 }
+
 
 - (void)emergencyFor:(id<UMLayerM2PAUserProtocol>)caller
 {
@@ -1495,6 +1526,8 @@
     [_controlLock lock];
     _powerOffCounter++;
     self.state = [_state eventStop];
+    self.state = [_state eventPowerOff];
+    [_sctpLink closeFor:self];
     [self startupInitialisation];
     [_controlLock unlock];
 }

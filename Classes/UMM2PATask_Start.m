@@ -20,6 +20,7 @@
     self = [super initWithName:[[self class]description]  receiver:rx sender:tx requiresSynchronisation:NO];
     if(self)
     {
+        _user = tx;
     }
     return self;
 }

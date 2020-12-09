@@ -107,10 +107,12 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [_link startupInitialisation];
     [self sendLinkstateOutOfService];
     [_link notifyMtp3OutOfService];
-    [self sendLinkstateAlignment];
+    if(_link.forcedOutOfService == NO)
+    {
+        [self sendLinkstateAlignment];
+    }
     [_link.t2 start];
     return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
-    return self;
 }
 
 
@@ -289,6 +291,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 
 - (void) sendLinkstateAlignment
 {
+
     [_link sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT];
     _link.linkstateAlignmentSent++;
     [_link.stateMachineLogFeed debugText:@"sendLinkstateAlignment"];
@@ -296,6 +299,10 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 
 - (void) sendLinkstateProvingNormal
 {
+    if([self isKindOfClass:[UMM2PAState_OutOfService class]])
+    {
+        NSLog(@"wrong state");
+    }
     [_link sendLinkstatus:M2PA_LINKSTATE_PROVING_NORMAL];
     _link.linkstateProvingSent++;
     [_link.stateMachineLogFeed debugText:@"sendLinkstateProvingNormal"];
@@ -351,6 +358,15 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 
 - (void) sendLinkstateOutOfService
 {
+    if([self isKindOfClass:[UMM2PAState_InitialAlignment class]])
+    {
+        NSLog(@"wrong state");
+    }
+   else  if([self isKindOfClass:[UMM2PAState_AlignedReady class]])
+    {
+        NSLog(@"wrong state");
+    }
+
     [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE];
     _link.linkstateOutOfServiceSent++;
     [_link.stateMachineLogFeed debugText:@"sendLinkstateOutOfService"];

@@ -69,8 +69,8 @@
 /* 1-2s */
 
 #define	M2PA_DEFAULT_T4_N	8.0		/* normal proving period  3-70s  8s */
-#define	M2PA_DEFAULT_T4_E	0.6     /* emergency proving period  0.4s - 0.6s : 0.5s*/
-#define	M2PA_DEFAULT_T4_R	0.100		/* resending timer of link status proving 10x per seconds */
+#define	M2PA_DEFAULT_T4_E	0.5     /* emergency proving period  0.4s - 0.6s : 0.5s*/
+#define	M2PA_DEFAULT_T4_R	0.150   /* resending timer of link status proving every 150ms */
 /*T4: proving period normal */
 /*  highspeed: 3-70s */
 /*  64k:	7.5-9.5s, nominal 8.5s */
@@ -171,6 +171,7 @@ typedef enum PocStatus
     BOOL    							_level3Indication;
     int     							_slc;
 	BOOL								_linkstate_busy;
+    BOOL                                _forcedOutOfService;
     u_int32_t							_bsn; /* backward sequence number. Last Sequence number received from the peer */
     u_int32_t							_fsn; /* forward sequence number. Last sequence number sent */
     u_int32_t							_bsn2; /* backward sequence number. Last FSN number acked from the peer for our transmission */
@@ -330,7 +331,7 @@ typedef enum PocStatus
 @property(readwrite,assign,atomic)  int stopCounter;
 @property(readwrite,assign,atomic)  int powerOnCounter;
 @property(readwrite,assign,atomic)  int powerOffCounter;
-
+@property(readwrite,assign,atomic)  BOOL forcedOutOfService;
 
 - (UMLayerM2PA *)initWithTaskQueueMulti:(UMTaskQueueMulti *)tq;
 - (UMLayerM2PA *)initWithTaskQueueMulti:(UMTaskQueueMulti *)tq name:(NSString *)name;
@@ -432,12 +433,20 @@ typedef enum PocStatus
            data:(NSData *)sendingData
      ackRequest:(NSDictionary *)ack;
 
+
 - (void)powerOnFor:(id<UMLayerM2PAUserProtocol>)caller;
 - (void)powerOffFor:(id<UMLayerM2PAUserProtocol>)caller;
-- (void)emergencyFor:(id<UMLayerM2PAUserProtocol>)caller;
-- (void)emergencyCheasesFor:(id<UMLayerM2PAUserProtocol>)caller;
 - (void)startFor:(id<UMLayerM2PAUserProtocol>)caller;
 - (void)stopFor:(id<UMLayerM2PAUserProtocol>)caller;
+- (void)powerOnFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced;
+- (void)powerOffFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced;
+- (void)startFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced;
+- (void)stopFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced;
+
+- (void)emergencyFor:(id<UMLayerM2PAUserProtocol>)caller;
+- (void)emergencyCheasesFor:(id<UMLayerM2PAUserProtocol>)caller;
+
+//- (void)stopFoosFor:(id<UMLayerM2PAUserProtocol>)caller;
 
 /* LAYER API. The following methods are called by queued tasks */
 #pragma mark -

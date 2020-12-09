@@ -13,6 +13,10 @@
 
 @implementation UMM2PAState_Off
 
+- (UMM2PAState *)initWithLink:(UMLayerM2PA *)link;
+{
+    return [super initWithLink:link];
+}
 - (NSString *)description
 {
     return @"off";
@@ -49,9 +53,8 @@
 - (UMM2PAState *)eventStart
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateAlignment];
-    [_link.t2 start];
-    return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+    UMM2PAState *s = [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+    return [s eventStart];
 }
 
 - (UMM2PAState *)eventSctpUp
@@ -59,9 +62,8 @@
     [self logStatemachineEvent:__func__];
     [_link.startTimer stop];
     [_link startupInitialisation];
-    [self sendLinkstateOutOfService];
-    [_link notifyMtp3OutOfService];
-    return self;
+    UMM2PAState *s = [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+    return [s eventStart];
 }
 
 - (UMM2PAState *)eventSctpDown
