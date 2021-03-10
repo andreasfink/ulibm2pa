@@ -135,7 +135,6 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [self logStatemachineEvent:__func__];
     [_link.startTimer stop];
     [_link startupInitialisation];
-
     [_link notifyMtp3OutOfService];
     [self sendLinkstateAlignment];
     if([_link.t2 isRunning]==NO)
@@ -291,7 +290,6 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 
 - (void) sendLinkstateAlignment
 {
-
     [_link sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT];
     _link.linkstateAlignmentSent++;
     [_link.stateMachineLogFeed debugText:@"sendLinkstateAlignment"];

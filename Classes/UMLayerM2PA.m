@@ -153,7 +153,7 @@
 
 - (void)setState:(UMM2PAState *)state
 {
-    [_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     
     if((_logLevel <=UMLOG_DEBUG) || (_stateMachineLogFeed))
     {
@@ -172,7 +172,7 @@
         }
     }
     _state = state;
-    [_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
 }
 
 #pragma mark -
@@ -232,18 +232,18 @@
 }
 - (void)sctpReportsUp
 {
-    [_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     _sctpUpReceived++;
     self.state = [_state eventSctpUp];
-    [_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
 }
 
 - (void)sctpReportsDown
 {
-    [_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     _sctpDownReceived++;
     self.state = [_state eventSctpDown];
-    [_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
 }
 
 - (void) _sctpStatusIndicationTask:(UMM2PATask_sctpStatusIndication *)task
@@ -439,9 +439,9 @@
                 }
 
                 NSData *userData = [NSData dataWithBytes:&dptr[16] length:userDataLen];
-                [_controlLock lock];
+                UMMUTEX_LOCK(_controlLock);
                 self.state = [_state eventReceiveUserData:userData];
-                [_controlLock unlock];
+                UMMUTEX_UNLOCK(_controlLock);
                 [_data_link_buffer replaceBytesInRange: NSMakeRange(0,len) withBytes:"" length:0];
             }
         }
@@ -487,7 +487,7 @@
             [self logDebug:[NSString stringWithFormat:@" %d bytes of linkstatus data received",(int)data.length]];
         }
         
-        [_controlLock lock];
+        UMMUTEX_LOCK(_controlLock);
         @try
         {
             [_control_link_buffer appendData:data];
@@ -546,83 +546,87 @@
         }
         @finally
         {
-            [_controlLock unlock];
+            UMMUTEX_UNLOCK(_controlLock);
         }
     }
 }
 
 - (void) _oos_received
 {
-	[_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     _linkstateOutOfServiceReceived++;
+    if(_state == NULL)
+    {
+        _state = [[UMM2PAState_Off alloc]initWithLink:self];
+    }
     self.state = [_state eventLinkstatusOutOfService];
-	[_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
 }
 
 - (void) _alignment_received
 {
-	[_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     self.state = [_state eventLinkstatusAlignment];
     _linkstateAlignmentReceived++;
     _linkstateProvingReceived=0;
     _linkstateProvingSent=0;
-	[_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
 
 }
 
 - (void) _proving_normal_received
 {
-    [_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     _linkstateProvingReceived++;
     self.state = [_state eventLinkstatusProvingNormal];
-	[_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
 }
 
 - (void) _proving_emergency_received
 {
-	[_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     _linkstateProvingReceived++;
     _emergency = YES;
     self.state = [_state eventLinkstatusProvingEmergency];
-	[_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
 }
 
 
 - (void) _linkstate_ready_received
 {
-	[_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     _linkstateReadyReceived++;
     self.state = [_state eventLinkstatusReady];
-	[_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
 }
 
 - (void) _linkstate_processor_outage_received
 {
-	[_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     _linkstateProcessorOutageReceived++;
     self.state = [_state eventLinkstatusProcessorOutage];
-	[_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
 }
 
 - (void) _linkstate_processor_recovered_received
 {
-	[_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     _linkstateProcessorRecoveredReceived++;
     self.state = [_state eventLinkstatusProcessorRecovered];
-	[_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
 }
 
 - (void) _linkstate_busy_received
 {
-	[_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     _linkstateBusyReceived++;
     self.state = [_state eventLinkstatusBusy];
-	[_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
 }
 
 - (void) _linkstate_busy_ended_received
 {
-	[_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     _linkstateBusyEndedReceived++;
 
     self.state = [_state eventLinkstatusBusyEnded];
@@ -630,7 +634,7 @@
     _link_congestion_cleared_time = [NSDate date];
     _congested = NO;
     [_t6 stop];
-	[_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
 
     [self sendCongestionClearedIndication];
     if([_waitingMessages count]>0)
@@ -813,60 +817,60 @@
 
 - (void)_timerFires1
 {
-    [_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     self.state = [_state eventTimer1];
-    [_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
 }
 - (void)_timerFires2
 {
-    [_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     self.state = [_state eventTimer2];
-    [_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
 }
 
 - (void)_timerFires3
 {
-    [_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     self.state = [_state eventTimer3];
-    [_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
 
 }
 
 - (void)_timerFires4
 {
-    [_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     self.state = [_state eventTimer4];
-    [_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
 }
 
 - (void)_timerFires4r
 {
-    [_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     self.state = [_state eventTimer4r];
-    [_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
 }
 
 - (void)_timerFires5
 {
-    [_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     self.state = [_state eventTimer5];
-    [_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
 }
 
 - (void)_timerFires6
 {
 	/* Figure 13/Q.703 (sheet 2 of 7) */
-    [_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     self.state = [_state eventTimer6];
 	_linkstate_busy = NO;
 	[_t7 stop];
-    [_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
 }
 - (void)_timerFires7
 {
-    [_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     self.state = [_state eventTimer7];
-    [_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
 }
 
 
@@ -1355,9 +1359,9 @@
     }
     else
     {
-        [_controlLock lock];
+        UMMUTEX_LOCK(_controlLock);
         [_state eventSendUserData:mtp3_data ackRequest:task.ackRequest];
-        [_controlLock unlock];
+        UMMUTEX_UNLOCK(_controlLock);
     }
 }
 
@@ -1439,7 +1443,7 @@
 
 - (void)_timerEventTask:(UMM2PATask_TimerEvent *)task
 {
-    [_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
 	NSString *timerName = task.timerName;
 	if([timerName isEqualToString:@"t1"])
 	{
@@ -1477,7 +1481,7 @@
 	{
 		UMAssert(0,@"Unknown timer fires: '%@'",timerName);
 	}
-    [_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
 }
 
 #pragma mark -
@@ -1511,41 +1515,40 @@
 
 - (void)powerOn
 {
-    [_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     _powerOnCounter++;
     self.state = [[UMM2PAState_Off alloc]initWithLink:self];
     self.state = [_state eventPowerOn];
-    [_controlLock unlock];
-
+    UMMUTEX_UNLOCK(_controlLock);
     /* we do additinoal stuff for power on in sctpReportsUp */
  }
 
 - (void)powerOff
 {
     
-    [_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     _powerOffCounter++;
     self.state = [_state eventStop];
     self.state = [_state eventPowerOff];
     [_sctpLink closeFor:self];
     [self startupInitialisation];
-    [_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
 }
 
 - (void)start
 {
-    [_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     _startCounter++;
     self.state = [_state eventStart];
-    [_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
 }
 
 - (void)stop
 {
-    [_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     _stopCounter++;
     self.state = [_state eventStop];
-    [_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
 }
 
 + (NSString *)linkStatusString:(M2PA_linkstate_message) linkstate
@@ -1766,25 +1769,25 @@
 
 -(void)txcSendSIN
 {
-    [_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     _linkstateProvingSent++;
     [self sendLinkstatus:M2PA_LINKSTATE_PROVING_NORMAL];
-    [_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
 }
 
 -(void)txcSendSIE
 {
-    [_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     _linkstateProvingSent++;
     [self sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY];
-    [_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
 }
 
 -(void)txcSendFISU
 {
-    [_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     [self sendLinkstatus:M2PA_LINKSTATE_READY];
-    [_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
 
 }
 
