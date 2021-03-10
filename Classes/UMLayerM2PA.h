@@ -332,6 +332,9 @@ typedef enum PocStatus
 @property(readwrite,assign,atomic)  int powerOnCounter;
 @property(readwrite,assign,atomic)  int powerOffCounter;
 @property(readwrite,assign,atomic)  BOOL forcedOutOfService;
+@property(readonly,strong,atomic)   UMMutex *dataLock;
+@property(readonly,strong,atomic)   UMMutex *controlLock;
+
 
 - (UMLayerM2PA *)initWithTaskQueueMulti:(UMTaskQueueMulti *)tq;
 - (UMLayerM2PA *)initWithTaskQueueMulti:(UMTaskQueueMulti *)tq name:(NSString *)name;
