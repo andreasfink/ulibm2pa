@@ -1254,9 +1254,6 @@
         _outstanding = ((long)_fsn - (long)_bsn2 ) % FSN_BSN_SIZE;
         //mm_layer_log_debug((mm_generic_layer *)link,PLACE_M2PA_GENERAL,"TX Outstanding=%u",link->outstanding);
     }
-    [_seqNumLock unlock];
-
-
     uint8_t header[16];
     size_t totallen =  sizeof(header) + data.length;
     header[0] = M2PA_VERSION1; /* version field */
@@ -1287,6 +1284,7 @@
            protocolId:SCTP_PROTOCOL_IDENTIFIER_M2PA
            ackRequest:ackRequest];
     [_dataLock unlock];
+    [_seqNumLock unlock];
     [_ackTimer start];
 }
 
@@ -1308,9 +1306,6 @@
     {
         _outstanding = ((long)_fsn - (long)_bsn2 ) % FSN_BSN_SIZE;
     }
-    [_seqNumLock unlock];
-
-
     uint8_t header[16];
     size_t totallen =  sizeof(header) + 0;
     header[0] = M2PA_VERSION1; /* version field */
@@ -1341,6 +1336,7 @@
             ackRequest:NULL];
     [_dataLock unlock];
     [_ackTimer start];
+    [_seqNumLock unlock];
 }
 
 - (void)_dataTask:(UMM2PATask_Data *)task
