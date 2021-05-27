@@ -97,7 +97,11 @@
 
 #define    M2PA_DEFAULT_START_TIMER    30.0 /* 30s */
 
-#define    M2PA_DEFAULT_ACK_TIMER    0.250 /* 250ms */
+#define    M2PA_DEFAULT_ACK_TIMER    0.100 /* 100ms */
+
+#define    M2PA_DEFAULT_T16    200.0 /* 200s */
+#define    M2PA_DEFAULT_T17    0.25 /* 200s */
+#define    M2PA_DEFAULT_T18    1.0 /* 200s */
 
 /* how many outstanding unacknowledgedpackets are allowed */
 #define    M2PA_DEFAULT_WINDOW_SIZE     128
@@ -227,6 +231,10 @@ typedef enum PocStatus
 		 	T7 (4.8) = 4-6 s	Bit rate of 4.8 kbit/s
 		 */
 		/* A timing mechanism, timer T7, shall be provided which generates an indication of excessive delay of acknowledgement if, assuming that there is at least one outstanding MSU in the retransmission buffer, no new acknowledgement has been received within a time-out T7 (see 12.3). In the case of excessive delay in the reception of acknowledgements, a link failure indications is given to level 3. */
+
+    UMTimer     *_t16;  /* proving rate timer */
+    UMTimer     *_t17;  /* Ready Rate Timer */
+    UMTimer     *_t18;  /* Processor Outage Rate Timer */
 
     UMTimer    *_ackTimer;    /* if no MSU is being sent and there is outstanding ACKs from the other side we have to send empty MSUs */
     UMTimer    *_startTimer;    /* time between SCTP power on retries in case SCTP doesnt come up */
@@ -509,5 +517,6 @@ typedef enum PocStatus
 - (void)sendData:(NSData *)data
           stream:(uint16_t)streamId
       ackRequest:(NSDictionary *)ackRequest;
+-(void)sendEmptyMSU;
 
 @end

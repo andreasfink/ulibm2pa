@@ -125,8 +125,10 @@
             _t5 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires5) object:NULL seconds:M2PA_DEFAULT_T5 name:@"t5" repeats:NO runInForeground:YES];
             _t6 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires6) object:NULL seconds:M2PA_DEFAULT_T6 name:@"t6" repeats:NO runInForeground:YES];
             _t7 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires7) object:NULL seconds:M2PA_DEFAULT_T7 name:@"t7" repeats:NO runInForeground:YES];
+            _t16 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires7) object:NULL seconds:M2PA_DEFAULT_T16 name:@"t16" repeats:NO runInForeground:YES];
+            _t17 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires7) object:NULL seconds:M2PA_DEFAULT_T17 name:@"t17" repeats:NO runInForeground:YES];
+            _t18 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires7) object:NULL seconds:M2PA_DEFAULT_T18 name:@"t18" repeats:NO runInForeground:YES];
             _ackTimer = [[UMTimer alloc]initWithTarget:self selector:@selector(ackTimerFires) object:NULL seconds:M2PA_DEFAULT_ACK_TIMER name:@"ack-timer" repeats:YES runInForeground:YES];
-
             _startTimer = [[UMTimer alloc]initWithTarget:self selector:@selector(startTimerFires) object:NULL seconds:M2PA_DEFAULT_START_TIMER name:@"start-timer" repeats:NO runInForeground:YES];
 
             _t4n = M2PA_DEFAULT_T4_N;
@@ -429,7 +431,8 @@
                     _outstanding = ((long)_fsn - (long)_bsn2 ) % FSN_BSN_SIZE;
                 }
                 [self checkSpeed];
-                [_ackTimer start];
+
+                [_ackTimer startIfNotRunning];
                 int userDataLen = len-16;
                 if(userDataLen < 0)
                 {
@@ -1238,10 +1241,12 @@
     [_dataLock lock];
     [_t1 stop]; /* alignment ready	*/
     [_t6 stop]; /* Remote congestion	*/
-
-
     [_seqNumLock lock];
-    _fsn = (_fsn+1) % FSN_BSN_SIZE;
+    /* if data is passed NULL; we send a empty ack packet and do not increase FSN */
+    if(data != NULL)
+    {
+        _fsn = (_fsn+1) % FSN_BSN_SIZE;
+    }
     /* The FSN and BSN values range from 0 to 16,777,215 */
     if((_fsn == FSN_BSN_MASK) || (_bsn2 == FSN_BSN_MASK))
     {
@@ -1277,15 +1282,17 @@
     _lastTxFsn = _fsn;
 
     NSMutableData *sctpData = [[NSMutableData alloc]initWithBytes:&header length:sizeof(header)];
-    [sctpData appendData:data];
+    if(data)
+    {
+        [sctpData appendData:data];
+    }
     [_sctpLink dataFor:self
                  data:sctpData
              streamId:streamId
            protocolId:SCTP_PROTOCOL_IDENTIFIER_M2PA
            ackRequest:ackRequest];
-    [_dataLock unlock];
     [_seqNumLock unlock];
-    [_ackTimer start];
+    [_dataLock unlock];
 }
 
 - (void)sendEmptyUserDataPacket
@@ -1293,7 +1300,6 @@
     uint16_t    streamId = M2PA_STREAM_USERDATA;
 
     [_dataLock lock];
-
     [_seqNumLock lock];
     _fsn = (_fsn+0) % FSN_BSN_SIZE; /* we do NOT increase the counter for empty packets */
     /* The FSN and BSN values range from 0 to 16,777,215 */
@@ -1324,10 +1330,8 @@
     header[13] = (_fsn >> 16) & 0xFF;
     header[14] = (_fsn >> 8) & 0xFF;
     header[15] = (_fsn >> 0) & 0xFF;
-
     _lastTxBsn = _bsn;
     _lastTxFsn = _fsn;
-
     NSMutableData *sctpData = [[NSMutableData alloc]initWithBytes:&header length:sizeof(header)];
     [_sctpLink dataFor:self
                   data:sctpData
@@ -1335,7 +1339,6 @@
             protocolId:SCTP_PROTOCOL_IDENTIFIER_M2PA
             ackRequest:NULL];
     [_dataLock unlock];
-    [_ackTimer start];
     [_seqNumLock unlock];
 }
 
@@ -1742,6 +1745,14 @@
 	[_t7 stop];
 }
 
+-(void)sendEmptyMSU
+{
+    [self sendData:NULL
+            stream:M2PA_STREAM_USERDATA
+        ackRequest:NULL];
+}
+
+
 -(void)txcSendMSU:(NSData *)msu ackRequest:(NSDictionary *)ackRequest
 {
     if(msu == NULL)
@@ -1778,6 +1789,14 @@
     [self sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY];
     UMMUTEX_UNLOCK(_controlLock);
 }
+
+-(void)txcSendEMPTY_DATA
+{
+    UMMUTEX_LOCK(_controlLock);
+    [self sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY];
+    UMMUTEX_UNLOCK(_controlLock);
+}
+
 
 -(void)txcSendFISU
 {
@@ -1919,6 +1938,7 @@
     config[@"t5"] =@(_t5.seconds);
     config[@"t6"] =@(_t6.seconds);
     config[@"t7"] =@(_t7.seconds);
+    config[@"ack-timer"] =@(_ackTimer.seconds);
     return config;
 }
 
@@ -1988,6 +2008,11 @@
         {
             _t7.seconds = [cfg[@"t7"] doubleValue];
         }
+        if (cfg[@"ack-timer"])
+        {
+            _ackTimer.seconds = [cfg[@"ack-timer"] doubleValue];
+        }
+
         if(cfg[@"state-machine-log"])
         {
             NSString *fileName = [cfg[@"state-machine-log"] stringValue];
