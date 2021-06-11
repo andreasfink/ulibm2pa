@@ -1287,10 +1287,11 @@
         [sctpData appendData:data];
     }
     [_sctpLink dataFor:self
-                 data:sctpData
-             streamId:streamId
-           protocolId:SCTP_PROTOCOL_IDENTIFIER_M2PA
-           ackRequest:ackRequest];
+                  data:sctpData
+              streamId:streamId
+            protocolId:SCTP_PROTOCOL_IDENTIFIER_M2PA
+            ackRequest:ackRequest
+          synchronous:YES];
     [_seqNumLock unlock];
     [_dataLock unlock];
 }
@@ -1337,9 +1338,10 @@
                   data:sctpData
               streamId:streamId
             protocolId:SCTP_PROTOCOL_IDENTIFIER_M2PA
-            ackRequest:NULL];
-    [_dataLock unlock];
+            ackRequest:NULL
+           synchronous:YES];
     [_seqNumLock unlock];
+    [_dataLock unlock];
 }
 
 - (void)_dataTask:(UMM2PATask_Data *)task
@@ -1683,10 +1685,11 @@
         }
 
         [_sctpLink dataFor:self
-                     data:data
-                 streamId:M2PA_STREAM_LINKSTATE
-               protocolId:SCTP_PROTOCOL_IDENTIFIER_M2PA
-               ackRequest:NULL];
+                      data:data
+                  streamId:M2PA_STREAM_LINKSTATE
+                protocolId:SCTP_PROTOCOL_IDENTIFIER_M2PA
+                ackRequest:NULL
+               synchronous:YES];
     }
 }
 
