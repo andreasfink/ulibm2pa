@@ -48,16 +48,7 @@
 
 - (UMM2PAState *)eventLinkstatusOutOfService
 {
-    [self logStatemachineEvent:__func__];
-    [_link.startTimer stop];
-    [_link startupInitialisation];
-    [_link notifyMtp3OutOfService];
-    [self sendLinkstateOutOfService];
-    if([_link.t2 isRunning]==NO)
-    {
-        [_link.t2 start];
-    }
-    return  [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+    return [super eventLinkstatusOutOfService];
 }
 
 

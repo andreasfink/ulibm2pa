@@ -74,6 +74,11 @@
 
 - (UMM2PAState *)eventLinkstatusOutOfService
 {
+    /*
+      we are already in this state. we have to do nothing here as
+      otherwise we will do start playing ping-pong. The proper
+      action is MTP3 to send us start now
+    */
     [self logStatemachineEvent:__func__];
     return self;
 }
