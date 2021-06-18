@@ -940,6 +940,17 @@
            data:(NSData *)sendingData
      ackRequest:(NSDictionary *)ack
 {
+    [self dataFor:caller
+             data:sendingData
+       ackRequest:ack
+            async:YES];
+}
+
+- (void)dataFor:(id<UMLayerM2PAUserProtocol>)caller
+           data:(NSData *)sendingData
+     ackRequest:(NSDictionary *)ack
+          async:(BOOL)async
+{
     @autoreleasepool
     {
 
@@ -949,11 +960,14 @@
                                                            ackRequest:ack];
 
         /* we can not queue this as otherwise the sequence might been destroyed */
-    #if 0
-        [task main];
-    #else
-        [self queueFromUpper:task];
-    #endif
+        if(async==NO)
+        {
+            [task main];
+        }
+        else
+        {
+            [self queueFromUpper:task];
+        }
     }
 }
 
@@ -1695,7 +1709,6 @@
 
 #pragma mark -
 #pragma mark Config Handling
-
 
 -(void)rcStart
 {

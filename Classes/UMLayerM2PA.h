@@ -444,6 +444,11 @@ typedef enum PocStatus
            data:(NSData *)sendingData
      ackRequest:(NSDictionary *)ack;
 
+- (void)dataFor:(id<UMLayerM2PAUserProtocol>)caller
+           data:(NSData *)sendingData
+     ackRequest:(NSDictionary *)ack
+          async:(BOOL)async;
+
 
 - (void)powerOnFor:(id<UMLayerM2PAUserProtocol>)caller;
 - (void)powerOffFor:(id<UMLayerM2PAUserProtocol>)caller;
