@@ -52,8 +52,6 @@
     return  self;
 }
 
-
-
 - (UMM2PAState *)eventEmergency
 {
     [self logStatemachineEvent:__func__];

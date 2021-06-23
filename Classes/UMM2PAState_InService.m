@@ -64,6 +64,13 @@
     return self;
 }
 
+- (UMM2PAState *)eventTimer4r
+{
+    [self logStatemachineEvent:__func__];
+    [_link.t4r stop];
+    return self;
+}
+
 - (UMM2PAState *)eventLinkstatusAlignment
 {
     [self logStatemachineEvent:__func__];
