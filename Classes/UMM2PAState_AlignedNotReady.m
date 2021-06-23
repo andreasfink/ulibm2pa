@@ -48,8 +48,10 @@
 
 - (UMM2PAState *)eventLinkstatusOutOfService
 {
-    return [super eventLinkstatusOutOfService];
+    [self logStatemachineEvent:__func__];
+    return  self;
 }
+
 
 
 - (UMM2PAState *)eventEmergency
@@ -64,6 +66,10 @@
     return self;
 }
 
+- (UMM2PAState *)eventLinkstatusOutOfService
+{
+    
+}
 - (UMM2PAState *)eventLinkstatusAlignment
 {
     [self logStatemachineEvent:__func__];
