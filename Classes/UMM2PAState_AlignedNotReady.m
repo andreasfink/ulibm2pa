@@ -66,10 +66,6 @@
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusOutOfService
-{
-    
-}
 - (UMM2PAState *)eventLinkstatusAlignment
 {
     [self logStatemachineEvent:__func__];
