@@ -344,7 +344,6 @@ typedef enum PocStatus
 @property(readonly,strong,atomic)   UMMutex *controlLock;
 
 
-- (UMLayerM2PA *)initWithTaskQueueMulti:(UMTaskQueueMulti *)tq;
 - (UMLayerM2PA *)initWithTaskQueueMulti:(UMTaskQueueMulti *)tq name:(NSString *)name;
 
 #pragma mark -
