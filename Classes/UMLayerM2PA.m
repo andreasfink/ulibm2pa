@@ -1637,12 +1637,11 @@
             break;
     }
 }
-    
-- (void)sendLinkstatus:(M2PA_linkstate_message)linkstate
+
+- (void)sendLinkstatus:(M2PA_linkstate_message)linkstate synchronous:(BOOL)sync
 {
     @autoreleasepool
     {
-
         NSString *ls = [UMLayerM2PA linkStatusString:linkstate];
         switch(self.sctp_status)
         {
@@ -1698,13 +1697,12 @@
             [self logDebug:[NSString stringWithFormat:@"Sending %@",ls]];
             //mm_m2pa_header_dump13(link,data);
         }
-
         [_sctpLink dataFor:self
                       data:data
                   streamId:M2PA_STREAM_LINKSTATE
                 protocolId:SCTP_PROTOCOL_IDENTIFIER_M2PA
                 ackRequest:NULL
-               synchronous:YES];
+               synchronous:sync];
     }
 }
 
@@ -1752,13 +1750,13 @@
 
 -(void)txcSendSIOS
 {
-    [self sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE];
+    [self sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:YES];
 	[_t7 stop];
 }
 
 -(void)txcSendSIPO
 {
-    [self sendLinkstatus:M2PA_LINKSTATE_PROCESSOR_OUTAGE];
+    [self sendLinkstatus:M2PA_LINKSTATE_PROCESSOR_OUTAGE synchronous:YES];
 	[_t7 stop];
 }
 
@@ -1786,7 +1784,7 @@
 
 -(void)txcSendSIO
 {
-    [self sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT];
+    [self sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT synchronous:YES];
     _linkstateAlignmentSent++;
 
 }
@@ -1795,7 +1793,7 @@
 {
     UMMUTEX_LOCK(_controlLock);
     _linkstateProvingSent++;
-    [self sendLinkstatus:M2PA_LINKSTATE_PROVING_NORMAL];
+    [self sendLinkstatus:M2PA_LINKSTATE_PROVING_NORMAL synchronous:YES];
     UMMUTEX_UNLOCK(_controlLock);
 }
 
@@ -1803,14 +1801,14 @@
 {
     UMMUTEX_LOCK(_controlLock);
     _linkstateProvingSent++;
-    [self sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY];
+    [self sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY synchronous:YES];
     UMMUTEX_UNLOCK(_controlLock);
 }
 
 -(void)txcSendEMPTY_DATA
 {
     UMMUTEX_LOCK(_controlLock);
-    [self sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY];
+    [self sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY synchronous:YES];
     UMMUTEX_UNLOCK(_controlLock);
 }
 
@@ -1818,7 +1816,7 @@
 -(void)txcSendFISU
 {
     UMMUTEX_LOCK(_controlLock);
-    [self sendLinkstatus:M2PA_LINKSTATE_READY];
+    [self sendLinkstatus:M2PA_LINKSTATE_READY synchronous:YES];
     UMMUTEX_UNLOCK(_controlLock);
 
 }

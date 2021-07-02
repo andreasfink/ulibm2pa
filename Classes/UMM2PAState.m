@@ -105,11 +105,11 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [self logStatemachineEvent:__func__];
     [_link.startTimer stop];
     [_link startupInitialisation];
-    [self sendLinkstateOutOfService];
+    [self sendLinkstateOutOfService:NO];
     [_link notifyMtp3OutOfService];
     if(_link.forcedOutOfService == NO)
     {
-        [self sendLinkstateAlignment];
+        [self sendLinkstateAlignment:NO];
     }
     [_link.t2 start];
     return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
@@ -136,7 +136,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [_link.startTimer stop];
     [_link startupInitialisation];
     [_link notifyMtp3OutOfService];
-    [self sendLinkstateOutOfService];
+    [self sendLinkstateOutOfService:NO];
     if([_link.t2 isRunning]==NO)
     {
         [_link.t2 start];
@@ -289,73 +289,74 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 #pragma mark -
 #pragma mark actionHelpers
 
-- (void) sendLinkstateAlignment
+- (void) sendLinkstateAlignment:(BOOL)sync
 {
-    [_link sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT];
+    [_link sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT synchronous:sync];
     _link.linkstateAlignmentSent++;
     [_link.stateMachineLogFeed debugText:@"sendLinkstateAlignment"];
 }
 
-- (void) sendLinkstateProvingNormal
+- (void) sendLinkstateProvingNormal:(BOOL)sync
 {
     if([self isKindOfClass:[UMM2PAState_OutOfService class]])
     {
         NSLog(@"wrong state");
     }
-    [_link sendLinkstatus:M2PA_LINKSTATE_PROVING_NORMAL];
+    [_link sendLinkstatus:M2PA_LINKSTATE_PROVING_NORMAL synchronous:sync];
     _link.linkstateProvingSent++;
     [_link.stateMachineLogFeed debugText:@"sendLinkstateProvingNormal"];
 
 }
 
-- (void) sendLinkstateProvingEmergency
+- (void) sendLinkstateProvingEmergency:(BOOL)sync
 {
-    [_link sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY];
+    [_link sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY synchronous:sync];
     _link.linkstateProvingSent++;
     [_link.stateMachineLogFeed debugText:@"sendLinkstateProvingEmergency"];
 }
 
-- (void) sendLinkstateReady
+- (void) sendLinkstateReady:(BOOL)sync
 {
-    [_link sendLinkstatus:M2PA_LINKSTATE_READY];
+    [_link sendLinkstatus:M2PA_LINKSTATE_READY synchronous:sync];
     _link.linkstateReadySent++;
     [_link.stateMachineLogFeed debugText:@"sendLinkstateReady"];
 
 }
 
-- (void) sendLinkstateProcessorOutage
+
+- (void) sendLinkstateProcessorOutage:(BOOL)sync
 {
-    [_link sendLinkstatus:M2PA_LINKSTATE_PROCESSOR_OUTAGE];
+    [_link sendLinkstatus:M2PA_LINKSTATE_PROCESSOR_OUTAGE synchronous:sync];
     _link.linkstateProcessorOutageSent++;
     [_link.stateMachineLogFeed debugText:@"sendLinkstateProcessorOutage"];
 
 }
 
-- (void) sendLinkstateProcessorRecovered
+- (void) sendLinkstateProcessorRecovered:(BOOL)sync
 {
-    [_link sendLinkstatus:M2PA_LINKSTATE_PROCESSOR_RECOVERED];
+    [_link sendLinkstatus:M2PA_LINKSTATE_PROCESSOR_RECOVERED synchronous:sync];
     _link.linkstateProcessorRecoveredSent++;
     [_link.stateMachineLogFeed debugText:@"sendLinkstateProcessorRecovered"];
 
 }
 
-- (void) sendLinkstateBusy
+- (void) sendLinkstateBusy:(BOOL)sync
 {
-    [_link sendLinkstatus:M2PA_LINKSTATE_BUSY];
+    [_link sendLinkstatus:M2PA_LINKSTATE_BUSY synchronous:sync];
     _link.linkstateBusySent++;
     [_link.stateMachineLogFeed debugText:@"sendLinkstateBusy"];
 
 }
 
-- (void) sendLinkstateBusyEnded
+- (void) sendLinkstateBusyEnded:(BOOL)sync
 {
-    [_link sendLinkstatus:M2PA_LINKSTATE_BUSY_ENDED];
+    [_link sendLinkstatus:M2PA_LINKSTATE_BUSY_ENDED synchronous:sync];
     _link.linkstateBusyEndedSent++;
     [_link.stateMachineLogFeed debugText:@"sendLinkstateBusyEnded"];
 
 }
 
-- (void) sendLinkstateOutOfService
+- (void) sendLinkstateOutOfService:(BOOL)sync
 {
     if([self isKindOfClass:[UMM2PAState_InitialAlignment class]])
     {
@@ -366,7 +367,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
         NSLog(@"wrong state");
     }
 
-    [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE];
+    [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:sync];
     _link.linkstateOutOfServiceSent++;
     [_link.stateMachineLogFeed debugText:@"sendLinkstateOutOfService"];
 

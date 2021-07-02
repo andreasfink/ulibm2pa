@@ -18,7 +18,7 @@
     self = [super initWithLink:link];
     if(self)
     {
-        [self sendLinkstateOutOfService];
+        [self sendLinkstateOutOfService:NO];
     }
     return self;
 }
@@ -49,12 +49,12 @@
     _i_am_starting = YES;
     if(_link.forcedOutOfService)
     {
-        [self sendLinkstateOutOfService];
+        [self sendLinkstateOutOfService:NO];
         return self;
     }
     else
     {
-       [self sendLinkstateAlignment];
+       [self sendLinkstateAlignment:NO];
         return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
     }
 }
@@ -62,7 +62,7 @@
 - (UMM2PAState *)eventSctpUp
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService];
+    [self sendLinkstateOutOfService:NO];
     return self;
 }
 
@@ -100,22 +100,22 @@
     [self logStatemachineEvent:__func__];
     if(_link.forcedOutOfService)
     {
-        [self sendLinkstateOutOfService];
+        [self sendLinkstateOutOfService:NO];
         return self;
     }
 
-    [self sendLinkstateAlignment];
+    [self sendLinkstateAlignment:NO];
     [_link.t2 stop];
     [_link.t4 stop];
     [_link.t4r stop];
     if(_link.emergency)
     {
-        [self sendLinkstateProvingEmergency];
+        [self sendLinkstateProvingEmergency:NO];
         _link.t4.seconds = _link.t4e;
     }
     else
     {
-        [self sendLinkstateProvingNormal];
+        [self sendLinkstateProvingNormal:NO];
         _link.t4.seconds = _link.t4n;
     }
     _link.t4r.repeats = YES;
@@ -129,10 +129,10 @@
 {
 
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService];
+    [self sendLinkstateOutOfService:NO];
     if(_link.forcedOutOfService==NO)
     {
-        [self sendLinkstateAlignment];
+        [self sendLinkstateAlignment:NO];
     }
     if([_link.t2 isRunning]==NO)
     {
@@ -144,10 +144,10 @@
 - (UMM2PAState *)eventLinkstatusProvingEmergency
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService];
+    [self sendLinkstateOutOfService:NO];
     if(_link.forcedOutOfService==NO)
     {
-        [self sendLinkstateAlignment];
+        [self sendLinkstateAlignment:NO];
     }
     if([_link.t2 isRunning]==NO)
     {
@@ -159,42 +159,42 @@
 - (UMM2PAState *)eventLinkstatusReady
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService];
+    [self sendLinkstateOutOfService:NO];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusBusy
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService];
+    [self sendLinkstateOutOfService:NO];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusBusyEnded
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService];
+    [self sendLinkstateOutOfService:NO];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusProcessorOutage
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService];
+    [self sendLinkstateOutOfService:NO];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusProcessorRecovered
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService];
+    [self sendLinkstateOutOfService:NO];
     return self;
 }
 
 - (UMM2PAState *)eventError
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService];
+    [self sendLinkstateOutOfService:NO];
     return self;
 }
 
@@ -203,11 +203,11 @@
     [self logStatemachineEvent:__func__];
     if(_link.forcedOutOfService)
     {
-        [self sendLinkstateOutOfService];
+        [self sendLinkstateOutOfService:NO];
     }
     else
     {
-        [self sendLinkstateAlignment];
+        [self sendLinkstateAlignment:NO];
         return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
     }
     if([_link.t2 isRunning]==NO)

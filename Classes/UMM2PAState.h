@@ -58,15 +58,14 @@
 - (UMM2PAState *)eventTimer7;                       /* timer 7 fired ((excessive delay of acknowledgement) */
 
 /* actions */
-- (void) sendLinkstateAlignment;
-- (void) sendLinkstateProvingNormal;
-- (void) sendLinkstateProvingEmergency;
-- (void) sendLinkstateReady;
-- (void) sendLinkstateProcessorOutage;
-- (void) sendLinkstateProcessorRecovered;
-- (void) sendLinkstateBusy;
-- (void) sendLinkstateBusyEnded;
-- (void) sendLinkstateOutOfService;
-
+- (void) sendLinkstateAlignment:(BOOL)sync;
+- (void) sendLinkstateProvingNormal:(BOOL)sync;
+- (void) sendLinkstateProvingEmergency:(BOOL)sync;
+- (void) sendLinkstateReady:(BOOL)sync;
+- (void) sendLinkstateProcessorOutage:(BOOL)sync;
+- (void) sendLinkstateProcessorRecovered:(BOOL)sync;
+- (void) sendLinkstateBusy:(BOOL)sync;
+- (void) sendLinkstateBusyEnded:(BOOL)sync;
+- (void) sendLinkstateOutOfService:(BOOL)sync;
 @end
 

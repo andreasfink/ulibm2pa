@@ -70,12 +70,12 @@
     [_link.t2 stop];
     if(_link.emergency)
     {
-        [self sendLinkstateProvingEmergency];
+        [self sendLinkstateProvingEmergency:NO];
         _link.t4.seconds = _link.t4e;
     }
     else
     {
-        [self sendLinkstateProvingNormal];
+        [self sendLinkstateProvingNormal:NO];
         _link.t4.seconds = _link.t4n;
     }
     if([_link.t4 isRunning]==NO)
@@ -103,7 +103,7 @@
 - (UMM2PAState *)eventLinkstatusReady
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateReady];
+    [self sendLinkstateReady:NO];
     [_link.t1 stop];
     [_link.t4r stop];
     [_link.t4 stop];
@@ -144,20 +144,19 @@
 - (UMM2PAState *)eventTimer4r
 {
     [self logStatemachineEvent:__func__];
-
     if((_t4_expired) && (_link.linkstateProvingSent > 5))
     {
-        [self sendLinkstateReady];
+        [self sendLinkstateReady:NO];
         return [[UMM2PAState_AlignedReady alloc]initWithLink:_link];
     }
 
     if(_link.emergency)
     {
-        [self sendLinkstateProvingEmergency];
+        [self sendLinkstateProvingEmergency:NO];
     }
     else
     {
-        [self sendLinkstateProvingNormal];
+        [self sendLinkstateProvingNormal:NO];
     }
     return self;
 }
@@ -167,7 +166,7 @@
     [self logStatemachineEvent:__func__];
     if(    _link.linkstateProvingSent > 5)
     {
-        [self sendLinkstateReady];
+        [self sendLinkstateReady:NO];
         return [[UMM2PAState_AlignedReady alloc]initWithLink:_link];
     }
     else

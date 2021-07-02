@@ -483,7 +483,7 @@ typedef enum PocStatus
 - (void)_dataTask:(UMM2PATask_Data *)task;
 
 - (void)checkSpeed;
-- (void) sendLinkstatus:(M2PA_linkstate_message)linkstate;
+- (void) sendLinkstatus:(M2PA_linkstate_message)linkstate synchronous:(BOOL)sync;
 - (void) sctpIncomingDataMessage:(NSData *)data;
 - (void) sctpIncomingLinkstateMessage:(NSData *)data;
 + (NSString *)linkStatusString:(M2PA_linkstate_message) linkstate;

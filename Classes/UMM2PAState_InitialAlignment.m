@@ -70,12 +70,12 @@
     [_link.t2 stop];
     if(_link.emergency)
     {
-        [self sendLinkstateProvingEmergency];
+        [self sendLinkstateProvingEmergency:NO];
         _link.t4.seconds = _link.t4e;
     }
     else
     {
-        [self sendLinkstateProvingNormal];
+        [self sendLinkstateProvingNormal:NO];
         _link.t4.seconds = _link.t4n;
     }
     if([_link.t4 isRunning]==NO)
