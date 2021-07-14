@@ -77,7 +77,7 @@
     /*
       we are already in this state. we have to do nothing here as
       otherwise we will do start playing ping-pong. The proper
-      action is MTP3 to send us start now
+      action is MTP3 to send us start now (if not already done)
     */
     [self logStatemachineEvent:__func__];
     return self;
@@ -108,6 +108,7 @@
     [_link.t2 stop];
     [_link.t4 stop];
     [_link.t4r stop];
+
     if(_link.emergency)
     {
         [self sendLinkstateProvingEmergency:NO];
@@ -118,8 +119,9 @@
         [self sendLinkstateProvingNormal:NO];
         _link.t4.seconds = _link.t4n;
     }
-    _link.t4r.repeats = YES;
     UMM2PAState *nstate = [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link];
+    [_link setState:nstate];
+    _link.t4r.repeats = YES;
     [_link.t4 start];
     [_link.t4r start];
     return nstate;
@@ -127,7 +129,6 @@
 
 - (UMM2PAState *)eventLinkstatusProvingNormal
 {
-
     [self logStatemachineEvent:__func__];
     [self sendLinkstateOutOfService:NO];
     if(_link.forcedOutOfService==NO)

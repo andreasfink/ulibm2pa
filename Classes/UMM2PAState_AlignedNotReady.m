@@ -64,6 +64,7 @@
     return self;
 }
 
+
 - (UMM2PAState *)eventLinkstatusAlignment
 {
     [self logStatemachineEvent:__func__];
@@ -107,8 +108,10 @@
     [_link.t1 stop];
     [_link.t4r stop];
     [_link.t4 stop];
+    UMM2PAState *nstate = [[UMM2PAState_InService alloc]initWithLink:_link];
+    [_link setState:nstate];
     [_link notifyMtp3InService];
-    return [[UMM2PAState_InService alloc]initWithLink:_link];
+    return nstate;
 }
 
 - (UMM2PAState *)eventLinkstatusBusy

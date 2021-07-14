@@ -63,6 +63,7 @@
     [_link.startTimer stop];
     [_link startupInitialisation];
     UMM2PAState *s = [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+    [_link setState:s];
     return [s eventStart];
 }
 

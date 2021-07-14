@@ -59,7 +59,7 @@
 /*  64k link: 40-50s	*/
 /*  4.8k: 500-600s */
 
-#define	M2PA_DEFAULT_T2	6.0 /* 6s */
+#define	M2PA_DEFAULT_T2	12.0 /* 12s */
 /* T2: not aligned */
 /* low: 5-50s */
 /* high: 70-150s */

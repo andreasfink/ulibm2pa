@@ -78,12 +78,11 @@
         [self sendLinkstateProvingNormal:NO];
         _link.t4.seconds = _link.t4n;
     }
-    if([_link.t4 isRunning]==NO)
-    {
-        [_link.t4 start];
-    }
+    UMM2PAState *nstate = [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link];
+    [_link setState:nstate];
+    [_link.t4 start];
     [_link.t4r start];
-    return [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link];
+    return nstate;
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal
