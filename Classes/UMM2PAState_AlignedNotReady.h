@@ -12,6 +12,7 @@
 {
     BOOL _t4_expired;
     BOOL _ready_received;
+    BOOL _switching_to_is;
 }
 @end
 

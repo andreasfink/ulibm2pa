@@ -19,6 +19,10 @@
 
 - (M2PA_Status)statusCode
 {
+    if(_switching_to_is)
+    {
+        return M2PA_STATUS_IS;
+    }
     return M2PA_STATUS_ALIGNED_READY;
 }
 
@@ -90,6 +94,7 @@
     [_link.t2 stop];
     [_link.t4r stop];
     [_link.t4 stop];
+    _switching_to_is = YES;
     _link.state = [[UMM2PAState_InService alloc]initWithLink:_link];
     [_link notifyMtp3InService];
     return _link.state;
@@ -149,9 +154,10 @@
     [_link.t2 stop];
     [_link.t4r stop];
     [_link.t4 stop];
-    [_link notifyMtp3InService];
     [_link.stateMachineLogFeed debugText:@"receive-data-going IS"];
+    _switching_to_is = YES;
     _link.state =  [[UMM2PAState_InService alloc]initWithLink:_link];
+    [_link notifyMtp3InService];
     return [_link.state  eventReceiveUserData:userData];
 }
 

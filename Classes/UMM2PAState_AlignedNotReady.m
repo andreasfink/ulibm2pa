@@ -19,6 +19,10 @@
 
 - (M2PA_Status)statusCode
 {
+    if(_switching_to_is)
+    {
+        return M2PA_STATUS_IS;
+    }
     return M2PA_STATUS_ALIGNED_NOT_READY;
 }
 
@@ -111,6 +115,7 @@
     [_link.t4 stop];
     UMM2PAState *newState = [[UMM2PAState_InService alloc]initWithLink:_link];
     _link.state = newState;
+    _switching_to_is = YES;
     [_link notifyMtp3InService];
     return newState;
 }

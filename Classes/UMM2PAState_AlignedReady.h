@@ -10,6 +10,8 @@
 
 
 @interface UMM2PAState_AlignedReady : UMM2PAState
-
+{
+    BOOL _switching_to_is;
+}
 @end
 
