@@ -295,13 +295,16 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 
 - (void) sendLinkstateProvingNormal:(BOOL)sync
 {
-    if([self isKindOfClass:[UMM2PAState_OutOfService class]])
+    if((_statusCode == M2PA_STATUS_INITIAL_ALIGNMENT) && (_statusCode == M2PA_STATUS_ALIGNED_NOT_READY))
     {
-        [_link logWarning:@"sendLinkstateProvingNormal in wrong state (OOS)"];
+        [_link logWarning:@"trying to sendLinkstateProvingNormal not in INITIAL ALIGNMENT or ALIGNED_NOT_READY state. Ignored"];
     }
-    [_link sendLinkstatus:M2PA_LINKSTATE_PROVING_NORMAL synchronous:sync];
-    _link.linkstateProvingSent++;
-    [_link.stateMachineLogFeed debugText:@"sendLinkstateProvingNormal"];
+    else
+    {
+        [_link sendLinkstatus:M2PA_LINKSTATE_PROVING_NORMAL synchronous:sync];
+        _link.linkstateProvingSent++;
+        [_link.stateMachineLogFeed debugText:@"sendLinkstateProvingNormal"];
+    }
 
 }
 
