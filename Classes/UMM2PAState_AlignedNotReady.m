@@ -105,13 +105,14 @@
 {
     [self logStatemachineEvent:__func__];
     [self sendLinkstateReady:NO];
+    [_link notifyMtp3InService];
     [_link.t1 stop];
+    [_link.t2 stop];
     [_link.t4r stop];
     [_link.t4 stop];
-    UMM2PAState *nstate = [[UMM2PAState_InService alloc]initWithLink:_link];
-    [_link setState:nstate];
+    _link.state = [[UMM2PAState_InService alloc]initWithLink:_link];
     [_link notifyMtp3InService];
-    return nstate;
+    return _link.state;
 }
 
 - (UMM2PAState *)eventLinkstatusBusy
