@@ -102,27 +102,24 @@
         return self;
     }
 
-    [self sendLinkstateAlignment:NO];
+    [self sendLinkstateAlignment:YES];
     [_link.t2 stop];
     [_link.t4 stop];
     [_link.t4r stop];
-
-    UMM2PAState *newState = [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link];
-    _link.state = newState;
     if(_link.emergency)
     {
-        [self sendLinkstateProvingEmergency:NO];
+        [self sendLinkstateProvingEmergency:YES];
         _link.t4.seconds = _link.t4e;
     }
     else
     {
-        [self sendLinkstateProvingNormal:NO];
+        [self sendLinkstateProvingNormal:YES];
         _link.t4.seconds = _link.t4n;
     }
     _link.t4r.repeats = YES;
     [_link.t4 start];
     [_link.t4r start];
-    return newState;
+    return [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link];;
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal
