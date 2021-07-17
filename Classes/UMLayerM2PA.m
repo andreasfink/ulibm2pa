@@ -165,7 +165,14 @@
 
 - (void)setState:(UMM2PAState *)state
 {
-    UMAssert((state != NULL),@"state can not be null");
+    if(state == NULL)
+    {
+        NSString *s = UMBacktrace(NULL, 0);
+        NSLog(@"state can not be null. called from:\n%@",s);
+        fflush(stdout);
+        sleep(1);
+        UMAssert((state != NULL),@"state can not be null");
+    }
     UMMUTEX_LOCK(_controlLock);
     if((_logLevel <=UMLOG_DEBUG) || (_stateMachineLogFeed))
     {
