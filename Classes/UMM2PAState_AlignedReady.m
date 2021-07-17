@@ -94,19 +94,6 @@
     return [[UMM2PAState_InService alloc]initWithLink:_link];
 }
 
-- (UMM2PAState *)eventReceiveUserData:(NSData *)userData
-{
-    [self logStatemachineEvent:__func__];
-    [_link.t1 stop];
-    [_link.t2 stop];
-    [_link.t4r stop];
-    [_link.t4 stop];
-    [_link notifyMtp3InService];
-    [_link.stateMachineLogFeed debugText:@"receive-data-going IS"];
-    [_link notifyMtp3UserData:userData];
-    return self;
-}
-
 - (UMM2PAState *)eventLinkstatusBusy
 {
     [self logStatemachineEvent:__func__];
@@ -162,8 +149,10 @@
     [_link.t4r stop];
     [_link.t4 stop];
     [_link notifyMtp3InService];
-    UMM2PAState *is_State =  [[UMM2PAState_InService alloc]initWithLink:_link];
-    return [is_State eventReceiveUserData:userData];
+    [_link.stateMachineLogFeed debugText:@"receive-data-going IS"];
+    _link.state =  [[UMM2PAState_InService alloc]initWithLink:_link];
+    return [_link.state  eventReceiveUserData:userData];
 }
+
 
 @end
