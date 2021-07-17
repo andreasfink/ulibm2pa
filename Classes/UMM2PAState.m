@@ -295,7 +295,8 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 
 - (void) sendLinkstateProvingNormal:(BOOL)sync
 {
-    if(  (_statusCode != M2PA_STATUS_INITIAL_ALIGNMENT)
+    if(   (_statusCode != M2PA_STATUS_OOS)
+       && (_statusCode != M2PA_STATUS_INITIAL_ALIGNMENT)
        && (_statusCode != M2PA_STATUS_ALIGNED_NOT_READY))
     {
         [_link logWarning:@"trying to sendLinkstateProvingNormal not in INITIAL ALIGNMENT or ALIGNED_NOT_READY state. Ignored"];
@@ -310,10 +311,11 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 
 - (void) sendLinkstateProvingEmergency:(BOOL)sync
 {
-    if(  (_statusCode != M2PA_STATUS_INITIAL_ALIGNMENT)
+    if(   (_statusCode != M2PA_STATUS_OOS)
+       && (_statusCode != M2PA_STATUS_INITIAL_ALIGNMENT)
        && (_statusCode != M2PA_STATUS_ALIGNED_NOT_READY))
     {
-        [_link logWarning:@"trying to sendLinkstateProvingEmergency not in INITIAL ALIGNMENT or ALIGNED_NOT_READY state. Ignored"];
+        [_link logWarning:@"trying to sendLinkstateProvingEmergency not in INITIAL ALIGNMENT or ALIGNED_NOT_READY or OOS state. Ignored"];
     }
     else
     {

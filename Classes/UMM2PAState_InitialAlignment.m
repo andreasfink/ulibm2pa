@@ -83,11 +83,9 @@
         [self sendLinkstateProvingNormal:NO];
         _link.t4.seconds = _link.t4n;
     }
-    UMM2PAState *nstate = [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link];
-    [_link setState:nstate];
     [_link.t4 start];
     [_link.t4r start];
-    return nstate;
+    return [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link];;
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal
@@ -141,10 +139,7 @@
 
 - (UMM2PAState *)eventTimer4r
 {
-    [self logStatemachineEvent:__func__];
-    {
-        [self sendLinkstateAlignment:NO];
-    }
+    [_link.t4 stop];
     return self;
 }
 

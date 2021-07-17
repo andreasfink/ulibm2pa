@@ -107,8 +107,8 @@
     [_link.t4 stop];
     [_link.t4r stop];
 
-    UMM2PAState *nstate = [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link];
-    _link.state = nstate;
+    UMM2PAState *newState = [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link];
+    _link.state = newState;
     if(_link.emergency)
     {
         [self sendLinkstateProvingEmergency:NO];
@@ -122,7 +122,7 @@
     _link.t4r.repeats = YES;
     [_link.t4 start];
     [_link.t4r start];
-    return nstate;
+    return newState;
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal

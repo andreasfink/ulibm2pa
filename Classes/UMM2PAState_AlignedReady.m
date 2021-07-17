@@ -95,10 +95,8 @@
     [_link.t4r stop];
     [_link.t4 stop];
     _switching_to_is = YES;
-    UMM2PAState *newState = [[UMM2PAState_InService alloc]initWithLink:_link];
-    _link.state = newState;
     [_link notifyMtp3InService];
-    return newState;
+    return  [[UMM2PAState_InService alloc]initWithLink:_link];;
 }
 
 - (UMM2PAState *)eventLinkstatusBusy
@@ -157,10 +155,8 @@
     [_link.t4 stop];
     [_link.stateMachineLogFeed debugText:@"receive-data-going IS"];
     _switching_to_is = YES;
-    UMM2PAState *newState =  [[UMM2PAState_InService alloc]initWithLink:_link];
-    _link.state = newState;
     [_link notifyMtp3InService];
-    return [newState eventReceiveUserData:userData];
+    return [[UMM2PAState_InService alloc]initWithLink:_link];
 }
 
 
