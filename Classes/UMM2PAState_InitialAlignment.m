@@ -138,4 +138,14 @@
     return self;
 }
 
+
+- (UMM2PAState *)eventTimer4r
+{
+    [self logStatemachineEvent:__func__];
+    {
+        [self sendLinkstateAlignment:NO];
+    }
+    return self;
+}
+
 @end
