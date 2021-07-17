@@ -166,7 +166,7 @@
 - (void)backtraceException
 {
     NSString *s = UMBacktrace(NULL, 0);
-    NSLog("Backtrace: %@",s);
+    NSLog(@"Backtrace: %@",s);
     fflush(stdout);
     sleep(1);
 }
@@ -174,7 +174,6 @@
 {
     if(state == NULL)
     {
-        [self backtraceException];
         [self backtraceException];
         UMAssert((state != NULL),@"state can not be null");
     }

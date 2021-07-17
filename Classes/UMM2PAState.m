@@ -300,7 +300,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 {
     if([self isKindOfClass:[UMM2PAState_OutOfService class]])
     {
-        NSLog(@"wrong state");
+        [_link logWarning:@"sendLinkstateProvingNormal in wrong state (OOS)"];
     }
     [_link sendLinkstatus:M2PA_LINKSTATE_PROVING_NORMAL synchronous:sync];
     _link.linkstateProvingSent++;
@@ -360,19 +360,15 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 {
     if([self isKindOfClass:[UMM2PAState_InitialAlignment class]])
     {
-        NSLog(@"wrong state. InitialAlignment tires to send OOS");
+        [_link logWarning:@"sendLinkstateOutOfService in wrong state (InitialAlignment)"];
     }
    else  if([self isKindOfClass:[UMM2PAState_AlignedReady class]])
     {
-        NSLog(@"wrong state, AlignedReady tries to send OOS");
+        [_link logWarning:@"sendLinkstateOutOfService in wrong state (AlignedRead)"];
     }
    else  if([self isKindOfClass:[UMM2PAState_AlignedNotReady class]])
     {
-        NSLog(@"wrong state.Initial AlignedNotReady tries to send OOS");
-    }
-   else  if([self isKindOfClass:[UMM2PAState_InitialAlignment class]])
-    {
-        NSLog(@"wrong state. Initial Alignment tries to send OOS");
+        [_link logWarning:@"sendLinkstateOutOfService in wrong state (AlignedNotReady)"];
     }
     else
     {
