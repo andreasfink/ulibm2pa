@@ -68,18 +68,27 @@
 #pragma mark -
 #pragma mark Initializer
 
+- (NSString *)stateString
+{
+    return _state.description;
+}
 
+- (M2PA_Status)stateCode
+{
+    return _state.statusCode;
+}
+
+/*
 -(M2PA_Status)m2pa_status
 {
     return _state.statusCode;
 }
 
-
 - (void)setM2pa_status:(M2PA_Status)status
 {
     NSAssert(0,@"we should not use setM2pa_status anymore\n");
 }
-
+*/
 - (UMLayerM2PA *)init
 {
     @throw([NSException exceptionWithName:@"INVALID_INIT" reason:@"UMLayerM2PA must be initialized via initWithTaskQueueMulti:name:" userInfo:NULL]);

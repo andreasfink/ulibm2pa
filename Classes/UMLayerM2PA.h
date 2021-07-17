@@ -343,6 +343,8 @@ typedef enum PocStatus
 @property(readonly,strong,atomic)   UMMutex *dataLock;
 @property(readonly,strong,atomic)   UMMutex *controlLock;
 
+- (NSString *)stateString;
+- (M2PA_Status)stateCode;
 
 - (UMLayerM2PA *)initWithTaskQueueMulti:(UMTaskQueueMulti *)tq name:(NSString *)name;
 
@@ -511,8 +513,8 @@ typedef enum PocStatus
 
 -(void)protocolViolation:(NSString *)reason;
 -(void)protocolViolation;
-- (void)setM2pa_status:(M2PA_Status)status;
-- (M2PA_Status)m2pa_status;
+//- (void)setM2pa_status:(M2PA_Status)status;
+//- (M2PA_Status)m2pa_status;
 - (void)resetSequenceNumbers;
 - (NSDictionary *)apiStatus;
 - (void)stopDetachAndDestroy;
