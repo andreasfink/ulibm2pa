@@ -175,7 +175,6 @@
     if(state == NULL)
     {
         [self backtraceException];
-        [self backtraceException];
         UMAssert((state != NULL),@"state can not be null");
     }
     UMMUTEX_LOCK(_controlLock);
