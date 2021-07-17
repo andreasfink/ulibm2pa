@@ -110,6 +110,7 @@
 - (UMM2PAState *)eventLinkstatusReady
 {
     [self logStatemachineEvent:__func__];
+    //[self sendLinkstateReady:NO]
     return self;
 }
 

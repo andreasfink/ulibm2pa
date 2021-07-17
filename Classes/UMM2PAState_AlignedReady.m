@@ -135,7 +135,7 @@
 - (UMM2PAState *)eventTimer4r
 {
     [self logStatemachineEvent:__func__];
-   // [self sendLinkstateReady];
+    [self sendLinkstateReady:NO];
     [_link.t4r stop];
     return self;
 }
