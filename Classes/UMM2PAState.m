@@ -46,6 +46,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     if(self)
     {
         _link = link;
+        _statusCode = M2PA_STATUS_DISCONNECTED;
     }
     return self;
 }
@@ -74,10 +75,6 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     return @"undefined-state";
 }
 
-- (M2PA_Status)statusCode
-{
-    return M2PA_STATUS_DISCONNECTED;
-}
 
 #pragma mark -
 #pragma mark eventHandlers

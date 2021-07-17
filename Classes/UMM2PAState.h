@@ -15,12 +15,14 @@
 @interface UMM2PAState : UMObject
 {
     UMLayerM2PA *_link;
+    M2PA_Status _statusCode;
 }
 
 @property(readwrite,strong) UMLayerM2PA *link;
+@property(readonly)         M2PA_Status statusCode;
+
 
 - (NSString *)description;
-- (M2PA_Status)statusCode;
 
 - (UMM2PAState *)initWithLink:(UMLayerM2PA *)link;
 - (void)logStatemachineEvent:(const char *)func;

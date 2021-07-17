@@ -12,18 +12,18 @@
 
 @implementation UMM2PAState_AlignedReady
 
+- (UMM2PAState *)initWithLink:(UMLayerM2PA *)link;
+{
+    self =[super initWithLink:link];
+    {
+        _statusCode = M2PA_STATUS_ALIGNED_READY;
+    }
+    return self;
+}
+
 - (NSString *)description
 {
     return @"aligned-ready";
-}
-
-- (M2PA_Status)statusCode
-{
-    if(_switching_to_is)
-    {
-        return M2PA_STATUS_IS;
-    }
-    return M2PA_STATUS_ALIGNED_READY;
 }
 
 - (UMM2PAState *)eventStop

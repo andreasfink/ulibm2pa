@@ -19,19 +19,17 @@
     if(self)
     {
         [self sendLinkstateOutOfService:NO];
+        _statusCode = M2PA_STATUS_OOS;
     }
     return self;
 }
+
 
 - (NSString *)description
 {
     return @"out-of-service";
 }
 
-- (M2PA_Status)statusCode
-{
-    return M2PA_STATUS_OOS;
-}
 
 - (UMM2PAState *)eventStop
 {

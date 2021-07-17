@@ -15,18 +15,17 @@
 
 - (UMM2PAState *)initWithLink:(UMLayerM2PA *)link;
 {
-    return [super initWithLink:link];
+    self =[super initWithLink:link];
+    {
+        _statusCode = M2PA_STATUS_OFF;
+    }
+    return self;
 }
+
 - (NSString *)description
 {
     return @"off";
 }
-
-- (M2PA_Status)statusCode
-{
-    return M2PA_STATUS_OFF;
-}
-
 
 - (UMM2PAState *)eventPowerOff
 {

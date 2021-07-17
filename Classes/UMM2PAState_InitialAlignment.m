@@ -12,15 +12,20 @@
 
 @implementation UMM2PAState_InitialAlignment
 
+- (UMM2PAState *)initWithLink:(UMLayerM2PA *)link;
+{
+    self =[super initWithLink:link];
+    {
+        _statusCode = M2PA_STATUS_INITIAL_ALIGNMENT;
+    }
+    return self;
+}
+
 - (NSString *)description
 {
     return @"initial-alignment";
 }
 
-- (M2PA_Status)statusCode
-{
-    return M2PA_STATUS_INITIAL_ALIGNMENT;
-}
 
 - (UMM2PAState *)eventStop
 {
