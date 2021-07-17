@@ -125,11 +125,13 @@
 - (UMM2PAState *)eventLinkstatusProvingNormal
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService:NO];
-    if(_link.forcedOutOfService==NO)
+    if(_link.forcedOutOfService==YES)
     {
-        [self sendLinkstateAlignment:NO];
+        [self sendLinkstateOutOfService:YES];
+        return self;
     }
+    
+    [self sendLinkstateAlignment:YES];
     if([_link.t2 isRunning]==NO)
     {
         [_link.t2 start];
@@ -140,11 +142,12 @@
 - (UMM2PAState *)eventLinkstatusProvingEmergency
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService:NO];
     if(_link.forcedOutOfService==NO)
     {
-        [self sendLinkstateAlignment:NO];
+        [self sendLinkstateOutOfService:YES];
+        return;
     }
+    [self sendLinkstateAlignment:YES];
     if([_link.t2 isRunning]==NO)
     {
         [_link.t2 start];
@@ -155,42 +158,42 @@
 - (UMM2PAState *)eventLinkstatusReady
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService:NO];
+    [self sendLinkstateOutOfService:YES];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusBusy
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService:NO];
+    [self sendLinkstateOutOfService:YES];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusBusyEnded
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService:NO];
+    [self sendLinkstateOutOfService:YES];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusProcessorOutage
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService:NO];
+    [self sendLinkstateOutOfService:YES];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusProcessorRecovered
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService:NO];
+    [self sendLinkstateOutOfService:YES];
     return self;
 }
 
 - (UMM2PAState *)eventError
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService:NO];
+    [self sendLinkstateOutOfService:YES];
     return self;
 }
 
@@ -199,11 +202,11 @@
     [self logStatemachineEvent:__func__];
     if(_link.forcedOutOfService)
     {
-        [self sendLinkstateOutOfService:NO];
+        [self sendLinkstateOutOfService:YES];
     }
     else
     {
-        [self sendLinkstateAlignment:NO];
+        [self sendLinkstateAlignment:YES];
         return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
     }
     if([_link.t2 isRunning]==NO)
