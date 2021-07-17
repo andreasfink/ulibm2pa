@@ -156,8 +156,8 @@
 
 - (void)setState:(UMM2PAState *)state
 {
+    UMAssert((state != NULL),@"state can not be null");
     UMMUTEX_LOCK(_controlLock);
-    
     if((_logLevel <=UMLOG_DEBUG) || (_stateMachineLogFeed))
     {
         if(_state.statusCode != state.statusCode)

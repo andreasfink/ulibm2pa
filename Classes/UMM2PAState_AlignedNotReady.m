@@ -109,9 +109,10 @@
     [_link.t2 stop];
     [_link.t4r stop];
     [_link.t4 stop];
-    _link.state = [[UMM2PAState_InService alloc]initWithLink:_link];
+    UMM2PAState *newState = [[UMM2PAState_InService alloc]initWithLink:_link];
+    _link.state = newState;
     [_link notifyMtp3InService];
-    return _link.state;
+    return newState;
 }
 
 - (UMM2PAState *)eventLinkstatusBusy
