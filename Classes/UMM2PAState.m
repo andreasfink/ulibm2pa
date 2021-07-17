@@ -295,7 +295,8 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 
 - (void) sendLinkstateProvingNormal:(BOOL)sync
 {
-    if((_statusCode == M2PA_STATUS_INITIAL_ALIGNMENT) && (_statusCode == M2PA_STATUS_ALIGNED_NOT_READY))
+    if(  (_statusCode != M2PA_STATUS_INITIAL_ALIGNMENT)
+       && (_statusCode != M2PA_STATUS_ALIGNED_NOT_READY))
     {
         [_link logWarning:@"trying to sendLinkstateProvingNormal not in INITIAL ALIGNMENT or ALIGNED_NOT_READY state. Ignored"];
     }
@@ -305,14 +306,21 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
         _link.linkstateProvingSent++;
         [_link.stateMachineLogFeed debugText:@"sendLinkstateProvingNormal"];
     }
-
 }
 
 - (void) sendLinkstateProvingEmergency:(BOOL)sync
 {
-    [_link sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY synchronous:sync];
-    _link.linkstateProvingSent++;
-    [_link.stateMachineLogFeed debugText:@"sendLinkstateProvingEmergency"];
+    if(  (_statusCode != M2PA_STATUS_INITIAL_ALIGNMENT)
+       && (_statusCode != M2PA_STATUS_ALIGNED_NOT_READY))
+    {
+        [_link logWarning:@"trying to sendLinkstateProvingEmergency not in INITIAL ALIGNMENT or ALIGNED_NOT_READY state. Ignored"];
+    }
+    else
+    {
+        [_link sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY synchronous:sync];
+        _link.linkstateProvingSent++;
+        [_link.stateMachineLogFeed debugText:@"sendLinkstateProvingEmergency"];
+    }
 }
 
 - (void) sendLinkstateReady:(BOOL)sync
