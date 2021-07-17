@@ -105,7 +105,6 @@
 {
     [self logStatemachineEvent:__func__];
     [self sendLinkstateReady:NO];
-    [_link notifyMtp3InService];
     [_link.t1 stop];
     [_link.t2 stop];
     [_link.t4r stop];
