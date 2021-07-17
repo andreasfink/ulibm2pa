@@ -166,7 +166,7 @@
 - (void)backtraceException
 {
     NSString *s = UMBacktrace(NULL, 0);
-    NSLog("Backtrace: %@",s);
+    NSLog(@"Backtrace: %@",s);
     fflush(stdout);
     sleep(1);
 }
