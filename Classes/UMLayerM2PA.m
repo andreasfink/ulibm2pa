@@ -163,14 +163,19 @@
     return _state;
 }
 
+- (void)backtraceException
+{
+    NSString *s = UMBacktrace(NULL, 0);
+    NSLog("Backtrace: %@",s);
+    fflush(stdout);
+    sleep(1);
+}
 - (void)setState:(UMM2PAState *)state
 {
     if(state == NULL)
     {
-        NSString *s = UMBacktrace(NULL, 0);
-        NSLog(@"state can not be null. called from:\n%@",s);
-        fflush(stdout);
-        sleep(1);
+        [self backtraceException];
+        [self backtraceException];
         UMAssert((state != NULL),@"state can not be null");
     }
     UMMUTEX_LOCK(_controlLock);
