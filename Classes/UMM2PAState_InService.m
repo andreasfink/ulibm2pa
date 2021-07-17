@@ -13,17 +13,6 @@
 
 @implementation UMM2PAState_InService
 
-- (UMM2PAState *)initWithLink:(UMLayerM2PA *)link
-{
-    self = [super initWithLink:link];
-    if(self)
-    {
-        _link.m2pa_status = M2PA_STATUS_IS;
-    }
-    return self;
-}
-
-
 - (NSString *)description
 {
     return @"in-service";
