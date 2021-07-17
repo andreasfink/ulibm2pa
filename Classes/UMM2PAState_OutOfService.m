@@ -45,9 +45,9 @@
         [_link.t2 start];
     }
     _i_am_starting = YES;
-    if(_link.forcedOutOfService)
+    if(_link.forcedOutOfService==YES)
     {
-        [self sendLinkstateOutOfService:NO];
+        [self sendLinkstateOutOfService:YES];
         return self;
     }
     else
@@ -96,9 +96,9 @@
 - (UMM2PAState *)eventLinkstatusAlignment
 {
     [self logStatemachineEvent:__func__];
-    if(_link.forcedOutOfService)
+    if(_link.forcedOutOfService==YES)
     {
-        [self sendLinkstateOutOfService:NO];
+        [self sendLinkstateOutOfService:YES];
         return self;
     }
 
@@ -142,10 +142,10 @@
 - (UMM2PAState *)eventLinkstatusProvingEmergency
 {
     [self logStatemachineEvent:__func__];
-    if(_link.forcedOutOfService==NO)
+    if(_link.forcedOutOfService==YES)
     {
         [self sendLinkstateOutOfService:YES];
-        return;
+        return self;
     }
     [self sendLinkstateAlignment:YES];
     if([_link.t2 isRunning]==NO)
@@ -200,9 +200,10 @@
 - (UMM2PAState *)eventTimer2
 {
     [self logStatemachineEvent:__func__];
-    if(_link.forcedOutOfService)
+    if(_link.forcedOutOfService==YES)
     {
         [self sendLinkstateOutOfService:YES];
+        return self;
     }
     else
     {
