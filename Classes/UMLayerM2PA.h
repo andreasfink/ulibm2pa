@@ -59,18 +59,18 @@
 /*  64k link: 40-50s	*/
 /*  4.8k: 500-600s */
 
-#define	M2PA_DEFAULT_T2	12.0 /* 12s */
+#define	M2PA_DEFAULT_T2	5.0 /* 5s */
 /* T2: not aligned */
 /* low: 5-50s */
 /* high: 70-150s */
 
-#define	M2PA_DEFAULT_T3	2.0 /* 2sec */
+#define	M2PA_DEFAULT_T3	1.0 /* 1 sec */
 /* T2: aligned  */
 /* 1-2s */
 
 #define	M2PA_DEFAULT_T4_N	8.0		/* normal proving period  3-70s  8s */
 #define	M2PA_DEFAULT_T4_E	0.5     /* emergency proving period  0.4s - 0.6s : 0.5s*/
-#define	M2PA_DEFAULT_T4_R	0.150   /* resending timer of link status proving every 150ms */
+#define	M2PA_DEFAULT_T4_R	0.100  /* resending timer of link status proving every 100ms */
 /*T4: proving period normal */
 /*  highspeed: 3-70s */
 /*  64k:	7.5-9.5s, nominal 8.5s */
@@ -85,12 +85,12 @@
 #define	M2PA_DEFAULT_T5	0.1 /* 100ms */
 /* Timer sending SIB. 80-120ms */
 
-#define	M2PA_DEFAULT_T6	3.5 /*3.5s */
+#define	M2PA_DEFAULT_T6	4.0 /*3.5s */
 /* Remote congestion */
 /* 64k: 3-6s */
 /* 4.8k 8-12s */
 
-#define	M2PA_DEFAULT_T7	1.0 /* 1s */
+#define	M2PA_DEFAULT_T7	2.0 /* 1s */
 /* excessive delay of acknowledgement */
 /* 64k: 0.5-2s */
 /* 4.8k 4-6s */
