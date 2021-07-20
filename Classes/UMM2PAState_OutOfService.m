@@ -18,7 +18,7 @@
     self = [super initWithLink:link];
     if(self)
     {
-        [self sendLinkstateOutOfService:NO];
+        [self sendLinkstateOutOfService:YES];
         _statusCode = M2PA_STATUS_OOS;
     }
     return self;
@@ -52,7 +52,7 @@
     }
     else
     {
-       [self sendLinkstateAlignment:NO];
+       [self sendLinkstateAlignment:YES];
         return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
     }
 }
@@ -60,7 +60,7 @@
 - (UMM2PAState *)eventSctpUp
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService:NO];
+    [self sendLinkstateOutOfService:YES];
     return self;
 }
 

@@ -79,8 +79,8 @@
 - (UMM2PAState *)eventLinkstatusAlignment
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService:NO];
-    [self sendLinkstateAlignment:NO];
+    [self sendLinkstateOutOfService:YES];
+    [self sendLinkstateAlignment:YES];
     if([_link.t2 isRunning]==NO)
     {
         [_link.t2 start];
@@ -91,8 +91,8 @@
 - (UMM2PAState *)eventLinkstatusProvingNormal
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService:NO];
-    [self sendLinkstateAlignment:NO];
+    [self sendLinkstateOutOfService:YES];
+    [self sendLinkstateAlignment:YES];
     if([_link.t2 isRunning]==NO)
     {
         [_link.t2 start];
@@ -103,8 +103,8 @@
 - (UMM2PAState *)eventLinkstatusProvingEmergency
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService:NO];
-    [self sendLinkstateAlignment:NO];
+    [self sendLinkstateOutOfService:YES];
+    [self sendLinkstateAlignment:YES];
     if([_link.t2 isRunning]==NO)
     {
         [_link.t2 start];
@@ -115,7 +115,7 @@
 - (UMM2PAState *)eventLinkstatusReady
 {
     [self logStatemachineEvent:__func__];
-    //[self sendLinkstateReady:NO]
+    //[self sendLinkstateReady:YES]
     return self;
 }
 

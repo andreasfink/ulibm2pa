@@ -82,7 +82,7 @@
 
 - (UMM2PAState *)eventEmergency
 {
-    [self sendLinkstateOutOfService:NO];
+    [self sendLinkstateOutOfService:YES];
     [self logStatemachineEvent:__func__];
     _link.emergency = YES;
     return self;
@@ -90,7 +90,7 @@
 
 - (UMM2PAState *)eventEmergencyCeases
 {
-    [self sendLinkstateOutOfService:NO];
+    [self sendLinkstateOutOfService:YES];
     [self logStatemachineEvent:__func__];
     _link.emergency = NO;
     return self;
@@ -98,63 +98,63 @@
 
 - (UMM2PAState *)eventLinkstatusAlignment
 {
-    [self sendLinkstateOutOfService:NO];
+    [self sendLinkstateOutOfService::YES];
     [self logStatemachineEvent:__func__];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal
 {
-    [self sendLinkstateOutOfService:NO];
+    [self sendLinkstateOutOfService:YES];
     [self logStatemachineEvent:__func__];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusProvingEmergency
 {
-    [self sendLinkstateOutOfService:NO];
+    [self sendLinkstateOutOfService:YES];
     [self logStatemachineEvent:__func__];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusReady
 {
-    [self sendLinkstateOutOfService:NO];
+    [self sendLinkstateOutOfService:YES];
     [self logStatemachineEvent:__func__];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusBusy
 {
-    [self sendLinkstateOutOfService:NO];
+    [self sendLinkstateOutOfService:YES];
     [self logStatemachineEvent:__func__];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusBusyEnded
 {
-    [self sendLinkstateOutOfService:NO];
+    [self sendLinkstateOutOfService:YES];
     [self logStatemachineEvent:__func__];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusProcessorOutage
 {
-    [self sendLinkstateOutOfService:NO];
+    [self sendLinkstateOutOfService:YES];
     [self logStatemachineEvent:__func__];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusProcessorRecovered
 {
-    [self sendLinkstateOutOfService:NO];
+    [self sendLinkstateOutOfService:YES];
     [self logStatemachineEvent:__func__];
     return self;
 }
 
 - (UMM2PAState *)eventError
 {
-    [self sendLinkstateOutOfService:NO];
+    [self sendLinkstateOutOfService:YES];
     [self logStatemachineEvent:__func__];
     return self;
 }

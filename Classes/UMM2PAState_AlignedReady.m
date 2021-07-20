@@ -132,7 +132,7 @@
 - (UMM2PAState *)eventTimer4
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateReady:NO];
+    [self sendLinkstateReady:YES];
     [_link.t4r stop];
     return [[UMM2PAState_AlignedReady alloc]initWithLink:_link];
 }
@@ -140,7 +140,7 @@
 - (UMM2PAState *)eventTimer4r
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateReady:NO];
+    [self sendLinkstateReady:YES];
     [_link.t4r stop];
     return self;
 }
