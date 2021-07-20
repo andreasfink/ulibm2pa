@@ -98,7 +98,7 @@
 
 - (UMM2PAState *)eventLinkstatusAlignment
 {
-    [self sendLinkstateOutOfService::YES];
+    [self sendLinkstateOutOfService:YES];
     [self logStatemachineEvent:__func__];
     return self;
 }
