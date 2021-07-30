@@ -56,6 +56,8 @@
 		A68974741A2D334B00854472 /* UMM2PATask_SetSlc.h in Headers */ = {isa = PBXBuildFile; fileRef = A68974721A2D334B00854472 /* UMM2PATask_SetSlc.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A68974751A2D334B00854472 /* UMM2PATask_SetSlc.m in Sources */ = {isa = PBXBuildFile; fileRef = A68974731A2D334B00854472 /* UMM2PATask_SetSlc.m */; };
 		A68974761A2D334B00854472 /* UMM2PATask_SetSlc.m in Sources */ = {isa = PBXBuildFile; fileRef = A68974731A2D334B00854472 /* UMM2PATask_SetSlc.m */; };
+		A68D975826B41A1900442769 /* UMM2PAUnackedPdu.h in Headers */ = {isa = PBXBuildFile; fileRef = A68D975626B41A1900442769 /* UMM2PAUnackedPdu.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A68D975926B41A1900442769 /* UMM2PAUnackedPdu.m in Sources */ = {isa = PBXBuildFile; fileRef = A68D975726B41A1900442769 /* UMM2PAUnackedPdu.m */; };
 		A6B717D61A3193860090FC94 /* UMM2PATask_sctpStatusIndication.h in Headers */ = {isa = PBXBuildFile; fileRef = A6B717D41A3193860090FC94 /* UMM2PATask_sctpStatusIndication.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A6B717D71A3193860090FC94 /* UMM2PATask_sctpStatusIndication.m in Sources */ = {isa = PBXBuildFile; fileRef = A6B717D51A3193860090FC94 /* UMM2PATask_sctpStatusIndication.m */; };
 		A6B717DA1A3193980090FC94 /* UMM2PATask_sctpDataIndication.h in Headers */ = {isa = PBXBuildFile; fileRef = A6B717D81A3193980090FC94 /* UMM2PATask_sctpDataIndication.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -152,6 +154,8 @@
 		A689746E1A2D333200854472 /* UMM2PATask_EmergencyCheases.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UMM2PATask_EmergencyCheases.m; sourceTree = "<group>"; };
 		A68974721A2D334B00854472 /* UMM2PATask_SetSlc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMM2PATask_SetSlc.h; sourceTree = "<group>"; };
 		A68974731A2D334B00854472 /* UMM2PATask_SetSlc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UMM2PATask_SetSlc.m; sourceTree = "<group>"; };
+		A68D975626B41A1900442769 /* UMM2PAUnackedPdu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UMM2PAUnackedPdu.h; sourceTree = "<group>"; };
+		A68D975726B41A1900442769 /* UMM2PAUnackedPdu.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UMM2PAUnackedPdu.m; sourceTree = "<group>"; };
 		A6B717D41A3193860090FC94 /* UMM2PATask_sctpStatusIndication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMM2PATask_sctpStatusIndication.h; sourceTree = "<group>"; };
 		A6B717D51A3193860090FC94 /* UMM2PATask_sctpStatusIndication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UMM2PATask_sctpStatusIndication.m; sourceTree = "<group>"; };
 		A6B717D81A3193980090FC94 /* UMM2PATask_sctpDataIndication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMM2PATask_sctpDataIndication.h; sourceTree = "<group>"; };
@@ -262,6 +266,8 @@
 				A604D06119B999400090FC94 /* ulibm2pa.h */,
 				A6E93D2D1A2CE59700854472 /* UMLayerM2PA.h */,
 				A6E93D2E1A2CE59700854472 /* UMLayerM2PA.m */,
+				A68D975626B41A1900442769 /* UMM2PAUnackedPdu.h */,
+				A68D975726B41A1900442769 /* UMM2PAUnackedPdu.m */,
 				A6827E0C1E37FC6B00F3048B /* UMLayerM2PAApplicationContextProtocol.h */,
 				A68974371A2D29C500854472 /* UMLayerM2PAStatus.h */,
 				A634B48D1A2E7AE900854472 /* UMLayerM2PAUser.h */,
@@ -422,6 +428,7 @@
 				A662F7482421106F00A1A1A1 /* UMM2PAState.h in Headers */,
 				A6C3A10B2421207900DB9AA0 /* UMM2PAState_OutOfService.h in Headers */,
 				A689745B1A2D32F800854472 /* UMM2PATask_PowerOff.h in Headers */,
+				A68D975826B41A1900442769 /* UMM2PAUnackedPdu.h in Headers */,
 				A6C3A113242120A700DB9AA0 /* UMM2PAState_InitialAlignment.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -550,6 +557,7 @@
 				A6C3A1082421206300DB9AA0 /* UMM2PAState_Off.m in Sources */,
 				A6DA2B8C1A2E02F00090FC94 /* UMM2PATask_TimerEvent.m in Sources */,
 				A68974341A2D277900854472 /* UMM2PATask_AdminAttach.m in Sources */,
+				A68D975926B41A1900442769 /* UMM2PAUnackedPdu.m in Sources */,
 				A68974571A2D32E900854472 /* UMM2PATask_PowerOn.m in Sources */,
 				A689745C1A2D32F800854472 /* UMM2PATask_PowerOff.m in Sources */,
 				A6C3A10C2421207900DB9AA0 /* UMM2PAState_OutOfService.m in Sources */,

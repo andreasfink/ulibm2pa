@@ -45,7 +45,7 @@
 - (UMM2PAState *)eventLinkstatusBusyEnded;          /* other side sent us linkstatus busy ended */
 - (UMM2PAState *)eventLinkstatusProcessorOutage;    /* other side sent us linkstatus processor outage */
 - (UMM2PAState *)eventLinkstatusProcessorRecovered; /* other side sent us linkstatus processor recovered */
-- (UMM2PAState *)eventSendUserData:(NSData *)data ackRequest:(NSDictionary *)ackRequest;
+- (UMM2PAState *)eventSendUserData:(NSData *)data ackRequest:(NSDictionary *)ackRequest dpc:(int)dpc;
 - (UMM2PAState *)eventReceiveUserData:(NSData *)userData;
 
 

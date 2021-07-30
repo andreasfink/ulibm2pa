@@ -218,11 +218,14 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 }
 
 
-- (UMM2PAState *)eventSendUserData:(NSData *)data ackRequest:(NSDictionary *)ackRequest
+- (UMM2PAState *)eventSendUserData:(NSData *)data
+                        ackRequest:(NSDictionary *)ackRequest
+                               dpc:(int)dpc
 {
     [_link sendData:data
              stream:M2PA_STREAM_USERDATA
-         ackRequest:ackRequest];
+         ackRequest:ackRequest
+                dpc:dpc];
     [_link.stateMachineLogFeed debugText:@"send-data"];
     return self;
 }

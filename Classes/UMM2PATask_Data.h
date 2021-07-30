@@ -16,17 +16,20 @@
 
 @interface UMM2PATask_Data : UMLayerTask
 {
-    NSData       *data;
-    NSDictionary *ackRequest;
+    NSData       *_data;
+    int         _dpc;
+    NSDictionary *_ackRequest;
 }
 
 @property (readwrite,strong) NSData *data;
+@property (readwrite,assign) int dpc;
 @property (readwrite,strong) NSDictionary *ackRequest;
 
 
 - (UMM2PATask_Data *)initWithReceiver:(UMLayerM2PA *)rx
                                sender:(id<UMLayerM2PAUserProtocol>)tx
                                  data:(NSData *)d
-                           ackRequest:(NSDictionary *)ack;
+                           ackRequest:(NSDictionary *)ack
+                                  dpc:(int)dpc;
 - (void)main;
 @end

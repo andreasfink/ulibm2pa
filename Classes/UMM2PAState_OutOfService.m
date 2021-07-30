@@ -208,12 +208,12 @@
     else
     {
         [self sendLinkstateAlignment:YES];
+        if([_link.t2 isRunning]==NO)
+        {
+            [_link.t2 start];
+        }
         return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
     }
-    if([_link.t2 isRunning]==NO)
-    {
-        [_link.t2 start];
-    }
-    return self;
 }
+
 @end

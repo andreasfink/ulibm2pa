@@ -33,6 +33,7 @@
 #import "UMLayerM2PAUserProfile.h"
 #import "UMM2PATask_AdminAttachOrder.h"
 #import "UMM2PATask_AdminDetachOrder.h"
+#import "UMM2PAUnackedPdu.h"
 
 #import "UMM2PAState_allStates.h"
 
@@ -112,7 +113,7 @@
             _dataLock = [[UMMutex alloc]initWithName:@"m2pa-data-mutex"];
             _controlLock = [[UMMutex alloc]initWithName:@"m2pa-control-mutex"];
             _incomingDataBufferLock = [[UMMutex alloc]initWithName:@"m2pa-incoming-data-mutex"];
-
+            _unackedMsu = [[UMSynchronizedDictionary alloc]init];
             _state = [[UMM2PAState_Off alloc]initWithLink:self];
             _slc = 0;
             _emergency = NO;
@@ -120,7 +121,6 @@
             _local_processor_outage = NO;
             _remote_processor_outage = NO;
             _sctp_status = UMSOCKET_STATUS_OOS;
-
             _link_restarts = 0;
             _linkstateReadyReceived = 0;
             _ready_sent = 0;
@@ -140,14 +140,11 @@
             _t18 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires7) object:NULL seconds:M2PA_DEFAULT_T18 name:@"t18" repeats:NO runInForeground:YES];
             _ackTimer = [[UMTimer alloc]initWithTarget:self selector:@selector(ackTimerFires) object:NULL seconds:M2PA_DEFAULT_ACK_TIMER name:@"ack-timer" repeats:YES runInForeground:YES];
             _startTimer = [[UMTimer alloc]initWithTarget:self selector:@selector(startTimerFires) object:NULL seconds:M2PA_DEFAULT_START_TIMER name:@"start-timer" repeats:NO runInForeground:YES];
-
             _t4n = M2PA_DEFAULT_T4_N;
             _t4e = M2PA_DEFAULT_T4_E;
-
             _control_link_buffer        = [[NSMutableData alloc] init];
             _data_link_buffer           = [[NSMutableData alloc] init];
             _waitingMessages            = [[UMQueueSingle alloc]init];
-
             _inboundThroughputPackets   =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
             _outboundThroughputPackets  =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
             _inboundThroughputBytes     =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
@@ -336,7 +333,14 @@
         }
         if(task.protocolId != SCTP_PROTOCOL_IDENTIFIER_M2PA)
         {
-            [self logMajorError:@"PROTOCOL IDENTIFIER IS NOT M2PA"];
+            NSMutableString *s = [[NSMutableString alloc]init];
+            [s appendString:@"----PROTOCOL IDENTIFIER IS NOT M2PA----"];
+            [s appendString:@"\n  in sctpDataIndication:"];
+            [s appendFormat:@"\n    data: %@",task.data.description];
+            [s appendFormat:@"\n    streamId: %d",task.streamId];
+            [s appendFormat:@"\n    protocolId: %d",task.protocolId];
+            [s appendFormat:@"\n    userId: %@",task.userId  ? task.userId : @"(null)"];
+            [self protocolViolation:s];
             return;
         }
 
@@ -367,7 +371,7 @@
             {
                 [self sctpIncomingLinkstateMessage:task.data];
             }
-            else if((task.streamId == M2PA_STREAM_USERDATA) && ( message_type==1))
+            else if((task.streamId == M2PA_STREAM_USERDATA) && (message_type==1))
             {
                 [self sctpIncomingDataMessage:task.data];
             }
@@ -411,9 +415,7 @@
         [_inboundThroughputPackets increaseBy:1];
         [_inboundThroughputBytes increaseBy:(uint32_t)data.length];
         u_int32_t len;
-        
         const char *dptr;
-
         [_incomingDataBufferLock lock];
         @try
         {
@@ -438,10 +440,28 @@
                 }
             
                 /* BSN in a packet is the last FSN received from the peer */
-                /* so we set BSN for the next outgoing packet */
-                _lastRxBsn = _bsn2 = ntohl(*(u_int32_t *)&dptr[8]) & FSN_BSN_MASK;
+                /* so we set _bsn for the next outgoing packet */
+                _bsn2 = ntohl(*(u_int32_t *)&dptr[8]) & FSN_BSN_MASK;
+                if(_bsn2 > _lastRxBsn)
+                {
+                    for(u_int32_t i =_lastRxBsn+1; i <= _bsn2; i++)
+                    {
+                        [_unackedMsu removeObjectForKey:@(i)];
+                    }
+                }
+                else if (_bsn2 < _lastRxBsn)
+                {
+                    for(u_int32_t i =_lastRxBsn+1; i < FSN_BSN_SIZE; i++)
+                    {
+                        [_unackedMsu removeObjectForKey:@(i)];
+                    }
+                    for(u_int32_t i = 0; i <= _bsn2; i++)
+                    {
+                        [_unackedMsu removeObjectForKey:@(i)];
+                    }
+                }
+                _lastRxBsn = _bsn2;
                 _lastRxFsn = _bsn  = ntohl(*(u_int32_t *)&dptr[12]) & FSN_BSN_MASK;
-
                 if((_fsn >= FSN_BSN_MASK) || (_bsn2 >= FSN_BSN_MASK))
                 {
                     _outstanding = 0;
@@ -452,7 +472,6 @@
                     _outstanding = ((long)_fsn - (long)_bsn2 ) % FSN_BSN_SIZE;
                 }
                 [self checkSpeed];
-
                 [_ackTimer startIfNotRunning];
                 int userDataLen = len-16;
                 if(userDataLen < 0)
@@ -960,17 +979,8 @@
 - (void)dataFor:(id<UMLayerM2PAUserProtocol>)caller
            data:(NSData *)sendingData
      ackRequest:(NSDictionary *)ack
-{
-    [self dataFor:caller
-             data:sendingData
-       ackRequest:ack
-            async:YES];
-}
-
-- (void)dataFor:(id<UMLayerM2PAUserProtocol>)caller
-           data:(NSData *)sendingData
-     ackRequest:(NSDictionary *)ack
           async:(BOOL)async
+            dpc:(int)dpc
 {
     @autoreleasepool
     {
@@ -978,7 +988,8 @@
         UMLayerTask *task = [[UMM2PATask_Data alloc] initWithReceiver:self
                                                                sender:caller
                                                                  data:sendingData
-                                                           ackRequest:ack];
+                                                           ackRequest:ack
+                                                                  dpc:dpc];
 
         /* we can not queue this as otherwise the sequence might been destroyed */
         if(async==NO)
@@ -1269,6 +1280,7 @@
 - (void)sendData:(NSData *)data
           stream:(uint16_t)streamId
       ackRequest:(NSDictionary *)ackRequest
+             dpc:(int)dpc
 {
     [_outboundThroughputPackets increaseBy:1];
     [_outboundThroughputBytes increaseBy:(uint32_t)data.length];
@@ -1287,12 +1299,10 @@
     {
         _outstanding = 0;
         _bsn2 = _fsn;
-        //mm_layer_log_debug((mm_generic_layer *)link,PLACE_M2PA_GENERAL,"TX Outstanding set to 0");
     }
     else
     {
         _outstanding = ((long)_fsn - (long)_bsn2 ) % FSN_BSN_SIZE;
-        //mm_layer_log_debug((mm_generic_layer *)link,PLACE_M2PA_GENERAL,"TX Outstanding=%u",link->outstanding);
     }
     uint8_t header[16];
     size_t totallen =  sizeof(header) + data.length;
@@ -1316,6 +1326,12 @@
     _lastTxBsn = _bsn;
     _lastTxFsn = _fsn;
 
+    if((streamId == M2PA_STREAM_USERDATA) && (data.length > 0))
+    {
+        UMM2PAUnackedPdu *updu = [[UMM2PAUnackedPdu alloc]init];
+        updu.data = data;
+        _unackedMsu[@(_fsn)] = updu;
+    }
     NSMutableData *sctpData = [[NSMutableData alloc]initWithBytes:&header length:sizeof(header)];
     if(data)
     {
@@ -1326,7 +1342,7 @@
               streamId:streamId
             protocolId:SCTP_PROTOCOL_IDENTIFIER_M2PA
             ackRequest:ackRequest
-          synchronous:YES];
+           synchronous:YES];
     [_seqNumLock unlock];
     [_dataLock unlock];
 }
@@ -1396,7 +1412,7 @@
     else
     {
         UMMUTEX_LOCK(_controlLock);
-        [_state eventSendUserData:mtp3_data ackRequest:task.ackRequest];
+        [_state eventSendUserData:mtp3_data ackRequest:task.ackRequest dpc:task.dpc];
         UMMUTEX_UNLOCK(_controlLock);
     }
 }
@@ -1782,13 +1798,11 @@
 
 -(void)sendEmptyMSU
 {
-    [self sendData:NULL
-            stream:M2PA_STREAM_USERDATA
-        ackRequest:NULL];
+    [self sendData:NULL stream:M2PA_STREAM_USERDATA ackRequest:NULL dpc:0];
 }
 
 
--(void)txcSendMSU:(NSData *)msu ackRequest:(NSDictionary *)ackRequest
+-(void)txcSendMSU:(NSData *)msu ackRequest:(NSDictionary *)ackRequest dpc:(int)dpc
 {
     if(msu == NULL)
     {
@@ -1798,7 +1812,8 @@
     [self checkSpeed];
     [self sendData:msu
             stream:M2PA_STREAM_USERDATA
-        ackRequest:ackRequest];
+        ackRequest:ackRequest
+               dpc:dpc];
 }
 
 

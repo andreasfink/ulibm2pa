@@ -119,7 +119,7 @@
 #define	M2PA_STREAM_LINKSTATE				0
 
 
-#define	FSN_BSN_MASK	0x00FFFFFF
+#define	FSN_BSN_MASK	0x00FFFFFF /* 16777215 */
 #define	FSN_BSN_SIZE	0x01000000
 
 
@@ -180,12 +180,12 @@ typedef enum PocStatus
     u_int32_t							_fsn; /* forward sequence number. Last sequence number sent */
     u_int32_t							_bsn2; /* backward sequence number. Last FSN number acked from the peer for our transmission */
 
-    u_int32_t                            _lastRxFsn;    /* last received FSN */
-    u_int32_t                            _lastRxBsn;    /* last received BSN */
+    u_int32_t                           _lastRxFsn;    /* last received FSN */
+    u_int32_t                           _lastRxBsn;    /* last received BSN */
 
-    u_int32_t                            _lastTxFsn;    /* last sent FSN */
-    u_int32_t                            _lastTxBsn;    /* last sent BSN */
-
+    u_int32_t                           _lastTxFsn;    /* last sent FSN */
+    u_int32_t                           _lastTxBsn;    /* last sent BSN */
+    UMSynchronizedDictionary            *_unackedMsu;
     u_int32_t							_outstanding;
     NSTimeInterval      				_t4n;
     NSTimeInterval      				_t4e;
@@ -343,6 +343,9 @@ typedef enum PocStatus
 @property(readonly,strong,atomic)   UMMutex *dataLock;
 @property(readonly,strong,atomic)   UMMutex *controlLock;
 
+@property(readonly,strong,atomic)   UMSynchronizedDictionary *unackedMsu;
+
+
 - (NSString *)stateString;
 - (M2PA_Status)stateCode;
 
@@ -361,7 +364,6 @@ typedef enum PocStatus
                    streamId:(uint16_t)sid
                  protocolId:(uint32_t)pid
                        data:(NSData *)d;
-
 
 - (void) sctpMonitorIndication:(UMLayer *)caller
                         userId:(id)uid
@@ -443,13 +445,9 @@ typedef enum PocStatus
 
 - (void)dataFor:(id<UMLayerM2PAUserProtocol>)caller
            data:(NSData *)sendingData
-     ackRequest:(NSDictionary *)ack;
-
-- (void)dataFor:(id<UMLayerM2PAUserProtocol>)caller
-           data:(NSData *)sendingData
      ackRequest:(NSDictionary *)ack
-          async:(BOOL)async;
-
+          async:(BOOL)async
+            dpc:(int)dpc;
 
 - (void)powerOnFor:(id<UMLayerM2PAUserProtocol>)caller;
 - (void)powerOffFor:(id<UMLayerM2PAUserProtocol>)caller;
@@ -522,7 +520,8 @@ typedef enum PocStatus
 - (void)startupInitialisation;
 - (void)sendData:(NSData *)data
           stream:(uint16_t)streamId
-      ackRequest:(NSDictionary *)ackRequest;
--(void)sendEmptyMSU;
+      ackRequest:(NSDictionary *)ackRequest
+             dpc:(int)dpc;
+- (void)sendEmptyMSU;
 
 @end

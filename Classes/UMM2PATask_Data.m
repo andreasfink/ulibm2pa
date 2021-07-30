@@ -14,20 +14,20 @@
 #import "UMLayerM2PAUserProtocol.h"
 
 @implementation UMM2PATask_Data
-@synthesize data;
-@synthesize ackRequest;
 
 - (UMM2PATask_Data *)initWithReceiver:(UMLayerM2PA *)rx
                                sender:(id<UMLayerM2PAUserProtocol>)tx
                                  data:(NSData *)d
-                           ackRequest:(NSDictionary *)ack;
+                           ackRequest:(NSDictionary *)ack
+                                  dpc:(int)dpc
 {
     self = [super initWithName:[[self class]description]  receiver:rx sender:tx requiresSynchronisation:NO];
     if(self)
     {
-        self.data = d;
-        self.ackRequest = ack;
+        _data = d;
+        _ackRequest = ack;
         self.receiver = rx;
+        _dpc = dpc;
     }
     return self;
 }
