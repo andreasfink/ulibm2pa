@@ -148,7 +148,7 @@
 
 - (UMM2PAState *)eventReceiveUserData:(NSData *)userData
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ forced:YES];
     [_link.t1 stop];
     [_link.t2 stop];
     [_link.t4r stop];
@@ -156,6 +156,7 @@
     [_link.stateMachineLogFeed debugText:@"receive-data-going IS"];
     _switching_to_is = YES;
     [_link notifyMtp3InService];
+    [_link notifyMtp3UserData:userData];
     return [[UMM2PAState_InService alloc]initWithLink:_link];
 }
 
@@ -166,5 +167,6 @@
     _link.linkstateOutOfServiceSent++;
     [_link.stateMachineLogFeed debugText:@"sendLinkstateOutOfService"];
 }
+
 
 @end

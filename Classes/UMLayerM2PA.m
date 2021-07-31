@@ -495,7 +495,7 @@
     }
 }
 
-- (void)notifyMtp3UserData:(NSData *)userData
+- (void) notifyMtp3UserData:(NSData *)userData
 {
     @autoreleasepool
     {
