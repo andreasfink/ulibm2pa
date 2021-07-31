@@ -68,9 +68,19 @@
 /* T2: aligned  */
 /* 1-2s */
 
-#define	M2PA_DEFAULT_T4_N	8.0		/* normal proving period  3-70s  8s */
-#define	M2PA_DEFAULT_T4_E	0.5     /* emergency proving period  0.4s - 0.6s : 0.5s*/
-#define	M2PA_DEFAULT_T4_R	0.100  /* resending timer of link status proving every 100ms */
+#define M2PA_DEFAULT_T4_N_MIN     3.0
+#define M2PA_DEFAULT_T4_N_MAX     70.0
+#define	M2PA_DEFAULT_T4_N	      8.0		/* normal proving period  3-70s  8s */
+
+#define M2PA_DEFAULT_T4_E_MIN     0.4
+#define M2PA_DEFAULT_T4_E_MAX     0.6
+#define	M2PA_DEFAULT_T4_E	      0.5     /* emergency proving period  0.4s - 0.6s : 0.5s*/
+
+#define M2PA_DEFAULT_T4_R_MIN     0.05
+#define M2PA_DEFAULT_T4_R_MAX     1.0
+#define	M2PA_DEFAULT_T4_R	      0.100  /* resending timer of link status proving every 100ms */
+
+#define M2TIMER_VALIDATE(value,default,min,max)  value = ((value<min) || (value >max)) ? default : value
 /*T4: proving period normal */
 /*  highspeed: 3-70s */
 /*  64k:	7.5-9.5s, nominal 8.5s */

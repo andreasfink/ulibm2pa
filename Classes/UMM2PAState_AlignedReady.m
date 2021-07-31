@@ -94,7 +94,6 @@
     [_link.t2 stop];
     [_link.t4r stop];
     [_link.t4 stop];
-    _switching_to_is = YES;
     [_link notifyMtp3InService];
     return  [[UMM2PAState_InService alloc]initWithLink:_link];;
 }
@@ -154,7 +153,6 @@
     [_link.t4r stop];
     [_link.t4 stop];
     [_link.stateMachineLogFeed debugText:@"receive-data-going IS"];
-    _switching_to_is = YES;
     [_link notifyMtp3InService];
     [_link notifyMtp3UserData:userData];
     return [[UMM2PAState_InService alloc]initWithLink:_link];

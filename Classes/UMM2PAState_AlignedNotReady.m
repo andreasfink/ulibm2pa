@@ -73,6 +73,9 @@
 
 - (UMM2PAState *)eventLinkstatusAlignment
 {
+    /* we are already in alignment */
+    /* so nothing to be done */
+#if 0
     [self logStatemachineEvent:__func__];
     [_link.t2 stop];
     if(_link.emergency)
@@ -90,6 +93,7 @@
         [_link.t4 start];
     }
     [_link.t4r start];
+#endif
     return self;
 }
 
@@ -115,10 +119,8 @@
     [_link.t2 stop];
     [_link.t4r stop];
     [_link.t4 stop];
-    UMM2PAState *newState = [[UMM2PAState_InService alloc]initWithLink:_link];
-    _switching_to_is = YES;
     [_link notifyMtp3InService];
-    return newState;
+    return [[UMM2PAState_InService alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventLinkstatusBusy

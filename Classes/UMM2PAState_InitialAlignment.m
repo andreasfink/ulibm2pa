@@ -73,13 +73,23 @@
 {
     [self logStatemachineEvent:__func__];
     [_link.t2 stop];
+    [_link.t4 stop];
+    [_link.t4r stop];
+    if(_link.t4r.seconds < 0.09)
+    {
+        _link.t4r.seconds = M2PA_DEFAULT_T4_R;
+    }
     if(_link.emergency)
     {
-        [self sendLinkstateProvingEmergency:YES];
         _link.t4.seconds = _link.t4e;
+        [self sendLinkstateProvingEmergency:YES];
     }
     else
     {
+        if(_link.t4n < 0.3)
+        {
+            _link.t4n = M2PA_DEFAULT_T4_N;
+        }
         [self sendLinkstateProvingNormal:YES];
         _link.t4.seconds = _link.t4n;
     }
@@ -91,12 +101,54 @@
 - (UMM2PAState *)eventLinkstatusProvingNormal
 {
     [self logStatemachineEvent:__func__];
+    if(_link.t4r.isRunning== NO)
+    {
+        M2TIMER_VALIDATE(_link.t4r.seconds,M2PA_DEFAULT_T4_R,M2PA_DEFAULT_T4_R_MIN,M2PA_DEFAULT_T4_R_MAX);
+        if(_link.emergency)
+        {
+            double t = _link.t4e;
+            M2TIMER_VALIDATE(t,M2PA_DEFAULT_T4_E,M2PA_DEFAULT_T4_E_MIN,M2PA_DEFAULT_T4_E_MAX);
+            _link.t4e = t;
+            _link.t4.seconds = t;
+            [self sendLinkstateProvingEmergency:YES];
+        }
+        else
+        {
+            double t = _link.t4n;
+            M2TIMER_VALIDATE(t,M2PA_DEFAULT_T4_N,M2PA_DEFAULT_T4_N_MIN,M2PA_DEFAULT_T4_N_MAX);
+            _link.t4n = t;
+            _link.t4.seconds = t;
+            [self sendLinkstateProvingNormal:YES];
+        }
+        [_link.t4r start];
+    }
     return [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventLinkstatusProvingEmergency
 {
     [self logStatemachineEvent:__func__];
+    if(_link.t4r.isRunning== NO)
+    {
+        M2TIMER_VALIDATE(_link.t4r.seconds,M2PA_DEFAULT_T4_R,M2PA_DEFAULT_T4_R_MIN,M2PA_DEFAULT_T4_R_MAX);
+        if(_link.emergency)
+        {
+            double t = _link.t4e;
+            M2TIMER_VALIDATE(t,M2PA_DEFAULT_T4_E,M2PA_DEFAULT_T4_E_MIN,M2PA_DEFAULT_T4_E_MAX);
+            _link.t4e = t;
+            _link.t4.seconds = t;
+            [self sendLinkstateProvingEmergency:YES];
+        }
+        else
+        {
+            double t = _link.t4n;
+            M2TIMER_VALIDATE(t,M2PA_DEFAULT_T4_N,M2PA_DEFAULT_T4_N_MIN,M2PA_DEFAULT_T4_N_MAX);
+            _link.t4n = t;
+            _link.t4.seconds = t;
+            [self sendLinkstateProvingNormal:YES];
+        }
+        [_link.t4r start];
+    }
     return [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link];
 }
 
@@ -145,10 +197,17 @@
 
 - (void) sendLinkstateOutOfService:(BOOL)sync
 {
-    [self logStatemachineEvent:__func__ forced:YES];
-    [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:sync];
-    _link.linkstateOutOfServiceSent++;
-    [_link.stateMachineLogFeed debugText:@"sendLinkstateOutOfService"];
+    if(0)
+    {
+        [self logStatemachineEvent:__func__ forced:YES];
+        [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:sync];
+        _link.linkstateOutOfServiceSent++;
+        [_link.stateMachineLogFeed debugText:@"sendLinkstateOutOfService"];
+    }
+    else
+    {
+        [_link sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT synchronous:sync];
+    }
 }
 
 - (UMM2PAState *)eventReceiveUserData:(NSData *)userData
