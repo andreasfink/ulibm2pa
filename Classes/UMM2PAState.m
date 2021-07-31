@@ -374,6 +374,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     if([self isKindOfClass:[UMM2PAState_InitialAlignment class]])
     {
         [_link logWarning:@"sendLinkstateOutOfService in wrong state (InitialAlignment)"];
+        [_link logWarning:s];
     }
    else  if([self isKindOfClass:[UMM2PAState_AlignedReady class]])
     {
