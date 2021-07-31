@@ -18,7 +18,8 @@
     self = [super initWithLink:link];
     if(self)
     {
-        [self sendLinkstateOutOfService:YES];
+        [self logStatemachineEvent:__func__ forced:YES];
+        //[self sendLinkstateOutOfService:YES];
         _statusCode = M2PA_STATUS_OOS;
     }
     return self;

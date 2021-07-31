@@ -25,7 +25,8 @@
 - (NSString *)description;
 
 - (UMM2PAState *)initWithLink:(UMLayerM2PA *)link;
-- (void)logStatemachineEvent:(const char *)func;
+- (void) logStatemachineEvent:(const char *)func;
+- (void) logStatemachineEvent:(const char *)func forced:(BOOL)forced;
 
 - (UMM2PAState *)eventPowerOn;                      /* switch on the wire */
 - (UMM2PAState *)eventPowerOff;                     /* switch off the wire */

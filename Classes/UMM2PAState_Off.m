@@ -52,6 +52,7 @@
 - (UMM2PAState *)eventStart
 {
     [self logStatemachineEvent:__func__];
+    [self sendLinkstateOutOfService:YES];
     UMM2PAState *s = [[UMM2PAState_OutOfService alloc]initWithLink:_link];
     return [s eventStart];
 }
@@ -61,6 +62,7 @@
     [self logStatemachineEvent:__func__];
     [_link.startTimer stop];
     [_link startupInitialisation];
+    [self sendLinkstateOutOfService:YES];
     UMM2PAState *newState = [[UMM2PAState_OutOfService alloc]initWithLink:_link];
     [_link setState:newState];
     return [newState eventStart];
