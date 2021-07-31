@@ -57,6 +57,14 @@
     return [s eventStart];
 }
 
+- (void) sendLinkstateOutOfService:(BOOL)sync
+{
+    [self logStatemachineEvent:__func__];
+    [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:sync];
+    _link.linkstateOutOfServiceSent++;
+    [_link.stateMachineLogFeed debugText:@"sendLinkstateOutOfService"];
+}
+
 - (UMM2PAState *)eventSctpUp
 {
     [self logStatemachineEvent:__func__];

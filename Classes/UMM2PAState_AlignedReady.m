@@ -159,5 +159,12 @@
     return [[UMM2PAState_InService alloc]initWithLink:_link];
 }
 
+- (void) sendLinkstateOutOfService:(BOOL)sync
+{
+    [self logStatemachineEvent:__func__ forced:YES];
+    [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:sync];
+    _link.linkstateOutOfServiceSent++;
+    [_link.stateMachineLogFeed debugText:@"sendLinkstateOutOfService"];
+}
 
 @end

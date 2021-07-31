@@ -380,27 +380,10 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 
 - (void) sendLinkstateOutOfService:(BOOL)sync
 {
-    if([self isKindOfClass:[UMM2PAState_InitialAlignment class]])
-    {
-        [_link logWarning:@"sendLinkstateOutOfService in wrong state (InitialAlignment)"];
-        NSString *s = UMBacktrace(NULL,0);
-        [_link logWarning:s];
-        usleep(0.1); /* FIXME: temporary to break busyloop.*/
-    }
-   else  if([self isKindOfClass:[UMM2PAState_AlignedReady class]])
-    {
-        [_link logWarning:@"sendLinkstateOutOfService in wrong state (AlignedRead)"];
-    }
-   else  if([self isKindOfClass:[UMM2PAState_AlignedNotReady class]])
-    {
-        [_link logWarning:@"sendLinkstateOutOfService in wrong state (AlignedNotReady)"];
-    }
-    else
-    {
-        [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:sync];
-        _link.linkstateOutOfServiceSent++;
-        [_link.stateMachineLogFeed debugText:@"sendLinkstateOutOfService"];
-    }
+    [self logStatemachineEvent:__func__ forced:YES];
+    [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:sync];
+    _link.linkstateOutOfServiceSent++;
+    [_link.stateMachineLogFeed debugText:@"sendLinkstateOutOfService"];
 }
 
 @end
