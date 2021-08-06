@@ -197,17 +197,19 @@
 
 - (void) sendLinkstateOutOfService:(BOOL)sync
 {
-    if(0)
+#if 0
     {
         [self logStatemachineEvent:__func__ forced:YES];
         [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:sync];
         _link.linkstateOutOfServiceSent++;
         [_link.stateMachineLogFeed debugText:@"sendLinkstateOutOfService"];
     }
-    else
+#else
     {
+        _link.linkstateAlignmentSent++;
         [_link sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT synchronous:sync];
     }
+#endif
 }
 
 - (UMM2PAState *)eventReceiveUserData:(NSData *)userData
