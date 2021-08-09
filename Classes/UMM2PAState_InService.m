@@ -69,6 +69,13 @@
     return self;
 }
 
+- (UMM2PAState *)eventTimer4
+{
+    [self logStatemachineEvent:__func__];
+    [_link.t4 stop];
+    return self;
+}
+
 - (UMM2PAState *)eventTimer4r
 {
     [self logStatemachineEvent:__func__];
