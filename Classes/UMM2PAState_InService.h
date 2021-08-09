@@ -10,6 +10,8 @@
 
 
 @interface UMM2PAState_InService : UMM2PAState
-
+{
+    int _readySent;
+}
 @end
 

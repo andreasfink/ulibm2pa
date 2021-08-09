@@ -91,20 +91,25 @@
 - (UMM2PAState *)eventLinkstatusProvingNormal
 {
     [self logStatemachineEvent:__func__ forced:YES];
-    /* ignored */
+    [self sendLinkstateReady:YES];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusProvingEmergency
 {
     [self logStatemachineEvent:__func__ forced:YES];
-    /* ignored */
+    [self sendLinkstateReady:YES];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusReady
 {
     [self logStatemachineEvent:__func__];
+    _readySent++;
+    if(_readySent < 3)
+    {
+        [self sendLinkstateReady:YES];
+    }
     /* ignored */
     return self;
 }
