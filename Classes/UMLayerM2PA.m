@@ -985,12 +985,11 @@
     @autoreleasepool
     {
 
-        UMLayerTask *task = [[UMM2PATask_Data alloc] initWithReceiver:self
+        UMM2PATask_Data *task = [[UMM2PATask_Data alloc] initWithReceiver:self
                                                                sender:caller
                                                                  data:sendingData
                                                            ackRequest:ack
                                                                   dpc:dpc];
-
         /* we can not queue this as otherwise the sequence might been destroyed */
         if(async==NO)
         {
@@ -1941,7 +1940,7 @@
     }
 }
 
--(void)notifyMtp3InService
+-(void) notifyMtp3InService
 {
     @autoreleasepool
     {
