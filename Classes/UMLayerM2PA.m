@@ -483,12 +483,17 @@
         _outstanding = ((long)_lastTxFsn - (long)end ) % FSN_BSN_SIZE;
     }
 
-    
+    int j= 0;
     if(end > start)
     {
         for(u_int32_t i = (start+1); i <= end; i++)
         {
             [_unackedMsu removeObjectForKey:@(i % FSN_BSN_SIZE)];
+            j++;
+            if(j > _window_size)
+            {
+                break;
+            }
         }
     }
     else if (start < end)
@@ -496,6 +501,11 @@
         for(u_int32_t i = (start+1); i <= (end + FSN_BSN_SIZE); i++)
         {
             [_unackedMsu removeObjectForKey:@(i % FSN_BSN_SIZE)];
+            j++;
+            if(j > _window_size)
+            {
+                break;
+            }
         }
     }
 }
