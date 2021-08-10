@@ -441,36 +441,13 @@
             
                 /* BSN in a packet is the last FSN received from the peer */
                 /* so we set _bsn for the next outgoing packet */
-                _bsn2 = ntohl(*(u_int32_t *)&dptr[8]) & FSN_BSN_MASK;
-                if(_bsn2 > _lastRxBsn)
-                {
-                    for(u_int32_t i =_lastRxBsn+1; i <= _bsn2; i++)
-                    {
-                        [_unackedMsu removeObjectForKey:@(i)];
-                    }
-                }
-                else if (_bsn2 < _lastRxBsn)
-                {
-                    for(u_int32_t i =_lastRxBsn+1; i < FSN_BSN_SIZE; i++)
-                    {
-                        [_unackedMsu removeObjectForKey:@(i)];
-                    }
-                    for(u_int32_t i = 0; i <= _bsn2; i++)
-                    {
-                        [_unackedMsu removeObjectForKey:@(i)];
-                    }
-                }
-                _lastRxBsn = _bsn2;
-                _lastRxFsn = _bsn  = ntohl(*(u_int32_t *)&dptr[12]) & FSN_BSN_MASK;
-                if((_fsn >= FSN_BSN_MASK) || (_bsn2 >= FSN_BSN_MASK))
-                {
-                    _outstanding = 0;
-                    _bsn2 =  _fsn;
-                }
-                else
-                {
-                    _outstanding = ((long)_fsn - (long)_bsn2 ) % FSN_BSN_SIZE;
-                }
+                /* _bsn2 is the last received bsn from the other side */
+                u_int32_t currentRxBsn = ntohl(*(u_int32_t *)&dptr[8]) & FSN_BSN_MASK;
+                u_int32_t currentRxFsn = ntohl(*(u_int32_t *)&dptr[12]) & FSN_BSN_MASK;
+                [self bsnAckFrom:_lastRxBsn to:currentRxBsn];
+                _lastRxBsn = currentRxBsn;
+                _lastRxFsn = currentRxFsn;
+
                 [self checkSpeed];
                 [_ackTimer startIfNotRunning];
                 int userDataLen = len-16;
@@ -494,6 +471,35 @@
         }
     }
 }
+
+- (void)bsnAckFrom:(int)start to:(int)end
+{
+    if((_lastTxFsn >= FSN_BSN_MASK) || (end >= FSN_BSN_MASK))
+    {
+        _outstanding = 0;
+    }
+    else
+    {
+        _outstanding = ((long)_lastTxFsn - (long)end ) % FSN_BSN_SIZE;
+    }
+
+    
+    if(end > start)
+    {
+        for(u_int32_t i = (start+1); i <= end; i++)
+        {
+            [_unackedMsu removeObjectForKey:@(i % FSN_BSN_SIZE)];
+        }
+    }
+    else if (start < end)
+    {
+        for(u_int32_t i = (start+1); i <= (end + FSN_BSN_SIZE); i++)
+        {
+            [_unackedMsu removeObjectForKey:@(i % FSN_BSN_SIZE)];
+        }
+    }
+}
+
 
 - (void) notifyMtp3UserData:(NSData *)userData
 {
@@ -1231,10 +1237,14 @@
     double	current_speed;
 
     [_seqNumLock lock];
-    _outstanding = ((long)_fsn - (long)_bsn2) % FSN_BSN_SIZE;
-    if((_fsn == 0) || (_bsn2== 0) || (_fsn >=FSN_BSN_MASK) || (_bsn2 >=FSN_BSN_MASK))
+    if((_lastTxFsn == FSN_BSN_MASK) || (_lastRxFsn == FSN_BSN_MASK))
     {
         _outstanding = 0;
+        _lastRxFsn = _lastTxFsn;
+    }
+    else
+    {
+        _outstanding = ((long)_lastTxFsn - (long)_lastRxBsn ) % FSN_BSN_SIZE;
     }
     [_seqNumLock unlock];
 
@@ -1291,18 +1301,20 @@
     /* if data is passed NULL; we send a empty ack packet and do not increase FSN */
     if(data != NULL)
     {
-        _fsn = (_fsn+1) % FSN_BSN_SIZE;
+        _lastTxFsn = (_lastTxFsn+1) % FSN_BSN_SIZE;
     }
     /* The FSN and BSN values range from 0 to 16,777,215 */
-    if((_fsn == FSN_BSN_MASK) || (_bsn2 == FSN_BSN_MASK))
+    if((_lastTxFsn == FSN_BSN_MASK) || (_lastRxBsn == FSN_BSN_MASK))
     {
         _outstanding = 0;
-        _bsn2 = _fsn;
+        _lastRxBsn = _lastTxFsn;
     }
     else
     {
-        _outstanding = ((long)_fsn - (long)_bsn2 ) % FSN_BSN_SIZE;
+        _outstanding = ((long)_lastTxFsn - (long)_lastRxBsn ) % FSN_BSN_SIZE;
     }
+    
+    _lastTxBsn = _lastRxFsn;
     uint8_t header[16];
     size_t totallen =  sizeof(header) + data.length;
     header[0] = M2PA_VERSION1; /* version field */
@@ -1313,23 +1325,20 @@
     header[5] = (totallen >> 16) & 0xFF;
     header[6] = (totallen >> 8) & 0xFF;
     header[7] = (totallen >> 0) & 0xFF;
-    header[8] = (_bsn >> 24) & 0xFF;
-    header[9] = (_bsn >> 16) & 0xFF;
-    header[10] = (_bsn >> 8) & 0xFF;
-    header[11] = (_bsn >> 0) & 0xFF;
-    header[12] = (_fsn >> 24) & 0xFF;
-    header[13] = (_fsn >> 16) & 0xFF;
-    header[14] = (_fsn >> 8) & 0xFF;
-    header[15] = (_fsn >> 0) & 0xFF;
-
-    _lastTxBsn = _bsn;
-    _lastTxFsn = _fsn;
+    header[8] = (_lastTxBsn >> 24) & 0xFF;
+    header[9] = (_lastTxBsn >> 16) & 0xFF;
+    header[10] = (_lastTxBsn >> 8) & 0xFF;
+    header[11] = (_lastTxBsn >> 0) & 0xFF;
+    header[12] = (_lastTxFsn >> 24) & 0xFF;
+    header[13] = (_lastTxFsn >> 16) & 0xFF;
+    header[14] = (_lastTxFsn >> 8) & 0xFF;
+    header[15] = (_lastTxFsn >> 0) & 0xFF;
 
     if((streamId == M2PA_STREAM_USERDATA) && (data.length > 0))
     {
         UMM2PAUnackedPdu *updu = [[UMM2PAUnackedPdu alloc]init];
         updu.data = data;
-        _unackedMsu[@(_fsn)] = updu;
+        _unackedMsu[@(_lastTxFsn)] = updu;
     }
     NSMutableData *sctpData = [[NSMutableData alloc]initWithBytes:&header length:sizeof(header)];
     if(data)
@@ -1352,17 +1361,18 @@
 
     [_dataLock lock];
     [_seqNumLock lock];
-    _fsn = (_fsn+0) % FSN_BSN_SIZE; /* we do NOT increase the counter for empty packets */
+    _lastTxFsn = (_lastTxFsn+0) % FSN_BSN_SIZE; /* we do NOT increase the counter for empty packets */
     /* The FSN and BSN values range from 0 to 16,777,215 */
-    if((_fsn == FSN_BSN_MASK) || (_bsn2 == FSN_BSN_MASK))
+    if((_lastTxFsn == FSN_BSN_MASK) || (_lastRxFsn == FSN_BSN_MASK))
     {
         _outstanding = 0;
-        _bsn2 = _fsn;
+        _lastRxFsn = _lastTxFsn;
     }
     else
     {
-        _outstanding = ((long)_fsn - (long)_bsn2 ) % FSN_BSN_SIZE;
+        _outstanding = ((long)_lastTxFsn - (long)_lastRxBsn ) % FSN_BSN_SIZE;
     }
+    _lastTxBsn = _lastRxFsn;
     uint8_t header[16];
     size_t totallen =  sizeof(header) + 0;
     header[0] = M2PA_VERSION1; /* version field */
@@ -1373,16 +1383,14 @@
     header[5] = (totallen >> 16) & 0xFF;
     header[6] = (totallen >> 8) & 0xFF;
     header[7] = (totallen >> 0) & 0xFF;
-    header[8] = (_bsn >> 24) & 0xFF;
-    header[9] = (_bsn >> 16) & 0xFF;
-    header[10] = (_bsn >> 8) & 0xFF;
-    header[11] = (_bsn >> 0) & 0xFF;
-    header[12] = (_fsn >> 24) & 0xFF;
-    header[13] = (_fsn >> 16) & 0xFF;
-    header[14] = (_fsn >> 8) & 0xFF;
-    header[15] = (_fsn >> 0) & 0xFF;
-    _lastTxBsn = _bsn;
-    _lastTxFsn = _fsn;
+    header[8] = (_lastTxBsn >> 24) & 0xFF;
+    header[9] = (_lastTxBsn >> 16) & 0xFF;
+    header[10] = (_lastTxBsn >> 8) & 0xFF;
+    header[11] = (_lastTxBsn >> 0) & 0xFF;
+    header[12] = (_lastTxFsn >> 24) & 0xFF;
+    header[13] = (_lastTxFsn >> 16) & 0xFF;
+    header[14] = (_lastTxFsn >> 8) & 0xFF;
+    header[15] = (_lastTxFsn >> 0) & 0xFF;
     NSMutableData *sctpData = [[NSMutableData alloc]initWithBytes:&header length:sizeof(header)];
     [_sctpLink dataFor:self
                   data:sctpData
@@ -1419,9 +1427,9 @@
 - (void) resetSequenceNumbers
 {
     [_seqNumLock lock];
-    _fsn = 0x00FFFFFF; /* last sent FSN */
-    _bsn = 0x00FFFFFF; /* last received FSN, next BSN to send. */
-    _bsn2 = 0x00FFFFFF; /* last received bsn */
+    _lastTxFsn = 0x00FFFFFF; /* last sent FSN */
+    _lastTxBsn = 0x00FFFFFF; /* last received FSN, next BSN to send. */
+    _lastRxBsn = 0x00FFFFFF; /* last received bsn */
     [_seqNumLock unlock];
 }
 
@@ -2094,9 +2102,9 @@ static NSDateFormatter *dateFormatter = NULL;
         d[@"remote-processor-outage"] = _remote_processor_outage ? @(YES) : @(NO);
         d[@"level3-indication"] = _level3Indication ? @(YES) : @(NO);
         d[@"slc"] = @(_slc);
-        d[@"bsn"] = @(_bsn);
-        d[@"fsn"] = @(_fsn);
-        d[@"bsn2"] = @(_bsn2);
+        d[@"bsn-tx"] = @(_lastTxBsn);
+        d[@"fsn-tx"] = @(_lastTxFsn);
+        d[@"bsn-rx"] = @(_lastRxBsn);
         d[@"outstanding"] = @(_outstanding);
         d[@"congested"] = _congested ? @(YES) : @(NO);
         d[@"emergency"] = _emergency ? @(YES) : @(NO);
