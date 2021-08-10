@@ -444,7 +444,7 @@
                 /* _bsn2 is the last received bsn from the other side */
                 u_int32_t currentRxBsn = ntohl(*(u_int32_t *)&dptr[8]) & FSN_BSN_MASK;
                 u_int32_t currentRxFsn = ntohl(*(u_int32_t *)&dptr[12]) & FSN_BSN_MASK;
-                [self bsnAckFrom:_lastRxBsn to:currentRxBsn];
+                [self bsnAckFrom:_lastTxFsn to:currentRxBsn];
                 _lastRxBsn = currentRxBsn;
                 _lastRxFsn = currentRxFsn;
 
