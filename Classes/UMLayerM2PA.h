@@ -533,5 +533,7 @@ typedef enum PocStatus
       ackRequest:(NSDictionary *)ackRequest
              dpc:(int)dpc;
 - (void)sendEmptyMSU;
+- (void) linktestTimerReportsFailure;
+
 
 @end

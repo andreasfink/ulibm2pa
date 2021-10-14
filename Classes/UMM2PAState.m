@@ -148,7 +148,6 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
         [_link.t2 start];
     }
     return  [[UMM2PAState_OutOfService alloc]initWithLink:_link];
-
 }
 
 
