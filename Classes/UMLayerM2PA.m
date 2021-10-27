@@ -702,6 +702,20 @@
     }
 }
 
+- (void) linktestTimerReportsFailure
+{
+    UMMUTEX_LOCK(_controlLock);
+    if(_state == NULL)
+    {
+        _state = [[UMM2PAState_Off alloc]initWithLink:self];
+    }
+    else
+    {
+        self.state = [_state eventLinkstatusOutOfService];
+    }
+    UMMUTEX_UNLOCK(_controlLock);
+}
+
 - (void)startDequeuingMessages
 {
     @autoreleasepool
