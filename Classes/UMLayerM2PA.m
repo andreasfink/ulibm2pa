@@ -1691,22 +1691,33 @@
     }
 }
 
-- (void)sendLinkstatus:(M2PA_linkstate_message)linkstate synchronous:(BOOL)sync
+- (int)sendLinkstatus:(M2PA_linkstate_message)linkstate synchronous:(BOOL)sync
 {
     @autoreleasepool
     {
         NSString *ls = [UMLayerM2PA linkStatusString:linkstate];
         switch(self.sctp_status)
         {
+
             case UMSOCKET_STATUS_OFF:
                 [self logDebug:[NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_OFF",ls ]];
-                return;
+                usleep(0.1);
+                return -1;
             case UMSOCKET_STATUS_OOS:
                 [self logDebug:[NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_OOS",ls ]];
-                return;
+                usleep(0.1);
+                return -2;
             case UMSOCKET_STATUS_FOOS:
                 [self logDebug:[NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_FOOS",ls ]];
-                return;
+                usleep(0.1);
+                return -3;
+            
+            case UMSOCKET_STATUS_LISTENING:
+                [self logDebug:[NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_LISTENING",ls ]];
+                usleep(0.1);
+                return -4;
+
+            case UMSOCKET_STATUS_IS:
             default:
                 break;
         }
@@ -1757,6 +1768,7 @@
                 ackRequest:NULL
                synchronous:sync];
     }
+    return 0;
 }
 
 #pragma mark -
@@ -1801,7 +1813,8 @@
     
 }
 
--(void)txcSendSIOS
+#ifdef UNUSED
+- (void)txcSendSIOS
 {
     [self sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:YES];
 	[_t7 stop];
@@ -1876,6 +1889,7 @@
 -(void)txcFlushBuffers
 {
 }
+#endif
 
 - (void)notifyMtp3Off
 {

@@ -493,7 +493,7 @@ typedef enum PocStatus
 - (void)_dataTask:(UMM2PATask_Data *)task;
 
 - (void)checkSpeed;
-- (void) sendLinkstatus:(M2PA_linkstate_message)linkstate synchronous:(BOOL)sync;
+- (int) sendLinkstatus:(M2PA_linkstate_message)linkstate synchronous:(BOOL)sync;
 - (void) sctpIncomingDataMessage:(NSData *)data;
 - (void) sctpIncomingLinkstateMessage:(NSData *)data;
 + (NSString *)linkStatusString:(M2PA_linkstate_message) linkstate;
@@ -532,6 +532,6 @@ typedef enum PocStatus
           stream:(uint16_t)streamId
       ackRequest:(NSDictionary *)ackRequest
              dpc:(int)dpc;
-- (void)sendEmptyMSU;
+//- (void)sendEmptyMSU;
 
 @end
