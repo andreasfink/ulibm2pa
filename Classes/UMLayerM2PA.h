@@ -535,6 +535,4 @@ typedef enum PocStatus
 //- (void)sendEmptyMSU;
 - (void) linktestTimerReportsFailure;
 
->>>>>>> 524d0867f5ff54f4eaeceb229917516c25d3bfd6
-
 @end
