@@ -444,7 +444,7 @@
                 /* _bsn2 is the last received bsn from the other side */
                 u_int32_t currentRxBsn = ntohl(*(u_int32_t *)&dptr[8]) & FSN_BSN_MASK;
                 u_int32_t currentRxFsn = ntohl(*(u_int32_t *)&dptr[12]) & FSN_BSN_MASK;
-                [self bsnAckFrom:_lastTxFsn to:currentRxBsn];
+                [self bsnAckFrom:_lastRxBsn to:currentRxBsn];
                 _lastRxBsn = currentRxBsn;
                 _lastRxFsn = currentRxFsn;
 
@@ -490,7 +490,7 @@
         {
             [_unackedMsu removeObjectForKey:@(i % FSN_BSN_SIZE)];
             j++;
-            if(j > _window_size)
+            if(j > (2*_window_size))
             {
                 break;
             }
@@ -502,7 +502,7 @@
         {
             [_unackedMsu removeObjectForKey:@(i % FSN_BSN_SIZE)];
             j++;
-            if(j > _window_size)
+            if(j > (2*_window_size))
             {
                 break;
             }
@@ -1318,7 +1318,6 @@
 {
     [_outboundThroughputPackets increaseBy:1];
     [_outboundThroughputBytes increaseBy:(uint32_t)data.length];
-
     [_dataLock lock];
     [_t1 stop]; /* alignment ready	*/
     [_t6 stop]; /* Remote congestion	*/
@@ -1363,6 +1362,7 @@
     {
         UMM2PAUnackedPdu *updu = [[UMM2PAUnackedPdu alloc]init];
         updu.data = data;
+        updu.dpc = dpc;
         _unackedMsu[@(_lastTxFsn)] = updu;
     }
     NSMutableData *sctpData = [[NSMutableData alloc]initWithBytes:&header length:sizeof(header)];
