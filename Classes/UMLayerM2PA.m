@@ -711,6 +711,7 @@
     }
     else
     {
+    
         self.state = [_state eventLinkstatusOutOfService];
     }
     UMMUTEX_UNLOCK(_controlLock);
@@ -1820,7 +1821,6 @@
 {
     self.emergency = NO;
 }
-
 
 -(void)txcStart
 {
