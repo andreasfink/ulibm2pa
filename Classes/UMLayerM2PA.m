@@ -175,24 +175,34 @@
         UMAssert((state != NULL),@"state can not be null");
     }
     UMMUTEX_LOCK(_controlLock);
-    if((_logLevel <=UMLOG_DEBUG) || (_stateMachineLogFeed))
+    @try
     {
-        if(_state.statusCode != state.statusCode)
+        if((_logLevel <=UMLOG_DEBUG) || (_stateMachineLogFeed))
         {
-            NSString *s;
-            s = [NSString stringWithFormat:@"StateChange: %@->%@",_state.description,state.description];
-            if(_logLevel <=UMLOG_DEBUG)
+            if(_state.statusCode != state.statusCode)
             {
-                [self logDebug:s];
-            }
-            if(_stateMachineLogFeed)
-            {
-                [_stateMachineLogFeed debugText:s];
+                NSString *s;
+                s = [NSString stringWithFormat:@"StateChange: %@->%@",_state.description,state.description];
+                if(_logLevel <=UMLOG_DEBUG)
+                {
+                    [self logDebug:s];
+                }
+                if(_stateMachineLogFeed)
+                {
+                    [_stateMachineLogFeed debugText:s];
+                }
             }
         }
+        _state = state;
     }
-    _state = state;
-    UMMUTEX_UNLOCK(_controlLock);
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
 
 #pragma mark -
@@ -253,23 +263,42 @@
 - (void)sctpReportsUp
 {
     UMMUTEX_LOCK(_controlLock);
-    _sctpUpReceived++;
-    self.state = [_state eventSctpUp];
-    UMMUTEX_UNLOCK(_controlLock);
+    @try
+    {
+        _sctpUpReceived++;
+        self.state = [_state eventSctpUp];
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
 
 - (void)sctpReportsDown
 {
     UMMUTEX_LOCK(_controlLock);
-    _sctpDownReceived++;
-    self.state = [_state eventSctpDown];
-    UMMUTEX_UNLOCK(_controlLock);
+    @try
+    {
+        _sctpDownReceived++;
+        self.state = [_state eventSctpDown];
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
 
 - (void) _sctpStatusIndicationTask:(UMM2PATask_sctpStatusIndication *)task
 {
     self.sctp_status = task.status;
-
 }
 
 - (UMSocketStatus)sctp_status
@@ -460,8 +489,18 @@
 
                 NSData *userData = [NSData dataWithBytes:&dptr[16] length:userDataLen];
                 UMMUTEX_LOCK(_controlLock);
-                self.state = [_state eventReceiveUserData:userData];
-                UMMUTEX_UNLOCK(_controlLock);
+                @try
+                {
+                    self.state = [_state eventReceiveUserData:userData];
+                }
+                @catch(NSException *e)
+                {
+                    [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+                }
+                @finally
+                {
+                    UMMUTEX_UNLOCK(_controlLock);
+                }
                 [_data_link_buffer replaceBytesInRange: NSMakeRange(0,len) withBytes:"" length:0];
             }
         }
@@ -545,7 +584,6 @@
         {
             [self logDebug:[NSString stringWithFormat:@" %d bytes of linkstatus data received",(int)data.length]];
         }
-        
         UMMUTEX_LOCK(_controlLock);
         @try
         {
@@ -553,55 +591,59 @@
             if(_control_link_buffer.length < 20)
             {
                 [self logDebug:@"not enough data received yet"];
-                return;
             }
-     
-            dptr = _control_link_buffer.bytes;
-            len = ntohl(*(u_int32_t *)&dptr[4]);
-            linkstatus = ntohl(*(u_int32_t *)&dptr[16]);
+            else
+            {
+                dptr = _control_link_buffer.bytes;
+                len = ntohl(*(u_int32_t *)&dptr[4]);
+                linkstatus = ntohl(*(u_int32_t *)&dptr[16]);
 
-            if(self.logLevel <= UMLOG_DEBUG)
-            {
-                NSString *ls = [UMLayerM2PA linkStatusString:linkstatus];
-                [self logDebug:[NSString stringWithFormat:@"Received %@",ls]];
+                if(self.logLevel <= UMLOG_DEBUG)
+                {
+                    NSString *ls = [UMLayerM2PA linkStatusString:linkstatus];
+                    [self logDebug:[NSString stringWithFormat:@"Received %@",ls]];
+                }
+                switch(linkstatus)
+                {
+                    case M2PA_LINKSTATE_ALIGNMENT:				/* 1 */
+                        [self _alignment_received];
+                        break;
+                    case M2PA_LINKSTATE_PROVING_NORMAL:			/* 2 */
+                        [self _proving_normal_received];
+                        break;
+                    case M2PA_LINKSTATE_PROVING_EMERGENCY:		/* 3 */
+                        [self _proving_emergency_received];
+                        break;
+                    case M2PA_LINKSTATE_READY:					/* 4 */
+                        [self _linkstate_ready_received];
+                        break;
+                    case M2PA_LINKSTATE_PROCESSOR_OUTAGE:		/* 5 */
+                        [self _linkstate_processor_outage_received];
+                        break;
+                    case M2PA_LINKSTATE_PROCESSOR_RECOVERED:	/* 6 */
+                        [self _linkstate_processor_recovered_received];
+                        break;
+                    case M2PA_LINKSTATE_BUSY:					/* 7 */
+                        [self _linkstate_busy_received];
+                        break;
+                    case M2PA_LINKSTATE_BUSY_ENDED:				/* 8 */
+                        [self _linkstate_busy_ended_received];
+                        break;
+                    case M2PA_LINKSTATE_OUT_OF_SERVICE:		/* 9 */
+                        /* other side tells us they are out of service. I wil let mtp3 know and have it send us a start */
+                        [self _oos_received];
+                        //m2pa_oos_received(link);
+                        break;
+                    default:
+                        [self logMajorError:[NSString stringWithFormat:@"Unknown linkstate '0x%04X' received",linkstatus]];
+                }
+                /* according to RFC 4165, the additional stuff are filler bytes */
+                [_control_link_buffer replaceBytesInRange: NSMakeRange(0,len) withBytes:"" length:0];
             }
-            switch(linkstatus)
-            {
-                case M2PA_LINKSTATE_ALIGNMENT:				/* 1 */
-                    [self _alignment_received];
-                    break;
-                case M2PA_LINKSTATE_PROVING_NORMAL:			/* 2 */
-                    [self _proving_normal_received];
-                    break;
-                case M2PA_LINKSTATE_PROVING_EMERGENCY:		/* 3 */
-                    [self _proving_emergency_received];
-                    break;
-                case M2PA_LINKSTATE_READY:					/* 4 */
-                    [self _linkstate_ready_received];
-                    break;
-                case M2PA_LINKSTATE_PROCESSOR_OUTAGE:		/* 5 */
-                    [self _linkstate_processor_outage_received];
-                    break;
-                case M2PA_LINKSTATE_PROCESSOR_RECOVERED:	/* 6 */
-                    [self _linkstate_processor_recovered_received];
-                    break;
-                case M2PA_LINKSTATE_BUSY:					/* 7 */
-                    [self _linkstate_busy_received];
-                    break;
-                case M2PA_LINKSTATE_BUSY_ENDED:				/* 8 */
-                    [self _linkstate_busy_ended_received];
-                    break;
-                    
-                case M2PA_LINKSTATE_OUT_OF_SERVICE:		/* 9 */
-                    /* other side tells us they are out of service. I wil let mtp3 know and have it send us a start */
-                    [self _oos_received];
-                    //m2pa_oos_received(link);
-                    break;
-                default:
-                    [self logMajorError:[NSString stringWithFormat:@"Unknown linkstate '0x%04X' received",linkstatus]];
-            }
-            /* according to RFC 4165, the additional stuff are filler bytes */
-            [_control_link_buffer replaceBytesInRange: NSMakeRange(0,len) withBytes:"" length:0];
+        }
+        @catch(NSException *e)
+        {
+            [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
         }
         @finally
         {
@@ -613,88 +655,171 @@
 - (void) _oos_received
 {
     UMMUTEX_LOCK(_controlLock);
-    _linkstateOutOfServiceReceived++;
-    if(_state == NULL)
+    @try
     {
-        _state = [[UMM2PAState_Off alloc]initWithLink:self];
+        _linkstateOutOfServiceReceived++;
+        if(_state == NULL)
+        {
+            _state = [[UMM2PAState_Off alloc]initWithLink:self];
+        }
+        self.state = [_state eventLinkstatusOutOfService];
     }
-    self.state = [_state eventLinkstatusOutOfService];
-    UMMUTEX_UNLOCK(_controlLock);
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
 
 - (void) _alignment_received
 {
     UMMUTEX_LOCK(_controlLock);
-    self.state = [_state eventLinkstatusAlignment];
-    _linkstateAlignmentReceived++;
-    _linkstateProvingReceived=0;
-    _linkstateProvingSent=0;
-    UMMUTEX_UNLOCK(_controlLock);
-
+    @try
+    {
+        self.state = [_state eventLinkstatusAlignment];
+        _linkstateAlignmentReceived++;
+        _linkstateProvingReceived=0;
+        _linkstateProvingSent=0;
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
 
 - (void) _proving_normal_received
 {
     UMMUTEX_LOCK(_controlLock);
-    _linkstateProvingReceived++;
-    self.state = [_state eventLinkstatusProvingNormal];
-    UMMUTEX_UNLOCK(_controlLock);
+    @try
+    {
+        _linkstateProvingReceived++;
+        self.state = [_state eventLinkstatusProvingNormal];
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
 
 - (void) _proving_emergency_received
 {
     UMMUTEX_LOCK(_controlLock);
-    _linkstateProvingReceived++;
-    _emergency = YES;
-    self.state = [_state eventLinkstatusProvingEmergency];
-    UMMUTEX_UNLOCK(_controlLock);
+    @try
+    {
+        _linkstateProvingReceived++;
+        _emergency = YES;
+        self.state = [_state eventLinkstatusProvingEmergency];
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
-
 
 - (void) _linkstate_ready_received
 {
     UMMUTEX_LOCK(_controlLock);
-    _linkstateReadyReceived++;
-    self.state = [_state eventLinkstatusReady];
-    UMMUTEX_UNLOCK(_controlLock);
+    @try
+    {
+        _linkstateReadyReceived++;
+        self.state = [_state eventLinkstatusReady];
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
 
 - (void) _linkstate_processor_outage_received
 {
     UMMUTEX_LOCK(_controlLock);
-    _linkstateProcessorOutageReceived++;
-    self.state = [_state eventLinkstatusProcessorOutage];
-    UMMUTEX_UNLOCK(_controlLock);
+    @try
+    {
+        _linkstateProcessorOutageReceived++;
+        self.state = [_state eventLinkstatusProcessorOutage];
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
 
 - (void) _linkstate_processor_recovered_received
 {
     UMMUTEX_LOCK(_controlLock);
-    _linkstateProcessorRecoveredReceived++;
-    self.state = [_state eventLinkstatusProcessorRecovered];
-    UMMUTEX_UNLOCK(_controlLock);
+    @try
+    {
+        _linkstateProcessorRecoveredReceived++;
+        self.state = [_state eventLinkstatusProcessorRecovered];
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
 
 - (void) _linkstate_busy_received
 {
     UMMUTEX_LOCK(_controlLock);
-    _linkstateBusyReceived++;
-    self.state = [_state eventLinkstatusBusy];
-    UMMUTEX_UNLOCK(_controlLock);
+    @try
+    {
+        _linkstateBusyReceived++;
+        self.state = [_state eventLinkstatusBusy];
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
 
 - (void) _linkstate_busy_ended_received
 {
     UMMUTEX_LOCK(_controlLock);
-    _linkstateBusyEndedReceived++;
+    @try
+    {
+        _linkstateBusyEndedReceived++;
 
-    self.state = [_state eventLinkstatusBusyEnded];
-/* FIXME: this belongs into the state machine now */
-    _link_congestion_cleared_time = [NSDate date];
-    _congested = NO;
-    [_t6 stop];
-    UMMUTEX_UNLOCK(_controlLock);
-
+        self.state = [_state eventLinkstatusBusyEnded];
+    /* FIXME: this belongs into the state machine now */
+        _link_congestion_cleared_time = [NSDate date];
+        _congested = NO;
+        [_t6 stop];
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
     [self sendCongestionClearedIndication];
     if([_waitingMessages count]>0)
     {
@@ -705,16 +830,25 @@
 - (void) linktestTimerReportsFailure
 {
     UMMUTEX_LOCK(_controlLock);
-    if(_state == NULL)
+    @try
     {
-        _state = [[UMM2PAState_Off alloc]initWithLink:self];
+        if(_state == NULL)
+        {
+            _state = [[UMM2PAState_Off alloc]initWithLink:self];
+        }
+        else
+        {
+            self.state = [_state eventLinkstatusOutOfService];
+        }
     }
-    else
+    @catch(NSException *e)
     {
-    
-        self.state = [_state eventLinkstatusOutOfService];
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
     }
-    UMMUTEX_UNLOCK(_controlLock);
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
 
 - (void)startDequeuingMessages
@@ -892,59 +1026,138 @@
 - (void)_timerFires1
 {
     UMMUTEX_LOCK(_controlLock);
-    self.state = [_state eventTimer1];
-    UMMUTEX_UNLOCK(_controlLock);
+    @try
+    {
+        self.state = [_state eventTimer1];
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
 - (void)_timerFires2
 {
     UMMUTEX_LOCK(_controlLock);
-    self.state = [_state eventTimer2];
-    UMMUTEX_UNLOCK(_controlLock);
+    @try
+    {
+        self.state = [_state eventTimer2];
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
 
 - (void)_timerFires3
 {
     UMMUTEX_LOCK(_controlLock);
-    self.state = [_state eventTimer3];
-    UMMUTEX_UNLOCK(_controlLock);
-
+    @try
+    {
+        self.state = [_state eventTimer3];
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
 
 - (void)_timerFires4
 {
     UMMUTEX_LOCK(_controlLock);
-    self.state = [_state eventTimer4];
-    UMMUTEX_UNLOCK(_controlLock);
+    @try
+    {
+        self.state = [_state eventTimer4];
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
 
 - (void)_timerFires4r
 {
     UMMUTEX_LOCK(_controlLock);
-    self.state = [_state eventTimer4r];
-    UMMUTEX_UNLOCK(_controlLock);
+    @try
+    {
+        self.state = [_state eventTimer4r];
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
 
 - (void)_timerFires5
 {
     UMMUTEX_LOCK(_controlLock);
-    self.state = [_state eventTimer5];
-    UMMUTEX_UNLOCK(_controlLock);
+    @try
+    {
+        self.state = [_state eventTimer5];
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
 
 - (void)_timerFires6
 {
 	/* Figure 13/Q.703 (sheet 2 of 7) */
     UMMUTEX_LOCK(_controlLock);
-    self.state = [_state eventTimer6];
-	_linkstate_busy = NO;
-	[_t7 stop];
-    UMMUTEX_UNLOCK(_controlLock);
+    @try
+    {
+        self.state = [_state eventTimer6];
+        _linkstate_busy = NO;
+        [_t7 stop];
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
 - (void)_timerFires7
 {
     UMMUTEX_LOCK(_controlLock);
-    self.state = [_state eventTimer7];
-    UMMUTEX_UNLOCK(_controlLock);
+    @try
+    {
+        self.state = [_state eventTimer7];
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
 
 
@@ -1444,8 +1657,18 @@
     else
     {
         UMMUTEX_LOCK(_controlLock);
-        [_state eventSendUserData:mtp3_data ackRequest:task.ackRequest dpc:task.dpc];
-        UMMUTEX_UNLOCK(_controlLock);
+        @try
+        {
+            [_state eventSendUserData:mtp3_data ackRequest:task.ackRequest dpc:task.dpc];
+        }
+        @catch(NSException *e)
+        {
+            [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+        }
+        @finally
+        {
+            UMMUTEX_UNLOCK(_controlLock);
+        }
     }
 }
 
@@ -1528,44 +1751,54 @@
 - (void)_timerEventTask:(UMM2PATask_TimerEvent *)task
 {
     UMMUTEX_LOCK(_controlLock);
-	NSString *timerName = task.timerName;
-	if([timerName isEqualToString:@"t1"])
-	{
-		[self _timerFires1];
-	}
-	else 	if([timerName isEqualToString:@"t2"])
-	{
-		[self _timerFires2];
-	}
-	else 	if([timerName isEqualToString:@"t3"])
-	{
-		[self _timerFires3];
-	}
-	else 	if([timerName isEqualToString:@"t4"])
-	{
-		[self _timerFires4];
-	}
-	else 	if([timerName isEqualToString:@"t4r"])
-	{
-		[self _timerFires4r];
-	}
-	else 	if([timerName isEqualToString:@"t5"])
-	{
-		[self _timerFires5];
-	}
-	else 	if([timerName isEqualToString:@"t6"])
-	{
-		[self _timerFires6];
-	}
-	else 	if([timerName isEqualToString:@"t7"])
-	{
-		[self _timerFires7];
-	}
-	else
-	{
-		UMAssert(0,@"Unknown timer fires: '%@'",timerName);
-	}
-    UMMUTEX_UNLOCK(_controlLock);
+    @try
+    {
+        NSString *timerName = task.timerName;
+        if([timerName isEqualToString:@"t1"])
+        {
+            [self _timerFires1];
+        }
+        else 	if([timerName isEqualToString:@"t2"])
+        {
+            [self _timerFires2];
+        }
+        else 	if([timerName isEqualToString:@"t3"])
+        {
+            [self _timerFires3];
+        }
+        else 	if([timerName isEqualToString:@"t4"])
+        {
+            [self _timerFires4];
+        }
+        else 	if([timerName isEqualToString:@"t4r"])
+        {
+            [self _timerFires4r];
+        }
+        else 	if([timerName isEqualToString:@"t5"])
+        {
+            [self _timerFires5];
+        }
+        else 	if([timerName isEqualToString:@"t6"])
+        {
+            [self _timerFires6];
+        }
+        else 	if([timerName isEqualToString:@"t7"])
+        {
+            [self _timerFires7];
+        }
+        else
+        {
+            UMAssert(0,@"Unknown timer fires: '%@'",timerName);
+        }
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
 
 #pragma mark -
@@ -1600,10 +1833,20 @@
 - (void)powerOn
 {
     UMMUTEX_LOCK(_controlLock);
-    _powerOnCounter++;
-    self.state = [[UMM2PAState_Off alloc]initWithLink:self];
-    self.state = [_state eventPowerOn];
-    UMMUTEX_UNLOCK(_controlLock);
+    @try
+    {
+        _powerOnCounter++;
+        self.state = [[UMM2PAState_Off alloc]initWithLink:self];
+        self.state = [_state eventPowerOn];
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
     /* we do additinoal stuff for power on in sctpReportsUp */
  }
 
@@ -1611,28 +1854,58 @@
 {
     
     UMMUTEX_LOCK(_controlLock);
-    _powerOffCounter++;
-    self.state = [_state eventStop];
-    self.state = [_state eventPowerOff];
-    [_sctpLink closeFor:self];
-    [self startupInitialisation];
-    UMMUTEX_UNLOCK(_controlLock);
+    @try
+    {
+        _powerOffCounter++;
+        self.state = [_state eventStop];
+        self.state = [_state eventPowerOff];
+        [_sctpLink closeFor:self];
+        [self startupInitialisation];
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
 
 - (void)start
 {
     UMMUTEX_LOCK(_controlLock);
-    _startCounter++;
-    self.state = [_state eventStart];
-    UMMUTEX_UNLOCK(_controlLock);
+    @try
+    {
+        _startCounter++;
+        self.state = [_state eventStart];
+    }
+    @catch(NSException *e)
+    {
+            [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
 
 - (void)stop
 {
     UMMUTEX_LOCK(_controlLock);
-    _stopCounter++;
-    self.state = [_state eventStop];
-    UMMUTEX_UNLOCK(_controlLock);
+    @try
+    {
+        _stopCounter++;
+        self.state = [_state eventStop];
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
 
 + (NSString *)linkStatusString:(M2PA_linkstate_message) linkstate
@@ -1871,33 +2144,72 @@
 -(void)txcSendSIN
 {
     UMMUTEX_LOCK(_controlLock);
-    _linkstateProvingSent++;
-    [self sendLinkstatus:M2PA_LINKSTATE_PROVING_NORMAL synchronous:YES];
-    UMMUTEX_UNLOCK(_controlLock);
+    @try
+    {
+        _linkstateProvingSent++;
+        [self sendLinkstatus:M2PA_LINKSTATE_PROVING_NORMAL synchronous:YES];
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
 
 -(void)txcSendSIE
 {
     UMMUTEX_LOCK(_controlLock);
-    _linkstateProvingSent++;
-    [self sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY synchronous:YES];
-    UMMUTEX_UNLOCK(_controlLock);
+    @try
+    {
+        _linkstateProvingSent++;
+        [self sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY synchronous:YES];
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
 
 -(void)txcSendEMPTY_DATA
 {
     UMMUTEX_LOCK(_controlLock);
-    [self sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY synchronous:YES];
-    UMMUTEX_UNLOCK(_controlLock);
+    @try
+    {
+        [self sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY synchronous:YES];
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
 
 
 -(void)txcSendFISU
 {
     UMMUTEX_LOCK(_controlLock);
-    [self sendLinkstatus:M2PA_LINKSTATE_READY synchronous:YES];
-    UMMUTEX_UNLOCK(_controlLock);
-
+    @try
+    {
+        [self sendLinkstatus:M2PA_LINKSTATE_READY synchronous:YES];
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
 }
 
 -(void)txcFlushBuffers
