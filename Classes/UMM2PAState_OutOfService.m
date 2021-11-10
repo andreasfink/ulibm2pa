@@ -101,7 +101,6 @@
         [self sendLinkstateOutOfService:YES];
         return self;
     }
-
     [self sendLinkstateAlignment:YES];
     [_link.t2 stop];
     [_link.t4 stop];
