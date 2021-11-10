@@ -142,7 +142,14 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [_link.startTimer stop];
     [_link startupInitialisation];
     [_link notifyMtp3OutOfService];
-    [self sendLinkstateOutOfService:YES];
+    if(_link.forcedOutOfService == NO)
+    {
+        [self sendLinkstateAlignment:YES];
+    }
+    else
+    {
+        [self sendLinkstateOutOfService:YES];
+    }
     if([_link.t2 isRunning]==NO)
     {
         [_link.t2 start];

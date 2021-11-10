@@ -18,7 +18,6 @@
     self = [super initWithLink:link];
     if(self)
     {
-        [self sendLinkstateOutOfService:YES];
         _statusCode = M2PA_STATUS_OOS;
     }
     return self;
@@ -61,6 +60,7 @@
 {
     [self logStatemachineEvent:__func__];
     [self sendLinkstateOutOfService:YES];
+    /* the start procedure will start the link */
     return self;
 }
 
@@ -130,7 +130,6 @@
         [self sendLinkstateOutOfService:YES];
         return self;
     }
-    
     [self sendLinkstateAlignment:YES];
     if([_link.t2 isRunning]==NO)
     {
@@ -142,16 +141,19 @@
 - (UMM2PAState *)eventLinkstatusProvingEmergency
 {
     [self logStatemachineEvent:__func__];
+    
     if(_link.forcedOutOfService==YES)
     {
         [self sendLinkstateOutOfService:YES];
         return self;
     }
-    [self sendLinkstateAlignment:YES];
-    if([_link.t2 isRunning]==NO)
-    {
-        [_link.t2 start];
-    }
+
+   
+        [self sendLinkstateAlignment:YES];
+        if([_link.t2 isRunning]==NO)
+        {
+            [_link.t2 start];
+        }
     return self;
 }
 
@@ -159,6 +161,14 @@
 {
     [self logStatemachineEvent:__func__];
     [self sendLinkstateOutOfService:YES];
+    if(_link.forcedOutOfService==NO)
+    {
+        [self sendLinkstateAlignment:YES];
+        if([_link.t2 isRunning]==NO)
+        {
+            [_link.t2 start];
+        }
+    }
     return self;
 }
 
@@ -166,6 +176,14 @@
 {
     [self logStatemachineEvent:__func__];
     [self sendLinkstateOutOfService:YES];
+    if(_link.forcedOutOfService==NO)
+    {
+        [self sendLinkstateAlignment:YES];
+        if([_link.t2 isRunning]==NO)
+        {
+            [_link.t2 start];
+        }
+    }
     return self;
 }
 
@@ -173,6 +191,14 @@
 {
     [self logStatemachineEvent:__func__];
     [self sendLinkstateOutOfService:YES];
+    if(_link.forcedOutOfService==NO)
+    {
+        [self sendLinkstateAlignment:YES];
+        if([_link.t2 isRunning]==NO)
+        {
+            [_link.t2 start];
+        }
+    }
     return self;
 }
 
@@ -180,6 +206,15 @@
 {
     [self logStatemachineEvent:__func__];
     [self sendLinkstateOutOfService:YES];
+    [self sendLinkstateAlignment:YES];
+    if(_link.forcedOutOfService==NO)
+    {
+        [self sendLinkstateAlignment:YES];
+        if([_link.t2 isRunning]==NO)
+        {
+            [_link.t2 start];
+        }
+    }
     return self;
 }
 
@@ -187,6 +222,14 @@
 {
     [self logStatemachineEvent:__func__];
     [self sendLinkstateOutOfService:YES];
+    if(_link.forcedOutOfService==NO)
+    {
+        [self sendLinkstateAlignment:YES];
+        if([_link.t2 isRunning]==NO)
+        {
+            [_link.t2 start];
+        }
+    }
     return self;
 }
 
@@ -194,6 +237,14 @@
 {
     [self logStatemachineEvent:__func__];
     [self sendLinkstateOutOfService:YES];
+    if(_link.forcedOutOfService==NO)
+    {
+        [self sendLinkstateAlignment:YES];
+        if([_link.t2 isRunning]==NO)
+        {
+            [_link.t2 start];
+        }
+    }
     return self;
 }
 
@@ -230,6 +281,21 @@
     [_link notifyMtp3UserData:userData];
     [_link.stateMachineLogFeed debugText:@"receive-data"];
     return self;
+}
+
+- (UMM2PAState *)goToAlignment
+{
+    if(_link.forcedOutOfService==YES)
+    {
+        [self sendLinkstateOutOfService:YES];
+        return self;
+    }
+    [self sendLinkstateAlignment:YES];
+    if([_link.t2 isRunning]==NO)
+    {
+        [_link.t2 start];
+    }
+    return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
 }
 
 @end
