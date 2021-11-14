@@ -1649,7 +1649,6 @@
     }
     [_submission_speed increase];
     [self checkSpeed];
-
     if(_congested)
     {
         [_waitingMessages append:task];
@@ -1659,7 +1658,9 @@
         UMMUTEX_LOCK(_controlLock);
         @try
         {
-            [_state eventSendUserData:mtp3_data ackRequest:task.ackRequest dpc:task.dpc];
+            [_state eventSendUserData:mtp3_data
+                           ackRequest:task.ackRequest
+                                  dpc:task.dpc];
         }
         @catch(NSException *e)
         {
