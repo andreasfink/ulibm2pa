@@ -1003,15 +1003,14 @@
     {
         return;
     }
-    
-    [_dataLock lock];
-    [_seqNumLock lock];
+    UMMUTEX_LOCK(_dataLock);
+    UMMUTEX_LOCK(_seqNumLock);
     if(_lastRxFsn != _lastTxBsn) /* we have unacked received packets, lets send empty packet to ack it */
     {
         [self sendEmptyUserDataPacket];
     }
-    [_seqNumLock unlock];
-    [_dataLock unlock];
+    UMMUTEX_UNLOCK(_seqNumLock);
+    UMMUTEX_UNLOCK(_dataLock);
 }
 
 - (void)startTimerFires
@@ -1531,113 +1530,134 @@
 {
     [_outboundThroughputPackets increaseBy:1];
     [_outboundThroughputBytes increaseBy:(uint32_t)data.length];
-    [_dataLock lock];
-    [_t1 stop]; /* alignment ready	*/
-    [_t6 stop]; /* Remote congestion	*/
-    [_seqNumLock lock];
-    /* if data is passed NULL; we send a empty ack packet and do not increase FSN */
-    if(data != NULL)
+    UMMUTEX_LOCK(_dataLock);
+    UMMUTEX_LOCK(_seqNumLock);
+    @try
     {
-        _lastTxFsn = (_lastTxFsn+1) % FSN_BSN_SIZE;
-    }
-    /* The FSN and BSN values range from 0 to 16,777,215 */
-    if((_lastTxFsn == FSN_BSN_MASK) || (_lastRxBsn == FSN_BSN_MASK))
-    {
-        _outstanding = 0;
-        _lastRxBsn = _lastTxFsn;
-    }
-    else
-    {
-        _outstanding = ((long)_lastTxFsn - (long)_lastRxBsn ) % FSN_BSN_SIZE;
-    }
-    
-    _lastTxBsn = _lastRxFsn;
-    uint8_t header[16];
-    size_t totallen =  sizeof(header) + data.length;
-    header[0] = M2PA_VERSION1; /* version field */
-    header[1] = 0; /* spare field */
-    header[2] = M2PA_CLASS_RFC4165; /* m2pa_message_class = draft13;*/
-    header[3] = M2PA_TYPE_USER_DATA; /*m2pa_message_type;*/
-    header[4] = (totallen >> 24) & 0xFF;
-    header[5] = (totallen >> 16) & 0xFF;
-    header[6] = (totallen >> 8) & 0xFF;
-    header[7] = (totallen >> 0) & 0xFF;
-    header[8] = (_lastTxBsn >> 24) & 0xFF;
-    header[9] = (_lastTxBsn >> 16) & 0xFF;
-    header[10] = (_lastTxBsn >> 8) & 0xFF;
-    header[11] = (_lastTxBsn >> 0) & 0xFF;
-    header[12] = (_lastTxFsn >> 24) & 0xFF;
-    header[13] = (_lastTxFsn >> 16) & 0xFF;
-    header[14] = (_lastTxFsn >> 8) & 0xFF;
-    header[15] = (_lastTxFsn >> 0) & 0xFF;
+        [_t1 stop]; /* alignment ready	*/
+        [_t6 stop]; /* Remote congestion	*/
+        /* if data is passed NULL; we send a empty ack packet and do not increase FSN */
+        if(data != NULL)
+        {
+            _lastTxFsn = (_lastTxFsn+1) % FSN_BSN_SIZE;
+        }
+        /* The FSN and BSN values range from 0 to 16,777,215 */
+        if((_lastTxFsn == FSN_BSN_MASK) || (_lastRxBsn == FSN_BSN_MASK))
+        {
+            _outstanding = 0;
+            _lastRxBsn = _lastTxFsn;
+        }
+        else
+        {
+            _outstanding = ((long)_lastTxFsn - (long)_lastRxBsn ) % FSN_BSN_SIZE;
+        }
+        
+        _lastTxBsn = _lastRxFsn;
+        uint8_t header[16];
+        size_t totallen =  sizeof(header) + data.length;
+        header[0] = M2PA_VERSION1; /* version field */
+        header[1] = 0; /* spare field */
+        header[2] = M2PA_CLASS_RFC4165; /* m2pa_message_class = draft13;*/
+        header[3] = M2PA_TYPE_USER_DATA; /*m2pa_message_type;*/
+        header[4] = (totallen >> 24) & 0xFF;
+        header[5] = (totallen >> 16) & 0xFF;
+        header[6] = (totallen >> 8) & 0xFF;
+        header[7] = (totallen >> 0) & 0xFF;
+        header[8] = (_lastTxBsn >> 24) & 0xFF;
+        header[9] = (_lastTxBsn >> 16) & 0xFF;
+        header[10] = (_lastTxBsn >> 8) & 0xFF;
+        header[11] = (_lastTxBsn >> 0) & 0xFF;
+        header[12] = (_lastTxFsn >> 24) & 0xFF;
+        header[13] = (_lastTxFsn >> 16) & 0xFF;
+        header[14] = (_lastTxFsn >> 8) & 0xFF;
+        header[15] = (_lastTxFsn >> 0) & 0xFF;
 
-    if((streamId == M2PA_STREAM_USERDATA) && (data.length > 0))
-    {
-        UMM2PAUnackedPdu *updu = [[UMM2PAUnackedPdu alloc]init];
-        updu.data = data;
-        updu.dpc = dpc;
-        _unackedMsu[@(_lastTxFsn)] = updu;
+        if((streamId == M2PA_STREAM_USERDATA) && (data.length > 0))
+        {
+            UMM2PAUnackedPdu *updu = [[UMM2PAUnackedPdu alloc]init];
+            updu.data = data;
+            updu.dpc = dpc;
+            _unackedMsu[@(_lastTxFsn)] = updu;
+        }
+        NSMutableData *sctpData = [[NSMutableData alloc]initWithBytes:&header length:sizeof(header)];
+        if(data)
+        {
+            [sctpData appendData:data];
+        }
+        [_sctpLink dataFor:self
+                      data:sctpData
+                  streamId:streamId
+                protocolId:SCTP_PROTOCOL_IDENTIFIER_M2PA
+                ackRequest:ackRequest
+               synchronous:YES];
     }
-    NSMutableData *sctpData = [[NSMutableData alloc]initWithBytes:&header length:sizeof(header)];
-    if(data)
+    @catch(NSException *e)
     {
-        [sctpData appendData:data];
+        [self logMajorError:[NSString stringWithFormat:@"Exception: %@",e]];
     }
-    [_sctpLink dataFor:self
-                  data:sctpData
-              streamId:streamId
-            protocolId:SCTP_PROTOCOL_IDENTIFIER_M2PA
-            ackRequest:ackRequest
-           synchronous:YES];
-    [_seqNumLock unlock];
-    [_dataLock unlock];
+    @finally
+    {
+        UMMUTEX_UNLOCK(_seqNumLock);
+        UMMUTEX_UNLOCK(_dataLock);
+    }
 }
 
 - (void)sendEmptyUserDataPacket
 {
     uint16_t    streamId = M2PA_STREAM_USERDATA;
 
-    [_dataLock lock];
-    [_seqNumLock lock];
-    _lastTxFsn = (_lastTxFsn+0) % FSN_BSN_SIZE; /* we do NOT increase the counter for empty packets */
-    /* The FSN and BSN values range from 0 to 16,777,215 */
-    if((_lastTxFsn == FSN_BSN_MASK) || (_lastRxFsn == FSN_BSN_MASK))
+    UMMUTEX_LOCK(_dataLock);
+    UMMUTEX_LOCK(_seqNumLock);
+    @try
     {
-        _outstanding = 0;
-        _lastRxFsn = _lastTxFsn;
+
+        _lastTxFsn = (_lastTxFsn+0) % FSN_BSN_SIZE; /* we do NOT increase the counter for empty packets */
+        /* The FSN and BSN values range from 0 to 16,777,215 */
+        if((_lastTxFsn == FSN_BSN_MASK) || (_lastRxFsn == FSN_BSN_MASK))
+        {
+            _outstanding = 0;
+            _lastRxFsn = _lastTxFsn;
+        }
+        else
+        {
+            _outstanding = ((long)_lastTxFsn - (long)_lastRxBsn ) % FSN_BSN_SIZE;
+        }
+        _lastTxBsn = _lastRxFsn;
+        uint8_t header[16];
+        size_t totallen =  sizeof(header) + 0;
+        header[0] = M2PA_VERSION1; /* version field */
+        header[1] = 0; /* spare field */
+        header[2] = M2PA_CLASS_RFC4165; /* m2pa_message_class = draft13;*/
+        header[3] = M2PA_TYPE_USER_DATA; /*m2pa_message_type;*/
+        header[4] = (totallen >> 24) & 0xFF;
+        header[5] = (totallen >> 16) & 0xFF;
+        header[6] = (totallen >> 8) & 0xFF;
+        header[7] = (totallen >> 0) & 0xFF;
+        header[8] = (_lastTxBsn >> 24) & 0xFF;
+        header[9] = (_lastTxBsn >> 16) & 0xFF;
+        header[10] = (_lastTxBsn >> 8) & 0xFF;
+        header[11] = (_lastTxBsn >> 0) & 0xFF;
+        header[12] = (_lastTxFsn >> 24) & 0xFF;
+        header[13] = (_lastTxFsn >> 16) & 0xFF;
+        header[14] = (_lastTxFsn >> 8) & 0xFF;
+        header[15] = (_lastTxFsn >> 0) & 0xFF;
+        NSMutableData *sctpData = [[NSMutableData alloc]initWithBytes:&header length:sizeof(header)];
+        [_sctpLink dataFor:self
+                      data:sctpData
+                  streamId:streamId
+                protocolId:SCTP_PROTOCOL_IDENTIFIER_M2PA
+                ackRequest:NULL
+               synchronous:YES];
     }
-    else
+    @catch(NSException *e)
     {
-        _outstanding = ((long)_lastTxFsn - (long)_lastRxBsn ) % FSN_BSN_SIZE;
+        [self logMajorError:[NSString stringWithFormat:@"Exception: %@",e]];
     }
-    _lastTxBsn = _lastRxFsn;
-    uint8_t header[16];
-    size_t totallen =  sizeof(header) + 0;
-    header[0] = M2PA_VERSION1; /* version field */
-    header[1] = 0; /* spare field */
-    header[2] = M2PA_CLASS_RFC4165; /* m2pa_message_class = draft13;*/
-    header[3] = M2PA_TYPE_USER_DATA; /*m2pa_message_type;*/
-    header[4] = (totallen >> 24) & 0xFF;
-    header[5] = (totallen >> 16) & 0xFF;
-    header[6] = (totallen >> 8) & 0xFF;
-    header[7] = (totallen >> 0) & 0xFF;
-    header[8] = (_lastTxBsn >> 24) & 0xFF;
-    header[9] = (_lastTxBsn >> 16) & 0xFF;
-    header[10] = (_lastTxBsn >> 8) & 0xFF;
-    header[11] = (_lastTxBsn >> 0) & 0xFF;
-    header[12] = (_lastTxFsn >> 24) & 0xFF;
-    header[13] = (_lastTxFsn >> 16) & 0xFF;
-    header[14] = (_lastTxFsn >> 8) & 0xFF;
-    header[15] = (_lastTxFsn >> 0) & 0xFF;
-    NSMutableData *sctpData = [[NSMutableData alloc]initWithBytes:&header length:sizeof(header)];
-    [_sctpLink dataFor:self
-                  data:sctpData
-              streamId:streamId
-            protocolId:SCTP_PROTOCOL_IDENTIFIER_M2PA
-            ackRequest:NULL
-           synchronous:YES];
-    [_seqNumLock unlock];
-    [_dataLock unlock];
+    @finally
+    {
+        UMMUTEX_UNLOCK(_seqNumLock);
+        UMMUTEX_UNLOCK(_dataLock);
+    }
 }
 
 - (void)_dataTask:(UMM2PATask_Data *)task
@@ -1655,7 +1675,7 @@
     }
     else
     {
-        UMMUTEX_LOCK(_controlLock);
+        UMMUTEX_LOCK(_dataLock);
         @try
         {
             [_state eventSendUserData:mtp3_data
@@ -1668,7 +1688,7 @@
         }
         @finally
         {
-            UMMUTEX_UNLOCK(_controlLock);
+            UMMUTEX_UNLOCK(_dataLock);
         }
     }
 }
