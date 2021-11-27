@@ -95,7 +95,7 @@
     }
     [_link.t4 start];
     [_link.t4r start];
-    return [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link];;
+    return [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal
@@ -217,6 +217,13 @@
     [self logStatemachineEvent:__func__ forced:YES];
     [_link notifyMtp3UserData:userData];
     [_link.stateMachineLogFeed debugText:@"receive-data"];
+    return self;
+}
+
+- (UMM2PAState *)eventTimer2
+{
+    [self logStatemachineEvent:__func__];
+    [self sendLinkstateAlignment:YES];
     return self;
 }
 
