@@ -100,7 +100,7 @@
 /* 64k: 3-6s */
 /* 4.8k 8-12s */
 
-#define	M2PA_DEFAULT_T7	2.0 /* 1s */
+#define	M2PA_DEFAULT_T7	0.5 /* 1s */
 /* excessive delay of acknowledgement */
 /* 64k: 0.5-2s */
 /* 4.8k 4-6s */

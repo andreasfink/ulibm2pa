@@ -138,7 +138,7 @@
             _t16 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires7) object:NULL seconds:M2PA_DEFAULT_T16 name:@"t16" repeats:NO runInForeground:YES];
             _t17 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires7) object:NULL seconds:M2PA_DEFAULT_T17 name:@"t17" repeats:NO runInForeground:YES];
             _t18 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires7) object:NULL seconds:M2PA_DEFAULT_T18 name:@"t18" repeats:NO runInForeground:YES];
-            _ackTimer = [[UMTimer alloc]initWithTarget:self selector:@selector(ackTimerFires) object:NULL seconds:M2PA_DEFAULT_ACK_TIMER name:@"ack-timer" repeats:YES runInForeground:YES];
+            _ackTimer = [[UMTimer alloc]initWithTarget:self selector:@selector(ackTimerFires) object:NULL seconds:M2PA_DEFAULT_ACK_TIMER name:@"ack-timer" repeats:NO runInForeground:YES];
             _startTimer = [[UMTimer alloc]initWithTarget:self selector:@selector(startTimerFires) object:NULL seconds:M2PA_DEFAULT_START_TIMER name:@"start-timer" repeats:NO runInForeground:YES];
             _t4n = M2PA_DEFAULT_T4_N;
             _t4e = M2PA_DEFAULT_T4_E;
@@ -476,9 +476,10 @@
                 [self bsnAckFrom:_lastRxBsn to:currentRxBsn];
                 _lastRxBsn = currentRxBsn;
                 _lastRxFsn = currentRxFsn;
-
                 [self checkSpeed];
-                [_ackTimer startIfNotRunning];
+                UMMUTEX_LOCK(_dataLock);
+                [_ackTimer start];
+                UMMUTEX_UNLOCK(_dataLock);
                 int userDataLen = len-16;
                 if(userDataLen < 0)
                 {
@@ -486,7 +487,6 @@
                     [self protocolViolation];
                     return;
                 }
-
                 NSData *userData = [NSData dataWithBytes:&dptr[16] length:userDataLen];
                 UMMUTEX_LOCK(_controlLock);
                 @try
@@ -1003,14 +1003,7 @@
     {
         return;
     }
-    UMMUTEX_LOCK(_dataLock);
-    UMMUTEX_LOCK(_seqNumLock);
-    if(_lastRxFsn != _lastTxBsn) /* we have unacked received packets, lets send empty packet to ack it */
-    {
-        [self sendEmptyUserDataPacket];
-    }
-    UMMUTEX_UNLOCK(_seqNumLock);
-    UMMUTEX_UNLOCK(_dataLock);
+    [self sendEmptyUserDataPacket];
 }
 
 - (void)startTimerFires
@@ -1584,6 +1577,7 @@
         {
             [sctpData appendData:data];
         }
+        [_ackTimer stop];
         [_sctpLink dataFor:self
                       data:sctpData
                   streamId:streamId
@@ -1610,7 +1604,6 @@
     UMMUTEX_LOCK(_seqNumLock);
     @try
     {
-
         _lastTxFsn = (_lastTxFsn+0) % FSN_BSN_SIZE; /* we do NOT increase the counter for empty packets */
         /* The FSN and BSN values range from 0 to 16,777,215 */
         if((_lastTxFsn == FSN_BSN_MASK) || (_lastRxFsn == FSN_BSN_MASK))
