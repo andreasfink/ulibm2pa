@@ -135,9 +135,9 @@
             _t5 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires5) object:NULL seconds:M2PA_DEFAULT_T5 name:@"t5" repeats:NO runInForeground:YES];
             _t6 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires6) object:NULL seconds:M2PA_DEFAULT_T6 name:@"t6" repeats:NO runInForeground:YES];
             _t7 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires7) object:NULL seconds:M2PA_DEFAULT_T7 name:@"t7" repeats:NO runInForeground:YES];
-            _t16 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires7) object:NULL seconds:M2PA_DEFAULT_T16 name:@"t16" repeats:NO runInForeground:YES];
-            _t17 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires7) object:NULL seconds:M2PA_DEFAULT_T17 name:@"t17" repeats:NO runInForeground:YES];
-            _t18 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires7) object:NULL seconds:M2PA_DEFAULT_T18 name:@"t18" repeats:NO runInForeground:YES];
+            _t16 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires16) object:NULL seconds:M2PA_DEFAULT_T16 name:@"t16" repeats:NO runInForeground:YES];
+            _t17 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires17) object:NULL seconds:M2PA_DEFAULT_T17 name:@"t17" repeats:NO runInForeground:YES];
+            _t18 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires18) object:NULL seconds:M2PA_DEFAULT_T18 name:@"t18" repeats:NO runInForeground:YES];
             _ackTimer = [[UMTimer alloc]initWithTarget:self selector:@selector(ackTimerFires) object:NULL seconds:M2PA_DEFAULT_ACK_TIMER name:@"ack-timer" repeats:NO runInForeground:YES];
             _startTimer = [[UMTimer alloc]initWithTarget:self selector:@selector(startTimerFires) object:NULL seconds:M2PA_DEFAULT_START_TIMER name:@"start-timer" repeats:NO runInForeground:YES];
             _t4n = M2PA_DEFAULT_T4_N;
@@ -477,9 +477,16 @@
                 _lastRxBsn = currentRxBsn;
                 _lastRxFsn = currentRxFsn;
                 [self checkSpeed];
-                UMMUTEX_LOCK(_dataLock);
-                [_ackTimer start];
-                UMMUTEX_UNLOCK(_dataLock);
+                if(_useAckTimer)
+                {
+                    UMMUTEX_LOCK(_dataLock);
+                    [_ackTimer start];
+                    UMMUTEX_UNLOCK(_dataLock);
+                }
+                else
+                {
+                    [self ackTimerFires];
+                }
                 int userDataLen = len-16;
                 if(userDataLen < 0)
                 {
@@ -995,6 +1002,26 @@
 {
     [_t7 stop];
 	[self queueTimerEvent:NULL timerName:@"t7"];
+}
+
+- (void)timerFires16
+{
+    [_t16 stop];
+    [self queueTimerEvent:NULL timerName:@"t16"];
+}
+
+
+- (void)timerFires17
+{
+    [_t17 stop];
+    [self queueTimerEvent:NULL timerName:@"t17"];
+}
+
+
+- (void)timerFires18
+{
+    [_t18 stop];
+    [self queueTimerEvent:NULL timerName:@"t18"];
 }
 
 - (void)ackTimerFires
@@ -2432,6 +2459,14 @@
         if (cfg[@"ack-timer"])
         {
             _ackTimer.seconds = [cfg[@"ack-timer"] doubleValue];
+            if(_ackTimer.seconds == 0)
+            {
+                _useAckTimer = NO;
+            }
+            else
+            {
+                _useAckTimer = YES;
+            }
         }
 
         if(cfg[@"state-machine-log"])

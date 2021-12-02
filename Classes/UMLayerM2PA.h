@@ -246,6 +246,7 @@ typedef enum PocStatus
     UMTimer     *_t17;  /* Ready Rate Timer */
     UMTimer     *_t18;  /* Processor Outage Rate Timer */
 
+    BOOL        _useAckTimer;
     UMTimer    *_ackTimer;    /* if no MSU is being sent and there is outstanding ACKs from the other side we have to send empty MSUs */
     UMTimer    *_startTimer;    /* time between SCTP power on retries in case SCTP doesnt come up */
 
