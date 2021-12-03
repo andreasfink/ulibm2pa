@@ -486,18 +486,15 @@
                     return;
                 }
                 
-                if(_useAckTimer == YES)
+                if(userDataLen > 0)
                 {
-                    if(userDataLen.length > 0)
+                    if(_useAckTimer == YES)
                     {
                         UMMUTEX_LOCK(_dataLock);
                         [_ackTimer start];
                         UMMUTEX_UNLOCK(_dataLock);
                     }
-                }
-                else
-                {
-                    if(userDataLen.length > 0)
+                    else
                     {
                         [self ackTimerFires];
                     }
