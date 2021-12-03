@@ -477,22 +477,30 @@
                 _lastRxBsn = currentRxBsn;
                 _lastRxFsn = currentRxFsn;
                 [self checkSpeed];
-                if(_useAckTimer)
-                {
-                    UMMUTEX_LOCK(_dataLock);
-                    [_ackTimer start];
-                    UMMUTEX_UNLOCK(_dataLock);
-                }
-                else
-                {
-                    [self ackTimerFires];
-                }
+            
                 int userDataLen = len-16;
                 if(userDataLen < 0)
                 {
                     [self logMajorError:@"m2pa userDataLen is < 0"];
                     [self protocolViolation];
                     return;
+                }
+                
+                if(_useAckTimer == YES)
+                {
+                    if(userDataLen.length > 0)
+                    {
+                        UMMUTEX_LOCK(_dataLock);
+                        [_ackTimer start];
+                        UMMUTEX_UNLOCK(_dataLock);
+                    }
+                }
+                else
+                {
+                    if(userDataLen.length > 0)
+                    {
+                        [self ackTimerFires];
+                    }
                 }
                 NSData *userData = [NSData dataWithBytes:&dptr[16] length:userDataLen];
                 UMMUTEX_LOCK(_controlLock);
