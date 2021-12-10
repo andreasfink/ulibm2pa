@@ -120,7 +120,7 @@
     [_link.t4r stop];
     [_link.t4 stop];
     [_link notifyMtp3InService];
-    return [[UMM2PAState_InService alloc]initWithLink:_link];
+    return [[UMM2PAState_AlignedReady alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventLinkstatusBusy

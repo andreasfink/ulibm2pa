@@ -134,9 +134,7 @@
     [self logStatemachineEvent:__func__];
     [self sendLinkstateReady:YES];
     [_link.t4r stop];
-    //return [[UMM2PAState_AlignedReady alloc]initWithLink:_link];
-    return self;
-
+    return [[UMM2PAState_InService alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventTimer4r

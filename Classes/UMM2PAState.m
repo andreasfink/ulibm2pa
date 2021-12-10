@@ -191,9 +191,13 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 - (UMM2PAState *)eventLinkstatusReady
 {
     [self logStatemachineEvent:__func__];
-    return self;
+    [_link.t1 stop];
+    [_link.t2 stop];
+    [_link.t4r stop];
+    [_link.t4 stop];
+    [_link notifyMtp3InService];
+    return  [[UMM2PAState_InService alloc]initWithLink:_link];;
 }
-
 
 - (UMM2PAState *)eventLinkstatusBusy
 {

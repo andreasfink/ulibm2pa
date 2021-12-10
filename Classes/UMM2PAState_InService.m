@@ -112,12 +112,11 @@
 - (UMM2PAState *)eventLinkstatusReady
 {
     [self logStatemachineEvent:__func__];
-    _readySent++;
-    if(_readySent < 3)
-    {
-        [self sendLinkstateReady:YES];
-    }
-    /* ignored */
+    [_link.t1 stop];
+    [_link.t2 stop];
+    [_link.t4r stop];
+    [_link.t4 stop];
+    [_link notifyMtp3InService];
     return self;
 }
 
