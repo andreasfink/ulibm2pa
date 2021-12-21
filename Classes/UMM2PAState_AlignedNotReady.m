@@ -17,10 +17,34 @@
     self =[super initWithLink:link];
     {
         _statusCode = M2PA_STATUS_ALIGNED_NOT_READY;
+        if(_link.t4.isRunning==NO)
+        {
+            [_link.t4 start];
+        }
+        if(_link.t4r.isRunning==NO)
+        {
+            M2TIMER_VALIDATE(_link.t4r.seconds,M2PA_DEFAULT_T4_R,M2PA_DEFAULT_T4_R_MIN,M2PA_DEFAULT_T4_R_MAX);
+            if(_link.emergency)
+            {
+                double t = _link.t4e;
+                M2TIMER_VALIDATE(t,M2PA_DEFAULT_T4_E,M2PA_DEFAULT_T4_E_MIN,M2PA_DEFAULT_T4_E_MAX);
+                _link.t4e = t;
+                _link.t4.seconds = t;
+                [self sendLinkstateProvingEmergency:YES];
+            }
+            else
+            {
+                double t = _link.t4n;
+                M2TIMER_VALIDATE(t,M2PA_DEFAULT_T4_N,M2PA_DEFAULT_T4_N_MIN,M2PA_DEFAULT_T4_N_MAX);
+                _link.t4n = t;
+                _link.t4.seconds = t;
+                [self sendLinkstateProvingNormal:YES];
+            }
+            [_link.t4r start];
+        }
     }
     return self;
 }
-
 
 - (NSString *)description
 {
@@ -73,54 +97,27 @@
 
 - (UMM2PAState *)eventLinkstatusAlignment
 {
-    /* we are already in alignment */
-    /* so nothing to be done */
-#if 0
     [self logStatemachineEvent:__func__];
-    [_link.t2 stop];
-    if(_link.emergency)
-    {
-        [self sendLinkstateProvingEmergency:YES];
-        _link.t4.seconds = _link.t4e;
-    }
-    else
-    {
-        [self sendLinkstateProvingNormal:YES];
-        _link.t4.seconds = _link.t4n;
-    }
-    if([_link.t4 isRunning]==NO)
-    {
-        [_link.t4 start];
-    }
-    [_link.t4r start];
-#endif
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal
 {
     [self logStatemachineEvent:__func__];
-    _link.linkstateProvingReceived++;
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusProvingEmergency
 {
     [self logStatemachineEvent:__func__];
-    _link.linkstateProvingReceived++;
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusReady
 {
+    /* other side is ready. we are ready when we are ready. */
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateReady:YES];
-    [_link.t1 stop];
-    [_link.t2 stop];
-    [_link.t4r stop];
-    [_link.t4 stop];
-    [_link notifyMtp3InService];
-    return [[UMM2PAState_AlignedReady alloc]initWithLink:_link];
+    return self;
 }
 
 - (UMM2PAState *)eventLinkstatusBusy
@@ -159,9 +156,12 @@
     if((_t4_expired) && (_link.linkstateProvingSent > 5))
     {
         [self sendLinkstateReady:YES];
+        [_link.t1 stop];
+        [_link.t2 stop];
+        [_link.t4r stop];
+        [_link.t4 stop];
         return [[UMM2PAState_AlignedReady alloc]initWithLink:_link];
     }
-
     if(_link.emergency)
     {
         [self sendLinkstateProvingEmergency:YES];

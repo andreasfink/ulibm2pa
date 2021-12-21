@@ -16,7 +16,12 @@
 {
     self =[super initWithLink:link];
     {
+        [_link.t4r stop];
         _statusCode = M2PA_STATUS_ALIGNED_READY;
+        _link.t4r.seconds = 1; /* we now send a READY signal every second
+                                until the other side sends READY as well.
+                                Then we go int In service state */
+        [_link.t4r start];
     }
     return self;
 }
@@ -133,7 +138,12 @@
 {
     [self logStatemachineEvent:__func__];
     [self sendLinkstateReady:YES];
+    [self sendLinkstateReady:YES];
+    [_link.t1 stop];
+    [_link.t2 stop];
     [_link.t4r stop];
+    [_link.t4 stop];
+    [_link notifyMtp3InService];
     return [[UMM2PAState_InService alloc]initWithLink:_link];
 }
 
@@ -141,7 +151,6 @@
 {
     [self logStatemachineEvent:__func__];
     [self sendLinkstateReady:YES];
-    //[_link.t4r stop];
     return self;
 }
 
@@ -166,6 +175,5 @@
     _link.linkstateOutOfServiceSent++;
     [_link.stateMachineLogFeed debugText:@"sendLinkstateOutOfService"];
 }
-
 
 @end
