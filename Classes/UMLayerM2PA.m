@@ -1852,7 +1852,6 @@
 
 - (void)startupInitialisation
 {
-
     _linkstateAlignmentReceived = 0;
     _linkstateAlignmentSent = 0;
     _linkstateProvingSent = 0;
