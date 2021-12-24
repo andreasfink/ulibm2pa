@@ -39,7 +39,13 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
                                  userInfo:@{    @"backtrace":   UMBacktrace(NULL,0) }]);
 }
 
+
 - (UMM2PAState *)initWithLink:(UMLayerM2PA *)link
+{
+    return [self initWithLink:link notify:NO];
+}
+
+- (UMM2PAState *)initWithLink:(UMLayerM2PA *)link notify:(BOOL)notify
 {
     NSAssert(link!=NULL,@"link can not be NULL");
     self = [super init];
@@ -47,6 +53,10 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     {
         _link = link;
         _statusCode = M2PA_STATUS_DISCONNECTED;
+        if(notify)
+        {
+            [_link notifyMtp3Status:_statusCode async:YES];
+        }
     }
     return self;
 }
@@ -112,7 +122,6 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [_link.startTimer stop];
     [_link startupInitialisation];
     [self sendLinkstateOutOfService:YES];
-    [_link notifyMtp3OutOfService];
     if(_link.forcedOutOfService == NO)
     {
         [self sendLinkstateAlignment:YES];
@@ -141,7 +150,6 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [self logStatemachineEvent:__func__];
     [_link.startTimer stop];
     [_link startupInitialisation];
-    [_link notifyMtp3OutOfService];
     if(_link.forcedOutOfService == NO)
     {
         [self sendLinkstateAlignment:YES];
@@ -151,7 +159,6 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
         [self sendLinkstateOutOfService:YES];
     }
     [_link.t2 start];
-    [_link notifyMtp3OutOfService];
     return  [[UMM2PAState_OutOfService alloc]initWithLink:_link];
 }
 

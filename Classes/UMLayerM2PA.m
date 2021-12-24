@@ -2280,7 +2280,7 @@
     }
 }
 
-- (void)notifyMtp3OutOfService
+- (void)notifyMtp3:(M2PA_Status)status async:(BOOL)async;
 {
     @autoreleasepool
     {
@@ -2292,25 +2292,21 @@
                 [u.user m2paStatusIndication:self
                                          slc:_slc
                                       userId:u.linkName
-                                      status:M2PA_STATUS_OOS];
+                                      status:status
+                                       async:async];
             }
         }
     }
 }
 
+- (void)notifyMtp3OutOfService
+{
+    [self notifyMtp3:M2PA_STATUS_OOS async:YES];
+}
+
 - (void)notifyMtp3Stop
 {
-    NSArray *usrs = [_users arrayCopy];
-    for(UMLayerM2PAUser *u in usrs)
-    {
-        if([u.profile wantsM2PALinkstateMessages])
-        {
-            [u.user m2paStatusIndication:self
-                                     slc:_slc
-                                  userId:u.linkName
-                                  status:M2PA_STATUS_OFF];
-        }
-    }
+    [self notifyMtp3:M2PA_STATUS_OFF async:NO];
 }
 
 -(void)notifyMtp3RemoteProcessorOutage
@@ -2345,20 +2341,7 @@
 
 -(void) notifyMtp3InService
 {
-    @autoreleasepool
-    {
-        NSArray *usrs = [_users arrayCopy];
-        for(UMLayerM2PAUser *u in usrs)
-        {
-            if([u.profile wantsM2PALinkstateMessages])
-            {
-                [u.user m2paStatusIndication:self
-                                         slc:_slc
-                                      userId:u.linkName
-                                      status:M2PA_STATUS_IS];
-            }
-        }
-    }
+    [self notifyMtp3:M2PA_STATUS_IS async:YES];
 }
 
 -(void)markFurtherProving

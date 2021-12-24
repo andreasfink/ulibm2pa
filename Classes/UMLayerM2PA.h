@@ -512,6 +512,8 @@ typedef enum PocStatus
 -(void)cancelFurtherProving;
 
 - (void)notifyMtp3UserData:(NSData *)userData;
+
+- (void)notifyMtp3:(M2PA_Status)status async:(BOOL)async;
 - (void)notifyMtp3OutOfService;
 - (void)notifyMtp3RemoteProcessorOutage;
 - (void)notifyMtp3RemoteProcessorRecovered;

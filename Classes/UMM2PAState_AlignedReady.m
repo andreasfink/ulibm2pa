@@ -55,7 +55,6 @@
     return [super eventSctpDown];
 }
 
-
 - (UMM2PAState *)eventLinkstatusOutOfService
 {
     return [super eventLinkstatusOutOfService];
