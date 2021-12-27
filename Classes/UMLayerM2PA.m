@@ -351,7 +351,6 @@
 {
     @autoreleasepool
     {
-
         if(self.logLevel <= UMLOG_DEBUG)
         {
             [self logDebug:@"sctpDataIndication:"];
