@@ -55,7 +55,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
         _statusCode = M2PA_STATUS_DISCONNECTED;
         if(notify)
         {
-            [_link notifyMtp3Status:_statusCode async:YES];
+            [_link notifyMtp3:_statusCode async:YES];
         }
     }
     return self;
