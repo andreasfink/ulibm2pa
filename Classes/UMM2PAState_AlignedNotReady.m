@@ -103,7 +103,15 @@
     {
         return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
     }
-    return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
+    if(_link.emergency)
+    {
+        [self sendLinkstateProvingEmergency:YES];
+    }
+    else
+    {
+        [self sendLinkstateProvingNormal:YES];
+    }
+    return self;
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal
