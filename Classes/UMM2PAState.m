@@ -254,7 +254,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
              stream:M2PA_STREAM_USERDATA
          ackRequest:ackRequest
                 dpc:dpc];
-    [_link.stateMachineLogFeed debugText:@"send-data"];
+    //[_link.stateMachineLogFeed debugText:@"send-data"];
     return self;
 }
 
@@ -262,7 +262,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 {
     [self logStatemachineEvent:__func__];
     [_link notifyMtp3UserData:userData];
-    [_link.stateMachineLogFeed debugText:@"receive-data"];
+    //[_link.stateMachineLogFeed debugText:@"receive-data"];
     return self;
 }
 
