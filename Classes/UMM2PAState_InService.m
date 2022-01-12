@@ -85,12 +85,10 @@
 
 - (UMM2PAState *)eventLinkstatusAlignment
 {
-    [self logStatemachineEvent:__func__ forced:YES];
-    //[self sendLinkstateOutOfService:YES];
-    [self sendLinkstateAlignment:YES];
-    if([_link.t2 isRunning]==NO)
+    [self logStatemachineEvent:__func__];
+    if(_link.forcedOutOfService==YES)
     {
-        [_link.t2 start];
+        return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
     }
     return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
 }

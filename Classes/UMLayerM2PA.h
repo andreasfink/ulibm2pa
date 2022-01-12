@@ -59,7 +59,7 @@
 /*  64k link: 40-50s	*/
 /*  4.8k: 500-600s */
 
-#define	M2PA_DEFAULT_T2	5.0 /* 5s */
+#define	M2PA_DEFAULT_T2	5.0 /* 5s . time we send ALIGNMENT messages out when being in Initial Alignment status */
 /* T2: not aligned */
 /* low: 5-50s */
 /* high: 70-150s */

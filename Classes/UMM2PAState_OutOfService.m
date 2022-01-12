@@ -19,6 +19,7 @@
     if(self)
     {
         _statusCode = M2PA_STATUS_OOS;
+        [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:YES];
     }
     return self;
 }
@@ -39,21 +40,15 @@
 - (UMM2PAState *)eventStart
 {
     [self logStatemachineEvent:__func__];
-    if([_link.t2 isRunning]==NO)
-    {
-        [_link.t2 start];
-    }
     _i_am_starting = YES;
     if(_link.forcedOutOfService==YES)
     {
         [self sendLinkstateOutOfService:YES];
         return self;
     }
-    else
-    {
-        [self sendLinkstateAlignment:YES];
-        return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
-    }
+    [self sendLinkstateAlignment:YES];
+    [_link.t2 start];
+    return self;
 }
 
 - (UMM2PAState *)eventSctpUp
@@ -96,12 +91,12 @@
 - (UMM2PAState *)eventLinkstatusAlignment
 {
     [self logStatemachineEvent:__func__];
+    [_link.t2 start];
     if(_link.forcedOutOfService==YES)
     {
         [self sendLinkstateOutOfService:YES];
         return self;
     }
-    [self sendLinkstateAlignment:YES];
     return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
 }
 
@@ -239,11 +234,9 @@
     else
     {
         [self sendLinkstateAlignment:YES];
-        if([_link.t2 isRunning]==NO)
-        {
-            [_link.t2 start];
-        }
-        return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
+        [_link.t2 start];
+        /* we only go to initial alignment state if we see initial alignment from other side */
+        return self;
     }
 }
 
@@ -269,11 +262,6 @@
     {
         [self sendLinkstateOutOfService:YES];
         return self;
-    }
-    [self sendLinkstateAlignment:YES];
-    if([_link.t2 isRunning]==NO)
-    {
-        [_link.t2 start];
     }
     return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
 }

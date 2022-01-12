@@ -178,7 +178,11 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 - (UMM2PAState *)eventLinkstatusAlignment
 {
     [self logStatemachineEvent:__func__];
-    return self;
+    if(_link.forcedOutOfService==YES)
+    {
+        return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+    }
+    return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal

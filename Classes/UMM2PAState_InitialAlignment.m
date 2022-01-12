@@ -17,6 +17,8 @@
     self =[super initWithLink:link];
     {
         _statusCode = M2PA_STATUS_INITIAL_ALIGNMENT;
+        [_link.t2 start];
+        [_link sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT synchronous:YES];
     }
     return self;
 }

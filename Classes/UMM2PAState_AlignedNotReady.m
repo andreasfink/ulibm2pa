@@ -17,6 +17,7 @@
     self =[super initWithLink:link];
     {
         _statusCode = M2PA_STATUS_ALIGNED_NOT_READY;
+        [_link.t2 stop];
         if(_link.t4.isRunning==NO)
         {
             [_link.t4 start];
@@ -98,7 +99,11 @@
 - (UMM2PAState *)eventLinkstatusAlignment
 {
     [self logStatemachineEvent:__func__];
-    return self;
+    if(_link.forcedOutOfService==YES)
+    {
+        return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+    }
+    return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal
