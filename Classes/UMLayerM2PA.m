@@ -128,7 +128,11 @@
             _speed = 0; /* unlimited */
             _window_size = M2PA_DEFAULT_WINDOW_SIZE;
             _t1 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires1) object:NULL seconds:M2PA_DEFAULT_T1 name:@"t1" repeats:NO runInForeground:YES];
-            _t2 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires2) object:NULL seconds:M2PA_DEFAULT_T2 name:@"t2" repeats:NO runInForeground:YES];
+            _t2 = [[UMTimer alloc]initWithTarget:self
+                                        selector:@selector(timerFires2)
+                                          object:NULL seconds:M2PA_DEFAULT_T2
+                                            name:@"t2"
+                                         repeats:YES runInForeground:YES];
             _t3 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires3) object:NULL seconds:M2PA_DEFAULT_T3 name:@"t3" repeats:NO runInForeground:YES];
             _t4 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires4) object:NULL seconds:M2PA_DEFAULT_T4_N name:@"t4" repeats:NO runInForeground:YES];
             _t4r = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires4r) object:NULL seconds:M2PA_DEFAULT_T4_R name:@"t4r" repeats:YES runInForeground:YES];
