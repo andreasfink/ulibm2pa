@@ -212,8 +212,6 @@
 - (UMM2PAState *)eventReceiveUserData:(NSData *)userData
 {
     [self logStatemachineEvent:__func__ forced:YES];
-    [_link notifyMtp3UserData:userData];
-    [self logStatemachineEventString:@"receiveUserData"];
     return self;
 }
 

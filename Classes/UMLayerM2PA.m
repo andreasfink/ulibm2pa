@@ -507,6 +507,10 @@
                 @try
                 {
                     self.state = [_state eventReceiveUserData:userData];
+                    if([self.state isKindOfClass: [UMM2PAState_InService class]])
+                    {
+                        [self notifyMtp3UserData:userData];
+                    }
                 }
                 @catch(NSException *e)
                 {

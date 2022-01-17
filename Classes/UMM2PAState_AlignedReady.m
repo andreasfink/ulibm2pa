@@ -163,7 +163,6 @@
     [_link.t4 stop];
     [self logStatemachineEventString:@"receiveUserData going IS"];
     [_link notifyMtp3InService];
-    [_link notifyMtp3UserData:userData];
     return [[UMM2PAState_InService alloc]initWithLink:_link];
 }
 

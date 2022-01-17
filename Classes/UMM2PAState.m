@@ -286,7 +286,6 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 - (UMM2PAState *)eventReceiveUserData:(NSData *)userData
 {
     [self logStatemachineEvent:__func__];
-    [_link notifyMtp3UserData:userData];
     return self;
 }
 
