@@ -286,8 +286,11 @@ typedef enum PocStatus
 
 - (UMM2PAState *)state;
 - (void)setState:(UMM2PAState *)state;
-@property(readwrite,strong)     UMLogFeed *stateMachineLogFeed;
 
+
+@property(readwrite,strong,atomic)     UMSynchronizedArray                 *users;
+@property(readwrite,strong,atomic)     UMM2PAState                         *state;
+@property(readwrite,strong,atomic)     UMLogFeed                           *stateMachineLogFeed;
 @property(readwrite,strong)     UMLayerSctp                         *sctpLink;
 @property(readwrite,strong)     UMTimer    *startTimer;    /* time between SCTP power on retries in case SCTP doesnt come up */
 
@@ -512,7 +515,6 @@ typedef enum PocStatus
 -(void)cancelFurtherProving;
 
 - (void)notifyMtp3UserData:(NSData *)userData;
- 
 - (void)notifyMtp3:(M2PA_Status)status async:(BOOL)async;
 - (void)notifyMtp3OutOfService;
 - (void)notifyMtp3RemoteProcessorOutage;

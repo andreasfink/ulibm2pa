@@ -148,7 +148,7 @@
         [self logStatemachineEvent:__func__ forced:YES];
         [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:sync];
         _link.linkstateOutOfServiceSent++;
-        [_link.stateMachineLogFeed debugText:@"sendLinkstateOutOfService"];
+        [self logStatemachineEventString:@"sendLinkstateOutOfService"];
     }
 #else
     {
@@ -162,7 +162,7 @@
 {
     [self logStatemachineEvent:__func__ forced:YES];
     [_link notifyMtp3UserData:userData];
-    [_link.stateMachineLogFeed debugText:@"receive-data"];
+    [self logStatemachineEventString:@"receiveUserData"];
     return self;
 }
 

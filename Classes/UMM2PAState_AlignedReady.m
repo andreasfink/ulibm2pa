@@ -161,7 +161,7 @@
     [_link.t2 stop];
     [_link.t4r stop];
     [_link.t4 stop];
-    [_link.stateMachineLogFeed debugText:@"receive-data-going IS"];
+    [self logStatemachineEventString:@"receiveUserData going IS"];
     [_link notifyMtp3InService];
     [_link notifyMtp3UserData:userData];
     return [[UMM2PAState_InService alloc]initWithLink:_link];
@@ -172,7 +172,7 @@
     [self logStatemachineEvent:__func__ forced:YES];
     [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:sync];
     _link.linkstateOutOfServiceSent++;
-    [_link.stateMachineLogFeed debugText:@"sendLinkstateOutOfService"];
+    [self logStatemachineEventString:@"sendLinkstateOutOfService"];
 }
 
 @end

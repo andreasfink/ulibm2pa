@@ -68,22 +68,48 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 
 - (void) logStatemachineEvent:(const char *)func forced:(BOOL)forced
 {
-    NSString *s;
+    NSString *s=NULL;
     if((_link.logLevel <= UMLOG_DEBUG) || (_link.stateMachineLogFeed!=NULL) || (forced))
     {
         /* func name is something like "[UMM2PAState eventNew]" */
         NSString *functionName  = UMM2PAState_currentMethodName(func);
         s = [NSString stringWithFormat:@"EVENT %@ in STATE %@",functionName,[self description]];
     }
-    if(_link.logLevel <= UMLOG_DEBUG)
+    if((_link.logLevel <= UMLOG_DEBUG) && (s))
     {
         [_link logDebug:s];
     }
-    if(forced)
+    if((forced) && (s))
     {
         [_link logWarning:s];
     }
-    if(_link.stateMachineLogFeed)
+    if((_link.stateMachineLogFeed) && (s))
+    {
+        [_link.stateMachineLogFeed debugText:s];
+    }
+}
+
+- (void) logStatemachineEventString:(NSString *)str
+{
+    return [self logStatemachineEventString:str forced:NO];
+}
+
+- (void) logStatemachineEventString:(NSString *)str forced:(BOOL)forced
+{
+    NSString *s=NULL;
+    if((_link.logLevel <= UMLOG_DEBUG) || (_link.stateMachineLogFeed!=NULL) || (forced))
+    {
+        s = [NSString stringWithFormat:@"EVENT %@ in STATE %@",str,[self description]];
+    }
+    if((_link.logLevel <= UMLOG_DEBUG) && (s))
+    {
+        [_link logDebug:s];
+    }
+    if((forced) && (s))
+    {
+        [_link logWarning:s];
+    }
+    if((_link.stateMachineLogFeed) && (s))
     {
         [_link.stateMachineLogFeed debugText:s];
     }
@@ -240,7 +266,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 - (UMM2PAState *)eventSctpError
 {
     [self logStatemachineEvent:__func__];
-    [_link.stateMachineLogFeed debugText:@"closing-sctp"];
+    [self logStatemachineEventString:@"closing-sctp"];
     [_link.sctpLink closeFor:_link];
     return [[UMM2PAState_Off alloc]initWithLink:_link];
 }
@@ -254,7 +280,6 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
              stream:M2PA_STREAM_USERDATA
          ackRequest:ackRequest
                 dpc:dpc];
-    //[_link.stateMachineLogFeed debugText:@"send-data"];
     return self;
 }
 
@@ -262,7 +287,6 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 {
     [self logStatemachineEvent:__func__];
     [_link notifyMtp3UserData:userData];
-    //[_link.stateMachineLogFeed debugText:@"receive-data"];
     return self;
 }
 
@@ -321,7 +345,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 {
     [_link sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT synchronous:sync];
     _link.linkstateAlignmentSent++;
-    [_link.stateMachineLogFeed debugText:@"sendLinkstateAlignment"];
+    [self logStatemachineEventString:@"sendLinkstateAlignment"];
 }
 
 - (void) sendLinkstateProvingNormal:(BOOL)sync
@@ -336,7 +360,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     {
         [_link sendLinkstatus:M2PA_LINKSTATE_PROVING_NORMAL synchronous:sync];
         _link.linkstateProvingSent++;
-        [_link.stateMachineLogFeed debugText:@"sendLinkstateProvingNormal"];
+        [self logStatemachineEventString:@"sendLinkstateProvingNormal"];
     }
 }
 
@@ -352,7 +376,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     {
         [_link sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY synchronous:sync];
         _link.linkstateProvingSent++;
-        [_link.stateMachineLogFeed debugText:@"sendLinkstateProvingEmergency"];
+        [self logStatemachineEventString:@"sendLinkstateProvingEmergency"];
     }
 }
 
@@ -360,8 +384,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 {
     [_link sendLinkstatus:M2PA_LINKSTATE_READY synchronous:sync];
     _link.linkstateReadySent++;
-    [_link.stateMachineLogFeed debugText:@"sendLinkstateReady"];
-
+    [self logStatemachineEventString:@"sendLinkstateReady"];
 }
 
 
@@ -369,32 +392,28 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 {
     [_link sendLinkstatus:M2PA_LINKSTATE_PROCESSOR_OUTAGE synchronous:sync];
     _link.linkstateProcessorOutageSent++;
-    [_link.stateMachineLogFeed debugText:@"sendLinkstateProcessorOutage"];
-
+    [self logStatemachineEventString:@"sendLinkstateProcessorOutage"];
 }
 
 - (void) sendLinkstateProcessorRecovered:(BOOL)sync
 {
     [_link sendLinkstatus:M2PA_LINKSTATE_PROCESSOR_RECOVERED synchronous:sync];
     _link.linkstateProcessorRecoveredSent++;
-    [_link.stateMachineLogFeed debugText:@"sendLinkstateProcessorRecovered"];
-
+    [self logStatemachineEventString:@"sendLinkstateProcessorRecovered"];
 }
 
 - (void) sendLinkstateBusy:(BOOL)sync
 {
     [_link sendLinkstatus:M2PA_LINKSTATE_BUSY synchronous:sync];
     _link.linkstateBusySent++;
-    [_link.stateMachineLogFeed debugText:@"sendLinkstateBusy"];
-
+    [self logStatemachineEventString:@"sendLinkstateBusy"];
 }
 
 - (void) sendLinkstateBusyEnded:(BOOL)sync
 {
     [_link sendLinkstatus:M2PA_LINKSTATE_BUSY_ENDED synchronous:sync];
     _link.linkstateBusyEndedSent++;
-    [_link.stateMachineLogFeed debugText:@"sendLinkstateBusyEnded"];
-
+    [self logStatemachineEventString:@"sendLinkstateBusyEnded"];
 }
 
 - (void) sendLinkstateOutOfService:(BOOL)sync
@@ -402,7 +421,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [self logStatemachineEvent:__func__ forced:YES];
     [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:sync];
     _link.linkstateOutOfServiceSent++;
-    [_link.stateMachineLogFeed debugText:@"sendLinkstateOutOfService"];
+    [self logStatemachineEventString:@"sendLinkstateOutOfService"];
 }
 
 @end

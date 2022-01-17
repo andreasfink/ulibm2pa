@@ -252,7 +252,7 @@
 {
     [self logStatemachineEvent:__func__ forced:YES];
     [_link notifyMtp3UserData:userData];
-    [_link.stateMachineLogFeed debugText:@"receive-data"];
+    [self logStatemachineEventString:@"receiveUserData"];
     return self;
 }
 
