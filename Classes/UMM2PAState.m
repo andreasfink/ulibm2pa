@@ -51,6 +51,19 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     self = [super init];
     if(self)
     {
+        if(link==NULL)
+        {
+            NSString *backtrace = UMBacktrace(NULL,0);
+            NSString *s = [NSString stringWithFormat:@"passing NULL to initWithLink:\nbacktrace:%@",backtrace];
+            @throw([NSException exceptionWithName:@"WRONG_INITIALISATION" reason:s userInfo:NULL]);
+        }
+        if (![link isKindOfClass:[UMLayerM2PA class]])
+        {
+            NSString *backtrace = UMBacktrace(NULL,0);
+            NSString *s = [NSString stringWithFormat:@"passing wrong object of type %@ to initWithLink:\nbacktrace:%@",
+                           link!=NULL ? @(object_getClassName(link)): @"NULL",backtrace];
+            @throw([NSException exceptionWithName:@"WRONG_INITIALISATION" reason:s userInfo:NULL]);
+        }
         _link = link;
         _statusCode = M2PA_STATUS_DISCONNECTED;
         if(notify)
@@ -231,7 +244,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [_link.t4r stop];
     [_link.t4 stop];
     [_link notifyMtp3InService];
-    return  [[UMM2PAState_InService alloc]initWithLink:_link];;
+    return  [[UMM2PAState_InService alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventLinkstatusBusy

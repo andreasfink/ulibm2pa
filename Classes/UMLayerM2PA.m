@@ -171,6 +171,7 @@
     fflush(stdout);
     sleep(1);
 }
+
 - (void)setState:(UMM2PAState *)state
 {
     if(state == NULL)
