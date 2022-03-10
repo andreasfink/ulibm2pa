@@ -40,6 +40,8 @@
         
         M2TIMER_VALIDATE(_link.t4r.seconds,M2PA_DEFAULT_T4_R,M2PA_DEFAULT_T4_R_MIN,M2PA_DEFAULT_T4_R_MAX);
         [_link.t4r start]; /* tume u*/
+        _link.t4.seconds = t;
+        [_link.t4 start];
     }
     return self;
 }
