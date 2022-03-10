@@ -18,31 +18,28 @@
     {
         _statusCode = M2PA_STATUS_ALIGNED_NOT_READY;
         [_link.t2 stop];
-        if(_link.t4.isRunning==NO)
+        [_link.t4 stop];
+        _t4_expired = NO;
+        [_link.t4r stop];
+        double t;
+        M2TIMER_VALIDATE(_link.t4r.seconds,M2PA_DEFAULT_T4_R,M2PA_DEFAULT_T4_R_MIN,M2PA_DEFAULT_T4_R_MAX);
+        if(_link.emergency)
         {
-            [_link.t4 start];
+            t = _link.t4e;
+            M2TIMER_VALIDATE(t,M2PA_DEFAULT_T4_E,M2PA_DEFAULT_T4_E_MIN,M2PA_DEFAULT_T4_E_MAX);
+            _link.t4e = t;
+            [self sendLinkstateProvingEmergency:YES];
         }
-        if(_link.t4r.isRunning==NO)
+        else
         {
-            M2TIMER_VALIDATE(_link.t4r.seconds,M2PA_DEFAULT_T4_R,M2PA_DEFAULT_T4_R_MIN,M2PA_DEFAULT_T4_R_MAX);
-            if(_link.emergency)
-            {
-                double t = _link.t4e;
-                M2TIMER_VALIDATE(t,M2PA_DEFAULT_T4_E,M2PA_DEFAULT_T4_E_MIN,M2PA_DEFAULT_T4_E_MAX);
-                _link.t4e = t;
-                _link.t4.seconds = t;
-                [self sendLinkstateProvingEmergency:YES];
-            }
-            else
-            {
-                double t = _link.t4n;
-                M2TIMER_VALIDATE(t,M2PA_DEFAULT_T4_N,M2PA_DEFAULT_T4_N_MIN,M2PA_DEFAULT_T4_N_MAX);
-                _link.t4n = t;
-                _link.t4.seconds = t;
-                [self sendLinkstateProvingNormal:YES];
-            }
-            [_link.t4r start];
+            t = _link.t4n;
+            M2TIMER_VALIDATE(t,M2PA_DEFAULT_T4_N,M2PA_DEFAULT_T4_N_MIN,M2PA_DEFAULT_T4_N_MAX);
+            _link.t4n = t;
+            [self sendLinkstateProvingEmergency:YES];
         }
+        
+        M2TIMER_VALIDATE(_link.t4r.seconds,M2PA_DEFAULT_T4_R,M2PA_DEFAULT_T4_R_MIN,M2PA_DEFAULT_T4_R_MAX);
+        [_link.t4r start]; /* tume u*/
     }
     return self;
 }
@@ -173,6 +170,7 @@
         [_link.t2 stop];
         [_link.t4r stop];
         [_link.t4 stop];
+        _t4_expired = NO;
         return [[UMM2PAState_AlignedReady alloc]initWithLink:_link];
     }
     if(_link.emergency)
