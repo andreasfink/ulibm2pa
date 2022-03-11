@@ -76,7 +76,11 @@
 - (UMM2PAState *)eventLinkstatusAlignment
 {
     [self logStatemachineEvent:__func__];
-    return self;
+    if(_link.forcedOutOfService==YES)
+    {
+        return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+    }
+    return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal
@@ -102,6 +106,7 @@
     [_link notifyMtp3InService];
     return  [[UMM2PAState_InService alloc]initWithLink:_link];
 }
+
 
 - (UMM2PAState *)eventLinkstatusBusy
 {
@@ -136,7 +141,6 @@
 - (UMM2PAState *)eventTimer4
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateReady:YES];
     [self sendLinkstateReady:YES];
     [_link.t1 stop];
     [_link.t2 stop];

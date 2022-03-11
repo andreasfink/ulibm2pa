@@ -17,6 +17,10 @@
 {
     self =[super initWithLink:link];
     {
+        [_link.t1 stop];
+        [_link.t2 stop];
+        [_link.t4r stop];
+        [_link.t4 stop];
         _statusCode = M2PA_STATUS_IS;
     }
     return self;
@@ -68,6 +72,7 @@
     [self logStatemachineEvent:__func__];
     return self;
 }
+
 
 - (UMM2PAState *)eventTimer4
 {

@@ -189,7 +189,7 @@
 - (UMM2PAState *)eventTimer4
 {
     [self logStatemachineEvent:__func__];
-    if(_link.linkstateProvingSent > 5)
+    if(_link.linkstateProvingSent > 3)
     {
         [self sendLinkstateReady:YES];
         return [[UMM2PAState_AlignedReady alloc]initWithLink:_link];
