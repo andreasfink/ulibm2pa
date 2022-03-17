@@ -62,7 +62,7 @@
 - (UMM2PAState *)eventSctpDown
 {
     [self logStatemachineEvent:__func__];
-    return [[UMM2PAState_Off alloc]initWithLink:_link];
+    return [super eventSctpDown];
 }
 
 - (UMM2PAState *)eventLinkstatusOutOfService
