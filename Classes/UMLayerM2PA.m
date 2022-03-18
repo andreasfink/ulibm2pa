@@ -341,7 +341,7 @@
        && (_sctp_status == UMSOCKET_STATUS_OFF))
     {
         /* SCTP Link has died */
-        [_state logStatemachineEvent:@"sctp-link-died"];
+        [_state logStatemachineEvent:"sctp-link-died"];
         [self sctpReportsDown];
         [_sctpLink openFor:self sendAbortFirst:NO];
     }
