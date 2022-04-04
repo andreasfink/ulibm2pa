@@ -54,7 +54,17 @@
 - (UMM2PAState *)eventSctpUp
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService:YES];
+
+    if(_link.forcedOutOfService==YES)
+    {
+        [self sendLinkstateOutOfService:YES];
+        return self;
+    }
+    else
+    {
+        [self sendLinkstateAlignment:YES];
+    }
+    [_link.t2 start];
     /* the start procedure will start the link */
     return self;
 }
