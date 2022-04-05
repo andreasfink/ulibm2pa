@@ -25,6 +25,7 @@
                                 until the other side sends READY as well or sends traffic
                                 Then we go int In service state */
         [_link.t4r start];
+
     }
     return self;
 }
@@ -37,7 +38,7 @@
 - (UMM2PAState *)eventStop
 {
     [self logStatemachineEvent:__func__];
-    return self;
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventStart
@@ -49,7 +50,7 @@
 - (UMM2PAState *)eventSctpUp
 {
     [self logStatemachineEvent:__func__];
-    return [super eventSctpUp];
+    return self;
 }
 
 - (UMM2PAState *)eventSctpDown
@@ -67,12 +68,14 @@
 - (UMM2PAState *)eventEmergency
 {
     [self logStatemachineEvent:__func__];
+    _link.emergency = YES;
     return self;
 }
 
 - (UMM2PAState *)eventEmergencyCeases
 {
     [self logStatemachineEvent:__func__];
+    _link.emergency = NO;
     return self;
 }
 
@@ -101,7 +104,6 @@
 - (UMM2PAState *)eventLinkstatusReady
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateReady:YES];
     [_link.t1 stop];
     [_link.t2 stop];
     [_link.t4r stop];
@@ -141,18 +143,6 @@
     return self;
 }
 
-- (UMM2PAState *)eventTimer4
-{
-    [self logStatemachineEvent:__func__];
-    [self sendLinkstateReady:YES];
-    [_link.t1 stop];
-    [_link.t2 stop];
-    [_link.t4r stop];
-    [_link.t4 stop];
-    [_link notifyMtp3InService];
-    return [[UMM2PAState_InService alloc]initWithLink:_link];
-}
-
 - (UMM2PAState *)eventTimer4r
 {
     [self logStatemachineEvent:__func__];
@@ -173,12 +163,5 @@
     return [[UMM2PAState_InService alloc]initWithLink:_link];
 }
 
-- (void) sendLinkstateOutOfService:(BOOL)sync
-{
-    [self logStatemachineEvent:__func__ forced:YES];
-    [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:sync];
-    _link.linkstateOutOfServiceSent++;
-    [self logStatemachineEventString:@"sendLinkstateOutOfService"];
-}
 
 @end

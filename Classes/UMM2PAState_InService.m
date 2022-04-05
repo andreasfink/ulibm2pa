@@ -34,7 +34,7 @@
 - (UMM2PAState *)eventStop
 {
     [self logStatemachineEvent:__func__];
-    return self;
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventStart

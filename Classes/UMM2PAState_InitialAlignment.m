@@ -1,5 +1,5 @@
 //
-//  UMM2PAState_AlignedNotReady.m
+//  UMM2PAState_InitialAlignment.m
 //  ulibm2pa
 //
 //  Created by Andreas Fink on 17.03.20.
@@ -17,8 +17,11 @@
     self =[super initWithLink:link];
     {
         _statusCode = M2PA_STATUS_INITIAL_ALIGNMENT;
-        [_link.t2 start];
+        [_link.t2 stop];
+        [_link.t4 stop];
+        [_link.t4r stop];
         [_link sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT synchronous:YES];
+        [_link.t2 start];
     }
     return self;
 }
@@ -32,7 +35,7 @@
 - (UMM2PAState *)eventStop
 {
     [self logStatemachineEvent:__func__];
-    return self;
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventStart
@@ -44,7 +47,7 @@
 - (UMM2PAState *)eventSctpUp
 {
     [self logStatemachineEvent:__func__];
-    return [super eventSctpUp];
+    return self;
 }
 
 - (UMM2PAState *)eventSctpDown
@@ -55,46 +58,39 @@
 
 - (UMM2PAState *)eventLinkstatusOutOfService
 {
-    return [super eventLinkstatusOutOfService];
+    [self logStatemachineEvent:__func__];
+    return self;
 }
-
 
 - (UMM2PAState *)eventEmergency
 {
     [self logStatemachineEvent:__func__];
+    _link.emergency = YES;
     return self;
 }
 
 - (UMM2PAState *)eventEmergencyCeases
 {
     [self logStatemachineEvent:__func__];
+    _link.emergency = NO;
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusAlignment
 {
     [self logStatemachineEvent:__func__];
-    [_link.t2 stop];
-    [_link.t4 stop];
-    [_link.t4r stop];
     return [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal
 {
     [self logStatemachineEvent:__func__];
-    [_link.t2 stop];
-    [_link.t4 stop];
-    [_link.t4r stop];
     return [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventLinkstatusProvingEmergency
 {
     [self logStatemachineEvent:__func__];
-    [_link.t2 stop];
-    [_link.t4 stop];
-    [_link.t4r stop];
     return [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link];
 }
 
@@ -135,27 +131,22 @@
 }
 
 
-- (UMM2PAState *)eventTimer4r
+- (UMM2PAState *)eventTimer4
 {
     [_link.t4 stop];
     return self;
 }
 
+- (UMM2PAState *)eventTimer4r
+{
+    [_link.t4r stop];
+    return self;
+}
+
 - (void) sendLinkstateOutOfService:(BOOL)sync
 {
-#if 0
-    {
-        [self logStatemachineEvent:__func__ forced:YES];
-        [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:sync];
-        _link.linkstateOutOfServiceSent++;
-        [self logStatemachineEventString:@"sendLinkstateOutOfService"];
-    }
-#else
-    {
-        _link.linkstateAlignmentSent++;
-        [_link sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT synchronous:sync];
-    }
-#endif
+    _link.linkstateAlignmentSent++;
+    [_link sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT synchronous:sync];
 }
 
 - (UMM2PAState *)eventReceiveUserData:(NSData *)userData

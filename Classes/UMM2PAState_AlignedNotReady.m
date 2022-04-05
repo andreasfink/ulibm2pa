@@ -16,6 +16,7 @@
 {
     self =[super initWithLink:link];
     {
+        _link.linkstateProvingSent = 0;
         _statusCode = M2PA_STATUS_ALIGNED_NOT_READY;
         [_link.t2 stop];
         [_link.t4 stop];
@@ -39,8 +40,8 @@
         }
         
         M2TIMER_VALIDATE(_link.t4r.seconds,M2PA_DEFAULT_T4_R,M2PA_DEFAULT_T4_R_MIN,M2PA_DEFAULT_T4_R_MAX);
-        [_link.t4r start]; /* tume u*/
-        _link.t4.seconds = t;
+        [_link.t4r start]; /* sending out status timer */
+        _link.t4.seconds = t;   /* ending of proving period timer */
         [_link.t4 start];
     }
     return self;
@@ -51,11 +52,10 @@
     return @"aligned-not-ready";
 }
 
-
 - (UMM2PAState *)eventStop
 {
     [self logStatemachineEvent:__func__];
-    return self;
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventStart
@@ -67,7 +67,7 @@
 - (UMM2PAState *)eventSctpUp
 {
     [self logStatemachineEvent:__func__];
-    return [super eventSctpUp];
+    return self;
 }
 
 - (UMM2PAState *)eventSctpDown
@@ -79,29 +79,26 @@
 - (UMM2PAState *)eventLinkstatusOutOfService
 {
     [self logStatemachineEvent:__func__];
-    return  self;
+    return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
 }
 
 - (UMM2PAState *)eventEmergency
 {
     [self logStatemachineEvent:__func__];
+    _link.emergency = YES;
     return self;
 }
 
 - (UMM2PAState *)eventEmergencyCeases
 {
     [self logStatemachineEvent:__func__];
+    _link.emergency = NO;
     return self;
 }
-
 
 - (UMM2PAState *)eventLinkstatusAlignment
 {
     [self logStatemachineEvent:__func__];
-    if(_link.forcedOutOfService==YES)
-    {
-        return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
-    }
     if(_link.emergency)
     {
         [self sendLinkstateProvingEmergency:YES];
@@ -129,6 +126,7 @@
 {
     /* other side is ready. we are ready when we are ready. */
     [self logStatemachineEvent:__func__];
+//  _link.othersideIsReady = YES;
     return self;
 }
 
@@ -169,8 +167,8 @@
     {
         [_link.t1 stop];
         [_link.t2 stop];
-        [_link.t4r stop];
         [_link.t4 stop];
+        [_link.t4r stop];
         _t4_expired = NO;
         [self sendLinkstateReady:YES];
         return [[UMM2PAState_AlignedReady alloc]initWithLink:_link];

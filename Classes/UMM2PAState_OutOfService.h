@@ -11,7 +11,6 @@
 
 @interface UMM2PAState_OutOfService : UMM2PAState
 {
-    BOOL    _i_am_starting;
 }
 @end
 
