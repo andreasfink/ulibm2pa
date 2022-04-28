@@ -77,7 +77,7 @@
 #define	M2PA_DEFAULT_T4_E	      0.5     /* emergency proving period  0.4s - 0.6s : 0.5s*/
 
 #define M2PA_DEFAULT_T4_R_MIN     0.05
-#define M2PA_DEFAULT_T4_R_MAX     1.0
+#define M2PA_DEFAULT_T4_R_MAX     0.39   /* has to be smaller than M2PA_DEFAULT_T4_E */
 #define	M2PA_DEFAULT_T4_R	      0.100  /* resending timer of link status proving every 100ms */
 
 #define M2TIMER_VALIDATE(value,default,min,max)  value = ((value<min) || (value >max)) ? default : value

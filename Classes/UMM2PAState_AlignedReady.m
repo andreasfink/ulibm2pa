@@ -20,6 +20,7 @@
         [_link.t2 stop];
         [_link.t4r stop];
         [_link.t4 stop];
+        [self sendLinkstateReady:YES];
         _statusCode = M2PA_STATUS_ALIGNED_READY;
         _link.t4r.seconds = 1; /* we now send a READY signal every second
                                 until the other side sends READY as well or sends traffic
