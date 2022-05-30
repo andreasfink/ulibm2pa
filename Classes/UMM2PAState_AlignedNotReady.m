@@ -206,4 +206,12 @@
     return self;
 }
 
+- (UMM2PAState *)eventSendUserData:(NSData *)data
+                        ackRequest:(NSDictionary *)ackRequest
+                               dpc:(int)dpc
+{
+    [self logStatemachineEvent:__func__ forced:YES];
+    return self;
+}
+
 @end

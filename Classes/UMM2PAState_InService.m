@@ -175,4 +175,15 @@
     [self logStatemachineEventString:@"sendLinkstateOutOfService"];
 }
 
+- (UMM2PAState *)eventSendUserData:(NSData *)data
+                        ackRequest:(NSDictionary *)ackRequest
+                               dpc:(int)dpc
+{
+    [_link sendData:data
+             stream:M2PA_STREAM_USERDATA
+         ackRequest:ackRequest
+                dpc:dpc];
+    return self;
+}
+
 @end

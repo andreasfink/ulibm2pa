@@ -180,4 +180,12 @@
     return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
 }
 
+- (UMM2PAState *)eventSendUserData:(NSData *)data
+                        ackRequest:(NSDictionary *)ackRequest
+                               dpc:(int)dpc
+{
+    [self logStatemachineEvent:__func__ forced:YES];
+    return self;
+}
+
 @end
