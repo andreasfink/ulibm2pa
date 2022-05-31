@@ -286,12 +286,6 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 {
     [self logStatemachineEvent:__func__];
     return self;
-
-    [_link sendData:data
-             stream:M2PA_STREAM_USERDATA
-         ackRequest:ackRequest
-                dpc:dpc];
-    return self;
 }
 
 - (UMM2PAState *)eventReceiveUserData:(NSData *)userData
