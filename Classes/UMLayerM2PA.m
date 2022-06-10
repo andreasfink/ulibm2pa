@@ -11,7 +11,6 @@
 
 #import "UMLayerM2PA.h"
 #import <ulibsctp/ulibsctp.h>
-
 #import "UMLayerM2PAApplicationContextProtocol.h"
 #import "UMM2PATask_sctpStatusIndication.h"
 #import "UMM2PATask_sctpDataIndication.h"
@@ -114,7 +113,7 @@
             _controlLock = [[UMMutex alloc]initWithName:@"m2pa-control-mutex"];
             _incomingDataBufferLock = [[UMMutex alloc]initWithName:@"m2pa-incoming-data-mutex"];
             _unackedMsu = [[UMSynchronizedDictionary alloc]init];
-            _state = [[UMM2PAState_Off alloc]initWithLink:self];
+            _state = [[UMM2PAState_Off alloc]initWithLink:self status:M2PA_STATUS_OFF];
             _slc = 0;
             _emergency = NO;
             _congested = NO;
@@ -681,7 +680,7 @@
         _linkstateOutOfServiceReceived++;
         if(_state == NULL)
         {
-            _state = [[UMM2PAState_Off alloc]initWithLink:self];
+            _state = [[UMM2PAState_Off alloc]initWithLink:self status:M2PA_STATUS_OFF];
         }
         self.state = [_state eventLinkstatusOutOfService];
     }
@@ -855,7 +854,7 @@
     {
         if(_state == NULL)
         {
-            _state = [[UMM2PAState_Off alloc]initWithLink:self];
+            _state = [[UMM2PAState_Off alloc]initWithLink:self  status:M2PA_STATUS_OFF];
         }
         else
         {
@@ -1890,7 +1889,7 @@
     @try
     {
         _powerOnCounter++;
-        self.state = [[UMM2PAState_Off alloc]initWithLink:self];
+        self.state = [[UMM2PAState_Off alloc]initWithLink:self  status:M2PA_STATUS_OFF];
         self.state = [_state eventPowerOn];
     }
     @catch(NSException *e)
