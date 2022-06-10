@@ -24,7 +24,7 @@
 
 - (NSString *)description;
 
-- (UMM2PAState *)initWithLink:(UMLayerM2PA *)link;
+- (UMM2PAState *)initWithLink:(UMLayerM2PA *)link status:(M2PA_Status)statusCode;
 - (void) logStatemachineEvent:(const char *)func;
 - (void) logStatemachineEvent:(const char *)func forced:(BOOL)forced;
 - (void) logStatemachineEventString:(NSString *)str;

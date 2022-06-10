@@ -11,7 +11,6 @@
 #import "UMLayerM2PA.h"
 
 @implementation UMM2PAState_InitialAlignment
-
 - (UMM2PAState *)initWithLink:(UMLayerM2PA *)link;
 {
     self =[super initWithLink:link];
@@ -168,6 +167,8 @@
                                dpc:(int)dpc
 {
     [self logStatemachineEvent:__func__ forced:YES];
+    /* we dont expect data pdus in linkstate initial alignment */
+    [self notifyMtp3:M2PA_STATUS_INITIAL_ALIGNMENT async:YES];
     return self;
 }
 

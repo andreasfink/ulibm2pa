@@ -211,7 +211,9 @@
                                dpc:(int)dpc
 {
     [self logStatemachineEvent:__func__ forced:YES];
+    [_link notifyMtp3:M2PA_STATUS_ALIGNED_NOT_READY async:YES];
     return self;
 }
+
 
 @end

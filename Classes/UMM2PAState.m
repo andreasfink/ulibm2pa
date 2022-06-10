@@ -40,13 +40,9 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 }
 
 
-- (UMM2PAState *)initWithLink:(UMLayerM2PA *)link
+- (UMM2PAState *)initWithLink:(UMLayerM2PA *)link status:(M2PA_Status)statusCode
 {
-    return [self initWithLink:link notify:NO];
-}
-
-- (UMM2PAState *)initWithLink:(UMLayerM2PA *)link notify:(BOOL)notify
-{
+    _statusCode = statusCode;
     NSAssert(link!=NULL,@"link can not be NULL");
     self = [super init];
     if(self)
@@ -66,10 +62,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
         }
         _link = link;
         _statusCode = M2PA_STATUS_DISCONNECTED;
-        if(notify)
-        {
-            [_link notifyMtp3:_statusCode async:YES];
-        }
+        [_link notifyMtp3:_statusCode async:YES];
     }
     return self;
 }
@@ -169,7 +162,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
         [self sendLinkstateOutOfService:YES];
     }
     [_link.t2 start];
-    return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
 
@@ -184,7 +177,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [self logStatemachineEvent:__func__];
     [_link.startTimer stop];
     [_link notifyMtp3Stop];
-    return [[UMM2PAState_Off alloc]initWithLink:_link];
+    return [[UMM2PAState_Off alloc]initWithLink:_link status:M2PA_STATUS_OFF];
 }
 
 - (UMM2PAState *)eventLinkstatusOutOfService
@@ -193,7 +186,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [_link.startTimer stop];
     [_link startupInitialisation];
     [_link.t2 start];
-    return  [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+    return  [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
 
@@ -214,9 +207,9 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [self logStatemachineEvent:__func__];
     if(_link.forcedOutOfService==YES)
     {
-        return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+        return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
     }
-    return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
+    return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link status:M2PA_STATUS_INITIAL_ALIGNMENT];
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal
@@ -239,7 +232,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [_link.t4r stop];
     [_link.t4 stop];
     [_link notifyMtp3InService];
-    return  [[UMM2PAState_InService alloc]initWithLink:_link];
+    return  [[UMM2PAState_InService alloc]initWithLink:_link status:M2PA_STATUS_IS];
 }
 
 - (UMM2PAState *)eventLinkstatusBusy
@@ -255,7 +248,6 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     _link.congested = NO;
     return self;
 }
-
 
 - (UMM2PAState *)eventLinkstatusProcessorOutage
 {
@@ -276,7 +268,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [self logStatemachineEvent:__func__];
     [self logStatemachineEventString:@"closing-sctp"];
     [_link.sctpLink closeFor:_link];
-    return [[UMM2PAState_Off alloc]initWithLink:_link];
+    return [[UMM2PAState_Off alloc]initWithLink:_link status:M2PA_STATUS_OFF];
 }
 
 
