@@ -12,9 +12,9 @@
 
 @implementation UMM2PAState_AlignedReady
 
-- (UMM2PAState *)initWithLink:(UMLayerM2PA *)link;
+- (UMM2PAState *)initWithLink:(UMLayerM2PA *)link status:(M2PA_Status)statusCode
 {
-    self =[super initWithLink:link];
+    self =[super initWithLink:link status:statusCode];
     {
         [_link.t1 stop];
         [_link.t2 stop];
@@ -39,7 +39,7 @@
 - (UMM2PAState *)eventStop
 {
     [self logStatemachineEvent:__func__];
-    return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
 - (UMM2PAState *)eventStart
@@ -85,9 +85,9 @@
     [self logStatemachineEvent:__func__];
     if(_link.forcedOutOfService==YES)
     {
-        return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+        return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
     }
-    return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
+    return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link status:M2PA_STATUS_INITIAL_ALIGNMENT];
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal
@@ -110,7 +110,7 @@
     [_link.t4r stop];
     [_link.t4 stop];
     [_link notifyMtp3InService];
-    return  [[UMM2PAState_InService alloc]initWithLink:_link];
+    return  [[UMM2PAState_InService alloc]initWithLink:_link status:M2PA_STATUS_IS];
 }
 
 
@@ -161,7 +161,7 @@
     [_link.t4 stop];
     [self logStatemachineEventString:@"receiveUserData going IS"];
     [_link notifyMtp3InService];
-    return [[UMM2PAState_InService alloc]initWithLink:_link];
+    return [[UMM2PAState_InService alloc]initWithLink:_link status:M2PA_STATUS_IS];
 }
 
 - (UMM2PAState *)eventSendUserData:(NSData *)data
