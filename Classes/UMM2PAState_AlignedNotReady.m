@@ -12,9 +12,9 @@
 
 @implementation UMM2PAState_AlignedNotReady
 
-- (UMM2PAState *)initWithLink:(UMLayerM2PA *)link;
+- (UMM2PAState *)initWithLink:(UMLayerM2PA *)link status:(M2PA_Status)statusCode
 {
-    self =[super initWithLink:link];
+    self =[super initWithLink:link status:statusCode];
     {
         _link.linkstateProvingSent = 0;
         _statusCode = M2PA_STATUS_ALIGNED_NOT_READY;
@@ -55,7 +55,7 @@
 - (UMM2PAState *)eventStop
 {
     [self logStatemachineEvent:__func__];
-    return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
 - (UMM2PAState *)eventStart
@@ -79,7 +79,7 @@
 - (UMM2PAState *)eventLinkstatusOutOfService
 {
     [self logStatemachineEvent:__func__];
-    return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
+    return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link status:M2PA_STATUS_INITIAL_ALIGNMENT];
 }
 
 - (UMM2PAState *)eventEmergency
@@ -169,7 +169,7 @@
         [_link.t2 stop];
         [_link.t4 stop];
         [_link.t4r stop];
-        return [[UMM2PAState_AlignedReady alloc]initWithLink:_link];
+        return [[UMM2PAState_AlignedReady alloc]initWithLink:_link status:M2PA_STATUS_ALIGNED_READY];
     }
     if(_link.emergency)
     {
@@ -189,7 +189,7 @@
     [_link.t2 stop];
     [_link.t4r stop];
     [_link.t4 stop];
-    return [[UMM2PAState_AlignedReady alloc]initWithLink:_link];
+    return [[UMM2PAState_AlignedReady alloc]initWithLink:_link status:M2PA_STATUS_ALIGNED_READY];
 }
 
 - (void) sendLinkstateOutOfService:(BOOL)sync

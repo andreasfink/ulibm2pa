@@ -11,9 +11,9 @@
 #import "UMLayerM2PA.h"
 
 @implementation UMM2PAState_InitialAlignment
-- (UMM2PAState *)initWithLink:(UMLayerM2PA *)link;
+- (UMM2PAState *)initWithLink:(UMLayerM2PA *)link status:(M2PA_Status)statusCode
 {
-    self =[super initWithLink:link];
+    self =[super initWithLink:link  status:statusCode];
     {
         _statusCode = M2PA_STATUS_INITIAL_ALIGNMENT;
         [_link.t2 stop];
@@ -34,7 +34,7 @@
 - (UMM2PAState *)eventStop
 {
     [self logStatemachineEvent:__func__];
-    return [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
 - (UMM2PAState *)eventStart
@@ -78,19 +78,19 @@
 - (UMM2PAState *)eventLinkstatusAlignment
 {
     [self logStatemachineEvent:__func__];
-    return [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link];
+    return [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link status:M2PA_STATUS_ALIGNED_NOT_READY];
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal
 {
     [self logStatemachineEvent:__func__];
-    return [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link];
+    return [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link status:M2PA_STATUS_ALIGNED_NOT_READY];
 }
 
 - (UMM2PAState *)eventLinkstatusProvingEmergency
 {
     [self logStatemachineEvent:__func__];
-    return [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link];
+    return [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link status:M2PA_STATUS_ALIGNED_NOT_READY];
 }
 
 - (UMM2PAState *)eventLinkstatusReady

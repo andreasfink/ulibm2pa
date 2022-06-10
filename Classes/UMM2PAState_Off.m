@@ -13,11 +13,15 @@
 
 @implementation UMM2PAState_Off
 
-- (UMM2PAState *)initWithLink:(UMLayerM2PA *)link;
+- (UMM2PAState *)initWithLink:(UMLayerM2PA *)link status:(M2PA_Status)statusCode
 {
-    self =[super initWithLink:link];
+    self =[super initWithLink:link status:M2PA_STATUS_OFF];
     {
         _statusCode = M2PA_STATUS_OFF;
+        if(_link.sctpLink.status != UMSOCKET_STATUS_OFF)
+        {
+            [self eventPowerOff];
+        }
     }
     return self;
 }
@@ -60,7 +64,7 @@
     {
         [self sendLinkstateOutOfService:YES];
     }
-    UMM2PAState *s = [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+    UMM2PAState *s = [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
     return [s eventStart];
 }
 
@@ -78,7 +82,7 @@
     [_link.startTimer stop];
     [_link startupInitialisation];
     [_link.t2 start];
-    UMM2PAState *newState = [[UMM2PAState_OutOfService alloc]initWithLink:_link];
+    UMM2PAState *newState = [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
     [_link setState:newState];
     return [newState eventStart];
 }

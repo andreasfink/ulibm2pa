@@ -13,9 +13,9 @@
 @implementation UMM2PAState_OutOfService
 
 
-- (UMM2PAState *)initWithLink:(UMLayerM2PA *)link
+- (UMM2PAState *)initWithLink:(UMLayerM2PA *)link status:(M2PA_Status)statusCode
 {
-    self = [super initWithLink:link];
+    self = [super initWithLink:link status:statusCode];
     if(self)
     {
         _statusCode = M2PA_STATUS_OOS;
@@ -49,7 +49,7 @@
         [self sendLinkstateOutOfService:YES];
         return self;
     }
-    return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
+    return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link status:M2PA_STATUS_INITIAL_ALIGNMENT];
 }
 
 - (UMM2PAState *)eventSctpUp
@@ -98,7 +98,7 @@
         [self sendLinkstateOutOfService:YES];
         return self;
     }
-    return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
+    return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link status:M2PA_STATUS_INITIAL_ALIGNMENT];
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal
@@ -177,7 +177,7 @@
         [self sendLinkstateOutOfService:YES];
         return self;
     }
-    return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link];
+    return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link status:M2PA_STATUS_INITIAL_ALIGNMENT];
 }
 
 - (UMM2PAState *)eventSendUserData:(NSData *)data
