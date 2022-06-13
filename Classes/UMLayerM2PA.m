@@ -2270,6 +2270,24 @@
 }
 #endif
 
+- (void)notifyMtp3Disconnected
+{
+    @autoreleasepool
+    {
+        NSArray *usrs = [_users arrayCopy];
+        for(UMLayerM2PAUser *u in usrs)
+        {
+            if([u.profile wantsM2PALinkstateMessages])
+            {
+                [u.user m2paStatusIndication:self
+                                         slc:_slc
+                                      userId:u.linkName
+                                      status:M2PA_STATUS_DISCONNECTED];
+            }
+        }
+    }
+}
+
 - (void)notifyMtp3Off
 {
     @autoreleasepool

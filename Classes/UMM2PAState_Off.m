@@ -36,6 +36,7 @@
 {
     [self logStatemachineEvent:__func__];
     [_link.sctpLink closeFor:_link];
+    [_link notifyMtp3Disconnected];
     return self;
 }
 
@@ -45,6 +46,7 @@
     [_link startupInitialisation];
     [_link.startTimer start];
     [_link.sctpLink openFor:_link];
+    [_link notifyMtp3Off];
     return self;
 }
 
