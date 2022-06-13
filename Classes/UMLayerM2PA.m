@@ -428,6 +428,7 @@
     {
         NSString *e = [NSString stringWithFormat:@"PROTOCOL VIOLATION: %@",reason];
         [self logMajorError:e];
+        [_stateMachineLogFeed debugText:e];
         [self powerOff];
     }
 }
@@ -437,6 +438,7 @@
     @autoreleasepool
     {
         [self logMajorError:@"PROTOCOL VIOLATION"];
+        [_stateMachineLogFeed debugText:@"PROTOCOL VIOLATION"];
         [self powerOff];
     }
 }
@@ -1752,6 +1754,7 @@
     {
         [self logDebug:@"powerOff"];
     }
+    [_stateMachineLogFeed debugText:@"PowerOff requested from upper layer"];
     [self powerOff];
 }
 
@@ -1917,7 +1920,9 @@
     }
     @catch(NSException *e)
     {
-        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+        NSString *s = [NSString stringWithFormat:@"Exception %@",e];
+        [self logMajorError:s];
+        [_stateMachineLogFeed debugText:s];
     }
     @finally
     {
