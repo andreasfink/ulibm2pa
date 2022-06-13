@@ -61,7 +61,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
             @throw([NSException exceptionWithName:@"WRONG_INITIALISATION" reason:s userInfo:NULL]);
         }
         _link = link;
-        _statusCode = M2PA_STATUS_DISCONNECTED;
+        _statusCode = statusCode;
         [_link notifyMtp3:_statusCode async:YES];
     }
     return self;

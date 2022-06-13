@@ -113,7 +113,6 @@
     return  [[UMM2PAState_InService alloc]initWithLink:_link status:M2PA_STATUS_IS];
 }
 
-
 - (UMM2PAState *)eventLinkstatusBusy
 {
     [self logStatemachineEvent:__func__];
