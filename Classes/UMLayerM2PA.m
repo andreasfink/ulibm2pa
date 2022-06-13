@@ -336,7 +336,7 @@
         }
     }
 
-    if(	(old_sctp_status != UMSOCKET_STATUS_OFF)
+    if(    (old_sctp_status != UMSOCKET_STATUS_OFF)
        && (_sctp_status == UMSOCKET_STATUS_OFF))
     {
         /* SCTP Link has died */
