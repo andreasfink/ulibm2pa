@@ -26,7 +26,10 @@
                                 until the other side sends READY as well or sends traffic
                                 Then we go int In service state */
         [_link.t4r start];
-
+        
+        _link.t4.seconds = 20; /* we wait max 20 second until READY is received */
+        [_link.t4 start];
+        _readySent = 0;
     }
     return self;
 }
@@ -110,6 +113,10 @@
     [_link.t4r stop];
     [_link.t4 stop];
     [_link notifyMtp3InService];
+    if(_readySent==0)
+    {
+        [self sendLinkstateReady:YES];
+    }
     return  [[UMM2PAState_InService alloc]initWithLink:_link status:M2PA_STATUS_IS];
 }
 
@@ -146,6 +153,7 @@
 - (UMM2PAState *)eventTimer4r
 {
     [self logStatemachineEvent:__func__];
+    _readySent++;
     [self sendLinkstateReady:YES];
     return self;
 }

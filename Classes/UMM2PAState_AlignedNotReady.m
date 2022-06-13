@@ -169,6 +169,7 @@
         [_link.t2 stop];
         [_link.t4 stop];
         [_link.t4r stop];
+        [self sendLinkstateReady:YES];
         return [[UMM2PAState_AlignedReady alloc]initWithLink:_link status:M2PA_STATUS_ALIGNED_READY];
     }
     if(_link.emergency)

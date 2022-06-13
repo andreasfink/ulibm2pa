@@ -11,6 +11,7 @@
 
 @interface UMM2PAState_AlignedReady : UMM2PAState
 {
+    int _readySent;
 }
 @end
 
