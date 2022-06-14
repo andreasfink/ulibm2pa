@@ -9,6 +9,8 @@
 // Version 3 from 29 June 2007 and other commercial licenses available by
 // the author.
 
+#define POWER_DEBUG  1  /* enable NSLog on poweron/poweroff*/
+
 #import "UMLayerM2PA.h"
 #import <ulibsctp/ulibsctp.h>
 #import "UMLayerM2PAApplicationContextProtocol.h"
@@ -219,6 +221,30 @@
 {
     @autoreleasepool
     {
+#if defined(POWER_DEBUG)
+        NSString *str;
+        switch(s)
+        {
+            case UMSOCKET_STATUS_FOOS:
+                str = @"UMSOCKET_STATUS_FOOS(-1)";
+                break;
+            case UMSOCKET_STATUS_OFF:
+                str = @"UMSOCKET_STATUS_OFF(100)";
+                break;
+            case UMSOCKET_STATUS_OOS:
+                str = @"UMSOCKET_STATUS_OOS(101)";
+                break;
+            case UMSOCKET_STATUS_IS:
+                str = @"UMSOCKET_STATUS_IS(102)";
+                break;
+            case UMSOCKET_STATUS_LISTENING:
+                str = @"UMSOCKET_STATUS_LISTENING(103)";
+                break;
+            default:
+                str = [NSString stringWithFormat:@"UNKNOWN(%d)",s];
+        }
+        NSLog(@"sctpStatusIndication in m2pa %@ from %@ status:%@",_layerName,caller.layerName,str);        
+#endif
         UMM2PATask_sctpStatusIndication *task = [[UMM2PATask_sctpStatusIndication alloc]initWithReceiver:self
                                                                                                   sender:caller
                                                                                                   userId:uid
@@ -429,6 +455,9 @@
         NSString *e = [NSString stringWithFormat:@"PROTOCOL VIOLATION: %@",reason];
         [self logMajorError:e];
         [_stateMachineLogFeed debugText:e];
+#if defined(POWER_DEBUG)
+        NSLog(@"protocol violation for m2pa %@: %@",_layerName,reason);
+#endif
         [self powerOff];
     }
 }
@@ -439,6 +468,9 @@
     {
         [self logMajorError:@"PROTOCOL VIOLATION"];
         [_stateMachineLogFeed debugText:@"PROTOCOL VIOLATION"];
+#if defined(POWER_DEBUG)
+        NSLog(@"protocol violation for m2pa %@",_layerName);
+#endif
         [self powerOff];
     }
 }
@@ -1306,9 +1338,14 @@
 
 - (void)powerOffFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced
 {
+    
+
     _forcedOutOfService = forced;
     @autoreleasepool
     {
+#if defined(POWER_DEBUG)
+        NSLog(@"powerOffFor called from %@ for m2pa %@ forced:%@",caller.layerName,_layerName,forced ? @"YES" : @"NO");
+#endif
         UMLayerTask *task = [[UMM2PATask_PowerOff alloc]initWithReceiver:self sender:caller];
         [self queueFromUpperWithPriority:task];
     }
@@ -1321,12 +1358,16 @@
 
 - (void)startFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced
 {
+    
     if(forced)
     {
         _forcedOutOfService = NO;
     }
     @autoreleasepool
     {
+#if defined(POWER_DEBUG)
+        NSLog(@"startFor called from %@ for m2pa %@ forced:%@",caller.layerName,_layerName,forced ? @"YES" : @"NO");
+#endif
         UMLayerTask *task = [[UMM2PATask_Start alloc]initWithReceiver:self sender:caller];
         [self queueFromUpperWithPriority:task];
     }
@@ -1341,6 +1382,9 @@
 {
     @autoreleasepool
     {
+#if defined(POWER_DEBUG)
+        NSLog(@"stopFor called from %@ for m2pa %@ forced:%@",caller.layerName,_layerName,forced ? @"YES" : @"NO");
+#endif
         UMLayerTask *task = [[UMM2PATask_Stop alloc]initWithReceiver:self sender:caller];
         [self queueFromUpperWithPriority:task];
     }
@@ -1908,6 +1952,9 @@
 
 - (void)powerOff
 {
+#if defined(POWER_DEBUG)
+    NSLog(@"powerOff called for m2pa %@. Queuing task",_layerName);
+#endif
     
     UMMUTEX_LOCK(_controlLock);
     @try
@@ -1923,6 +1970,9 @@
         NSString *s = [NSString stringWithFormat:@"Exception %@",e];
         [self logMajorError:s];
         [_stateMachineLogFeed debugText:s];
+#if defined(POWER_DEBUG)
+        NSLog(@"Exception: %@",e);
+#endif
     }
     @finally
     {
@@ -1932,6 +1982,10 @@
 
 - (void)start
 {
+#if defined(POWER_DEBUG)
+    NSLog(@"start called for m2pa %@. Queuing task",_layerName);
+#endif
+
     UMMUTEX_LOCK(_controlLock);
     @try
     {
@@ -1950,6 +2004,10 @@
 
 - (void)stop
 {
+#if defined(POWER_DEBUG)
+    NSLog(@"stop called for m2pa %@. Queuing task",_layerName);
+#endif
+
     UMMUTEX_LOCK(_controlLock);
     @try
     {
