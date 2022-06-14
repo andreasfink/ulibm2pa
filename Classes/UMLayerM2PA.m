@@ -9,7 +9,7 @@
 // Version 3 from 29 June 2007 and other commercial licenses available by
 // the author.
 
-#define POWER_DEBUG  1  /* enable NSLog on poweron/poweroff*/
+//#define POWER_DEBUG  1  /* enable NSLog on poweron/poweroff*/
 
 #import "UMLayerM2PA.h"
 #import <ulibsctp/ulibsctp.h>
