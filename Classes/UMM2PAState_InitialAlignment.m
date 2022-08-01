@@ -19,7 +19,7 @@
         [_link.t2 stop];
         [_link.t4 stop];
         [_link.t4r stop];
-        [_link sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT synchronous:YES];
+        [self sendLinkstateAlignment:YES];
         [_link.t2 start];
     }
     return self;
@@ -145,6 +145,7 @@
 - (void) sendLinkstateOutOfService:(BOOL)sync
 {
     _link.linkstateAlignmentSent++;
+    [self sendLinkstateAlignment:YES];
     [_link sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT synchronous:sync];
 }
 
