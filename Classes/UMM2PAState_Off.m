@@ -86,8 +86,11 @@
     [_link startupInitialisation];
     [_link.t2 start];
     UMM2PAState *newState = [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
+    return newState;
+    /* this is now done by the caller to avoid issues with the state machine return value changing twice and not updating upper layer
     [_link setState:newState];
     return [newState eventStart];
+     */
 }
 
 - (UMM2PAState *)eventSctpDown

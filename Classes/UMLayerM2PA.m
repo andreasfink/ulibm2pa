@@ -296,8 +296,14 @@
     @try
     {
         _sctpUpReceived++;
+        UMM2PAState *oldState = _state;
         self.state = [_state eventSctpUp];
+        if(([oldState isKindOfClass:[UMM2PAState_Off class]]) && ([_state isKindOfClass:[UMM2PAState_OutOfService class]]))
+        {
+            self.state = [_state eventStart];
+        }
     }
+
     @catch(NSException *e)
     {
         [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
