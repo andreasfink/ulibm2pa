@@ -2120,6 +2120,8 @@
 
 - (int)sendLinkstatus:(M2PA_linkstate_message)linkstate synchronous:(BOOL)sync
 {
+    /* we can not send linkstat messages while control is occuring as the state might change */
+    [_controlLock lock];
     @autoreleasepool
     {
         NSString *ls = [UMLayerM2PA linkStatusString:linkstate];
@@ -2136,7 +2138,7 @@
                 {
                     NSLog(@"LastEvents%d: %@",i,_lastEvent[0]);
                 }
-                usleep(0.1);
+                usleep(2);
                 return -1;
             case UMSOCKET_STATUS_OOS:
                 [self logDebug:[NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_OOS",ls ]];
@@ -2203,6 +2205,7 @@
                 ackRequest:NULL
                synchronous:sync];
     }
+    [_controlLock unlock];
     return 0;
 }
 
