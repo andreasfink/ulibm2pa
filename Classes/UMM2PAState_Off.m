@@ -59,6 +59,7 @@
 - (UMM2PAState *)eventStart
 {
     [self logStatemachineEvent:__func__];
+    /* we let this be done by the timer 
     if(_link.forcedOutOfService == NO)
     {
         [self sendLinkstateAlignment:YES];
@@ -67,6 +68,7 @@
     {
         [self sendLinkstateOutOfService:YES];
     }
+    */
     UMM2PAState *s = [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
     return [s eventStart];
 }

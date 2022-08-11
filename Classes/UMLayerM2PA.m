@@ -305,7 +305,6 @@
         if(([oldState isKindOfClass:[UMM2PAState_Off class]]) && ([_state isKindOfClass:[UMM2PAState_OutOfService class]]))
         {
             self.state = [_state eventStart];
-            
         }
     }
 
