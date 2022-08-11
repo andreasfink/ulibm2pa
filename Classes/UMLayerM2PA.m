@@ -154,7 +154,6 @@
             _outboundThroughputPackets  =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
             _inboundThroughputBytes     =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
             _outboundThroughputBytes    =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
-            
             _lastEventLock = [[UMMutex alloc]initWithName:@"last-event-lock"];
             for(int i=0;i<MAX_LAST_EVENTS;i++)
             {
@@ -306,6 +305,7 @@
         if(([oldState isKindOfClass:[UMM2PAState_Off class]]) && ([_state isKindOfClass:[UMM2PAState_OutOfService class]]))
         {
             self.state = [_state eventStart];
+            
         }
     }
 
