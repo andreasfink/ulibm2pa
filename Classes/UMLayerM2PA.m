@@ -121,7 +121,7 @@
             _congested = NO;
             _local_processor_outage = NO;
             _remote_processor_outage = NO;
-            _sctp_status = UMSOCKET_STATUS_OOS;
+            _sctp_status = UMSOCKET_STATUS_OFF;
             _link_restarts = 0;
             _linkstateReadyReceived = 0;
             _ready_sent = 0;
@@ -349,8 +349,23 @@
     
     if(old_sctp_status == _sctp_status)
     {
-        /* nothing happened we can ignore */
+        /* nothing has changed we can ignore */
         return;
+    }
+
+    if( (old_sctp_status != UMSOCKET_STATUS_OFF)
+       && (_sctp_status == UMSOCKET_STATUS_OFF))
+    {
+        /* SCTP Link has died */
+        [_state logStatemachineEvent:"sctp-link-died"];
+        [self sctpReportsDown];
+        [_sctpLink openFor:self sendAbortFirst:NO];
+    }
+    if( (old_sctp_status != UMSOCKET_STATUS_IS)
+    && (_sctp_status == UMSOCKET_STATUS_IS))
+    {
+        /* SCTP link came up properly. Lets start M2PA now on it */
+        [self sctpReportsUp];
     }
 
     NSArray *usrs = [_users arrayCopy];
@@ -366,21 +381,6 @@
                                           status:_sctp_status];
             }
         }
-    }
-
-    if(    (old_sctp_status != UMSOCKET_STATUS_OFF)
-       && (_sctp_status == UMSOCKET_STATUS_OFF))
-    {
-        /* SCTP Link has died */
-        [_state logStatemachineEvent:"sctp-link-died"];
-        [self sctpReportsDown];
-        [_sctpLink openFor:self sendAbortFirst:NO];
-    }
-    if( (old_sctp_status != UMSOCKET_STATUS_IS)
-    && (_sctp_status == UMSOCKET_STATUS_IS))
-    {
-        /* SCTP link came up properly. Lets start M2PA now on it */
-        [self sctpReportsUp];
     }
 }
 
