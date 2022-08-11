@@ -22,7 +22,8 @@
         [_link.t2 stop];
         [_link.t4 stop];
         [_link.t4r stop];
-        [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:YES];
+        // [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:YES];
+        // we can not do this at this moment as we might still be in status UMMP2PAState off. so we let the timer send the first OOS */
         [_link.t2 start]; /* heartbeat sending out OOS */
     }
     return self;

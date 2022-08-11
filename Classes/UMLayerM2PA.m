@@ -2111,7 +2111,7 @@
 
             case UMSOCKET_STATUS_OFF:
                 [self logDebug:[NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_OFF",ls ]];
-                usleep(0.1);
+                usleep(
                 return -1;
             case UMSOCKET_STATUS_OOS:
                 [self logDebug:[NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_OOS",ls ]];
