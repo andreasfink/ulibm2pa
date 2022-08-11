@@ -553,11 +553,12 @@
                 @try
                 {
                     self.state = [_state eventReceiveUserData:userData];
-                    if([self.state isKindOfClass: [UMM2PAState_InService class]])
+                    if(![self.state isKindOfClass: [UMM2PAState_InService class]])
                     {
-                        [self notifyMtp3UserData:userData];
+                        self.state = [[UMM2PAState_InService alloc]initWithLink:self status:M2PA_STATUS_IS];
                     }
-                }
+                    [self notifyMtp3UserData:userData];
+                                    }
                 @catch(NSException *e)
                 {
                     [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];

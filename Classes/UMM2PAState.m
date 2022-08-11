@@ -171,7 +171,6 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
-
 - (UMM2PAState *)eventSctpUp
 {
     [self logStatemachineEvent:__func__];
