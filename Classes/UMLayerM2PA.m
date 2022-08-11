@@ -300,14 +300,16 @@
     @try
     {
         _sctpUpReceived++;
-        UMM2PAState *oldState = _state;
-        self.state = [_state eventSctpUp];
-        if(([oldState isKindOfClass:[UMM2PAState_Off class]]) && ([_state isKindOfClass:[UMM2PAState_OutOfService class]]))
+        
+        if([_state isKindOfClass:[UMM2PAState_Off class]])
         {
-            self.state = [_state eventStart];
+            self.state = [_state eventSctpUp];
+        }
+        if([_state isKindOfClass:[UMM2PAState_OutOfService class]])
+        {
+            [self start];
         }
     }
-
     @catch(NSException *e)
     {
         [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
@@ -2001,7 +2003,19 @@
     @try
     {
         _startCounter++;
-        self.state = [_state eventStart];
+        if([_state isKindOfClass:[UMM2PAState_OutOfService class]])
+        {
+            self.state = [_state eventStart];
+        }
+        if([_state isKindOfClass:[UMM2PAState_OutOfService class]])
+        {
+            /* we are still in OOS so we have FOOS set */
+            [self sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:YES];
+        }
+        else if([_state isKindOfClass:[UMM2PAState_InitialAlignment class]])
+        {
+            [self sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT synchronous:YES];
+        }
     }
     @catch(NSException *e)
     {
