@@ -2111,6 +2111,10 @@
 
             case UMSOCKET_STATUS_OFF:
                 [self logDebug:[NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_OFF",ls ]];
+                NSLog(@"sctp_status=%d",_sctp_status);
+                NSLog(@"sync=%d",sync ? 1 : 0);
+                NSLog(@"sctpLink.status=%d",_sctpLink.status);
+                NSLog(@"m2pa.state=%@ (%d)",self.stateString,self.stateCode);
                 usleep(0.1);
                 return -1;
             case UMSOCKET_STATUS_OOS:
