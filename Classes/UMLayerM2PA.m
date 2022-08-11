@@ -781,7 +781,10 @@
     @try
     {
         _linkstateProvingReceived++;
-        _emergency = YES;
+        if(_emergency == NO)
+        {
+            _emergency = YES;
+        }
         self.state = [_state eventLinkstatusProvingEmergency];
     }
     @catch(NSException *e)
@@ -1043,10 +1046,12 @@
     [_t4 stop];
 	[self queueTimerEvent:NULL timerName:@"t4"];
 }
+
 - (void)timerFires4r
 {
 	[self queueTimerEvent:NULL timerName:@"t4r"];
 }
+
 - (void)timerFires5
 {
     [_t5 stop];
@@ -2253,11 +2258,6 @@
     self.local_processor_outage = NO;
 }
 
-- (void)cancelEmergency
-{
-    self.emergency = NO;
-}
-
 -(void)txcStart
 {
     
@@ -2478,16 +2478,6 @@
 -(void) notifyMtp3InService
 {
     [self notifyMtp3:M2PA_STATUS_IS async:YES];
-}
-
--(void)markFurtherProving
-{
-	_furtherProving = YES;
-}
-
--(void)cancelFurtherProving
-{
-	_furtherProving = NO;
 }
 
 #pragma mark -

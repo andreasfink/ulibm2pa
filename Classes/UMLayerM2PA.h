@@ -515,7 +515,6 @@ typedef enum PocStatus
 -(void)cancelProcessorOutage;
 -(void)cancelLocalProcessorOutage;
 
--(void)cancelEmergency;
 -(void)markFurtherProving;
 -(void)cancelFurtherProving;
 

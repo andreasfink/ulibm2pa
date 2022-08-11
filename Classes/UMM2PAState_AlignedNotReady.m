@@ -40,9 +40,9 @@
         }
         
         M2TIMER_VALIDATE(_link.t4r.seconds,M2PA_DEFAULT_T4_R,M2PA_DEFAULT_T4_R_MIN,M2PA_DEFAULT_T4_R_MAX);
-        [_link.t4r start]; /* sending out status timer */
         _link.t4.seconds = t;   /* ending of proving period timer */
         [_link.t4 start];
+        [_link.t4r start]; /* sending out status timer */
     }
     return self;
 }
@@ -85,6 +85,10 @@
 - (UMM2PAState *)eventEmergency
 {
     [self logStatemachineEvent:__func__];
+    if(_link.emergency==NO)
+    {
+        _link.t4.seconds = _link.t4e;
+    }
     _link.emergency = YES;
     return self;
 }
@@ -93,6 +97,10 @@
 {
     [self logStatemachineEvent:__func__];
     _link.emergency = NO;
+    if(_link.emergency==YES)
+    {
+        _link.t4.seconds = _link.t4n;
+    }
     return self;
 }
 
