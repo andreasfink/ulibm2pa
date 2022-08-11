@@ -154,7 +154,12 @@
             _outboundThroughputPackets  =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
             _inboundThroughputBytes     =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
             _outboundThroughputBytes    =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
-
+            
+            _lastEventLock = [[UMMutex alloc]initWithName:@"last-event-lock"];
+            for(int i=0;i<MAX_LAST_EVENTS;i++)
+            {
+                _lastEvent[i]=@"";
+            }
         }
         return self;
     }
@@ -2101,6 +2106,17 @@
     }
 }
 
+- (void)addEvent:(NSString *)s
+{
+    [_lastEventLock lock];
+    for(int i=MAX_LAST_EVENTS-1;i>0;i--)
+    {
+        _lastEvent[i] = _lastEvent[i-1];
+    }
+    _lastEvent[0] =s;
+    [_lastEventLock unlock];
+}
+
 - (int)sendLinkstatus:(M2PA_linkstate_message)linkstate synchronous:(BOOL)sync
 {
     @autoreleasepool
@@ -2114,7 +2130,11 @@
                 NSLog(@"sctp_status=%d",_sctp_status);
                 NSLog(@"sync=%d",sync ? 1 : 0);
                 NSLog(@"sctpLink.status=%d",_sctpLink.status);
-                NSLog(@"m2pa.state=%@ (%d)",self.stateString,self.stateCode);
+                NSLog(@"m2pa.state=%@ (%d) %@",self.stateString,self.stateCode,_state.description);
+                for(int i=MAX_LAST_EVENTS-1;i>=0;i--)
+                {
+                    NSLog(@"LastEvents%d: %@",i,_lastEvent[0]);
+                }
                 usleep(0.1);
                 return -1;
             case UMSOCKET_STATUS_OOS:

@@ -146,6 +146,8 @@ typedef enum PocStatus
 	PocStatus_inService,
 } PocStatus;
 
+#define MAX_LAST_EVENTS 5
+
 @class UMM2PAState;
 
 @interface UMLayerM2PA : UMLayer<UMLayerSctpUserProtocol>
@@ -282,6 +284,7 @@ typedef enum PocStatus
     NSMutableData 	*_control_link_buffer;
     SpeedStatus 	_speed_status;
     UMQueueSingle   *_waitingMessages;
+    NSString *_lastEvent[MAX_LAST_EVENTS];
 }
 
 - (UMM2PAState *)state;
@@ -356,6 +359,7 @@ typedef enum PocStatus
 @property(readwrite,assign,atomic)  BOOL forcedOutOfService;
 @property(readonly,strong,atomic)   UMMutex *dataLock;
 @property(readonly,strong,atomic)   UMMutex *controlLock;
+@property(readonly,strong,atomic)   UMMutex *lastEventLock;
 
 @property(readonly,strong,atomic)   UMSynchronizedDictionary *unackedMsu;
 
@@ -368,6 +372,7 @@ typedef enum PocStatus
 #pragma mark -
 #pragma mark SCTP Callbacks
 
+- (void)addEvent:(NSString *)s;
 
 - (void) sctpStatusIndication:(UMLayer *)caller
                        userId:(id)uid

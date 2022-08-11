@@ -93,6 +93,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     {
         [_link.stateMachineLogFeed debugText:s];
     }
+    [_link addEvent:s];
 }
 
 - (void) logStatemachineEventString:(NSString *)str
