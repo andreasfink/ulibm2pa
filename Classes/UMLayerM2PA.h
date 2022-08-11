@@ -199,6 +199,7 @@ typedef enum PocStatus
     u_int32_t                           _lastTxBsn;    /* last sent BSN */
     UMSynchronizedDictionary            *_unackedMsu;
     u_int32_t							_outstanding;
+    u_int32_t                           _outstandingSLTA;
     NSTimeInterval      				_t4n;
     NSTimeInterval      				_t4e;
     UMLayerSctp     					*_sctpLink;
@@ -318,6 +319,7 @@ typedef enum PocStatus
 @property(readwrite,assign)     int     window_size;
 @property(readwrite,assign)     BOOL    furtherProving;
 @property(readwrite,assign)     u_int32_t outstanding;
+@property(readwrite,assign)     u_int32_t outstandingSLTA; /* mtp3 link will set this */
 
 @property(readwrite,strong)     UMTimer  *t1;       /* T1:  alignment ready */
 @property(readwrite,strong)     UMTimer  *t2;      	/* T2: not aligned */
