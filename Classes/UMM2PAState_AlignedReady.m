@@ -14,7 +14,7 @@
 
 - (UMM2PAState *)initWithLink:(UMLayerM2PA *)link status:(M2PA_Status)statusCode
 {
-    self =[super initWithLink:link status:statusCode];
+    self = [super initWithLink:link status:statusCode];
     {
         [_link.t1 stop];
         [_link.t2 stop];
@@ -26,9 +26,9 @@
                                 until the other side sends READY as well or sends traffic
                                 Then we go int In service state */
         [_link.t4r start];
-        
         _link.t4.seconds = 20; /* we wait max 20 second until READY is received */
         [_link.t4 start];
+        [_link.t1 start];
         _readySent = 0;
     }
     return self;
@@ -119,6 +119,7 @@
     if(_readySent==0)
     {
         [self sendLinkstateReady:YES];
+        _readySent = YES;
     }
     return  [[UMM2PAState_InService alloc]initWithLink:_link status:M2PA_STATUS_IS];
 }
@@ -151,6 +152,19 @@
 {
     [self logStatemachineEvent:__func__];
     return self;
+}
+
+- (UMM2PAState *)eventTimer1
+{
+    [self logStatemachineEvent:__func__];
+    _readySent++;
+    [self sendLinkstateReady:YES];
+    [_link.t1 stop];
+    [_link.t2 stop];
+    [_link.t4r stop];
+    [_link.t4 stop];
+    [self logStatemachineEventString:@"t1 expired. going IS"];
+    return [[UMM2PAState_InService alloc]initWithLink:_link status:M2PA_STATUS_IS];
 }
 
 - (UMM2PAState *)eventTimer4r
