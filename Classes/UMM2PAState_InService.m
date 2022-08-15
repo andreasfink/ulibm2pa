@@ -163,7 +163,16 @@
 
 - (UMM2PAState *)eventReceiveUserData:(NSData *)userData
 {
-    [self logStatemachineEvent:__func__];
+    /* we dont want to fill up the statemachine log with entries for every packet received. So we only log the first 3 */
+    if(_userDataReceived<3)
+    {
+        [self logStatemachineEvent:__func__];
+        _userDataReceived++;
+    }
+    else if(_userDataReceived==3)
+    {
+        [_link.stateMachineLogFeed debugText:@"..."];
+    }
     return self;
 }
 
