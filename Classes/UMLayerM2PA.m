@@ -129,6 +129,7 @@
             _speed = 0; /* unlimited */
             _window_size = M2PA_DEFAULT_WINDOW_SIZE;
             _t1 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires1) object:NULL seconds:M2PA_DEFAULT_T1 name:@"t1" repeats:NO runInForeground:YES];
+            _t1r = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires1r) object:NULL seconds:M2PA_DEFAULT_T1R name:@"t1r" repeats:NO runInForeground:YES];
             _t2 = [[UMTimer alloc]initWithTarget:self
                                         selector:@selector(timerFires2)
                                           object:NULL seconds:M2PA_DEFAULT_T2
@@ -1030,6 +1031,12 @@
     [self queueTimerEvent:NULL timerName:@"t1"];
 
 }
+
+- (void)timerFires1r
+{
+    [self queueTimerEvent:NULL timerName:@"t1r"];
+}
+
 - (void)timerFires2
 {
     [_t2 stop];
@@ -1122,6 +1129,24 @@
         UMMUTEX_UNLOCK(_controlLock);
     }
 }
+
+- (void)_timerFires1r
+{
+    UMMUTEX_LOCK(_controlLock);
+    @try
+    {
+        self.state = [_state eventTimer1r];
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
+}
+
 - (void)_timerFires2
 {
     UMMUTEX_LOCK(_controlLock);
@@ -1876,6 +1901,11 @@
         {
             [self _timerFires1];
         }
+        if([timerName isEqualToString:@"t1r"])
+        {
+            [self _timerFires1r];
+        }
+
         else 	if([timerName isEqualToString:@"t2"])
         {
             [self _timerFires2];
@@ -2490,6 +2520,7 @@
     config[@"window-size"] = @(_window_size);
     config[@"speed"] = @(_speed);
     config[@"t1"] =@(_t1.seconds);
+    config[@"t1r"] =@(_t1r.seconds);
     config[@"t2"] =@(_t2.seconds);
     config[@"t3"] =@(_t3.seconds);
     config[@"t4e"] =@(_t4e);
@@ -2535,6 +2566,10 @@
         if (cfg[@"t1"])
         {
             _t1.seconds = [cfg[@"t1"] doubleValue];
+        }
+        if (cfg[@"t1r"])
+        {
+            _t1r.seconds = [cfg[@"t1r"] doubleValue];
         }
         if (cfg[@"t2"])
         {

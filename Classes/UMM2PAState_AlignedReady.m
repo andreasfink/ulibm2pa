@@ -22,12 +22,11 @@
         [_link.t4 stop];
         [self sendLinkstateReady:YES];
         _statusCode = M2PA_STATUS_ALIGNED_READY;
-        _link.t4r.seconds = 1; /* we now send a READY signal every second
-                                until the other side sends READY as well or sends traffic
-                                Then we go int In service state */
-        [_link.t4r start];
-        _link.t4.seconds = 20; /* we wait max 20 second until READY is received */
-        [_link.t4 start];
+        /* we now send a READY signal every second
+           until the other side sends READY as well or sends traffic
+           Then we go int In service state
+        */
+        [_link.t1r start];
         [_link.t1 start];
         _readySent = 0;
     }
@@ -167,7 +166,7 @@
     return [[UMM2PAState_InService alloc]initWithLink:_link status:M2PA_STATUS_IS];
 }
 
-- (UMM2PAState *)eventTimer4r
+- (UMM2PAState *)eventTimer1r
 {
     [self logStatemachineEvent:__func__];
     _readySent++;
@@ -180,6 +179,7 @@
 {
     [self logStatemachineEvent:__func__ forced:YES];
     [_link.t1 stop];
+    [_link.t1r stop];
     [_link.t2 stop];
     [_link.t4r stop];
     [_link.t4 stop];

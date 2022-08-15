@@ -41,6 +41,7 @@
  CS7 M2PA Timers for RFC
  
  T1   (alignment ready)   : 45000    ms
+ T1r  (sending of alignment ready: 1s
  T2   (not aligned)       : 60000    ms
  T3   (aligned)           : 2000     ms
  T4   (emergency proving) : 500      ms
@@ -58,6 +59,7 @@
 /*  highspeed: 25-350s */
 /*  64k link: 40-50s	*/
 /*  4.8k: 500-600s */
+#define    M2PA_DEFAULT_T1R    1.000000
 
 #define	M2PA_DEFAULT_T2	5.0 /* 5s . time we send ALIGNMENT messages out when being in Initial Alignment status */
 /* T2: not aligned */
@@ -209,6 +211,7 @@ typedef enum PocStatus
 		/* 64kbps:	 T1 = 40-50s		*/
 		/* 4.8kbps: T1 = 500-600s		*/
 		/* Following successful alignment and proving procedure, the signalling terminal enters Aligned Ready state and the aligned ready time-out T1 is stopped on entry in the In-service state and the duration of time-out T1 should be chosen such that the remote end can perform four additional proving attempts. */
+    UMTimer    *_t1r;    /* how fast are we sending reoccuring "alignment ready" */
 
     UMTimer    *_t2;	/* Timer "not aligned" */
 		/* recommended values: 			*/
@@ -320,6 +323,7 @@ typedef enum PocStatus
 @property(readwrite,assign)     u_int32_t outstanding;
 
 @property(readwrite,strong)     UMTimer  *t1;       /* T1:  alignment ready */
+@property(readwrite,strong)     UMTimer  *t1r;      /* T1R:  alignment ready repeat */
 @property(readwrite,strong)     UMTimer  *t2;      	/* T2: not aligned */
 @property(readwrite,strong)     UMTimer  *t3;
 @property(readwrite,strong)     UMTimer  *t4;

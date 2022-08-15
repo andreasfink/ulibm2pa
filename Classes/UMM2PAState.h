@@ -52,6 +52,7 @@
 
 
 - (UMM2PAState *)eventTimer1;                       /* timer 1 fired (alignment ready timer) */
+- (UMM2PAState *)eventTimer1r;                      /* timer 1r fired (time to send alignment ready) */
 - (UMM2PAState *)eventTimer2;                       /* timer 2 fired (not aligned timer) */
 - (UMM2PAState *)eventTimer3;                       /* timer 3 fired (waiting for first proving. alignment timer) */
 - (UMM2PAState *)eventTimer4;                       /* timer 4 fired (proving period) */

@@ -297,6 +297,12 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     return self;
 }
 
+- (UMM2PAState *)eventTimer1r
+{
+    [self logStatemachineEvent:__func__];
+    return self;
+}
+
 - (UMM2PAState *)eventTimer2
 {
     [self logStatemachineEvent:__func__];
