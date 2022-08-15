@@ -36,7 +36,7 @@
             t = _link.t4n;
             M2TIMER_VALIDATE(t,M2PA_DEFAULT_T4_N,M2PA_DEFAULT_T4_N_MIN,M2PA_DEFAULT_T4_N_MAX);
             _link.t4n = t;
-            [self sendLinkstateProvingEmergency:YES];
+            [self sendLinkstateProvingNormal:YES];
         }
         
         M2TIMER_VALIDATE(_link.t4r.seconds,M2PA_DEFAULT_T4_R,M2PA_DEFAULT_T4_R_MIN,M2PA_DEFAULT_T4_R_MAX);
@@ -211,6 +211,7 @@
 
 - (UMM2PAState *)eventReceiveUserData:(NSData *)userData
 {
+    /* data processing is done outside by the caller */
     [self logStatemachineEvent:__func__ forced:YES];
     return self;
 }
