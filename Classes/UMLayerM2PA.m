@@ -366,7 +366,7 @@
         /* SCTP Link has died */
         [_state logStatemachineEvent:"sctp-link-died"];
         [self sctpReportsDown];
-        [_sctpLink openFor:self sendAbortFirst:NO];
+        [_sctpLink openFor:self sendAbortFirst:NO reason:@"sctp-link-died"];
     }
     if( (old_sctp_status != UMSOCKET_STATUS_IS)
     && (_sctp_status == UMSOCKET_STATUS_IS))
@@ -471,7 +471,7 @@
 #if defined(POWER_DEBUG)
         NSLog(@"protocol violation for m2pa %@: %@",_layerName,reason);
 #endif
-        [self powerOff];
+        [self powerOff:e];
     }
 }
 
@@ -484,7 +484,7 @@
 #if defined(POWER_DEBUG)
         NSLog(@"protocol violation for m2pa %@",_layerName);
 #endif
-        [self powerOff];
+        [self powerOff:@"PROTOCOL VIOLATION"];
     }
 }
 
@@ -1841,7 +1841,7 @@
         [self logDebug:@"powerOff"];
     }
     [_stateMachineLogFeed debugText:@"PowerOff requested from upper layer"];
-    [self powerOff];
+    [self powerOff:@"powerOff requested-from-mtp3"];
 }
 
 - (void)_startTask:(UMM2PATask_Start *)task
@@ -1999,6 +1999,11 @@
 
 - (void)powerOff
 {
+    [self powerOff:NULL];
+}
+
+- (void)powerOff:(NSString *)reason
+{
 #if defined(POWER_DEBUG)
     NSLog(@"powerOff called for m2pa %@. Queuing task",_layerName);
 #endif
@@ -2009,7 +2014,7 @@
         _powerOffCounter++;
         self.state = [_state eventStop];
         self.state = [_state eventPowerOff];
-        [_sctpLink closeFor:self];
+        [_sctpLink closeFor:self reason:reason];
         [self startupInitialisation];
     }
     @catch(NSException *e)

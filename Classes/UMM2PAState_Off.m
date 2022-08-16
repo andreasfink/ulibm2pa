@@ -45,7 +45,7 @@
     [self logStatemachineEvent:__func__];
     [_link startupInitialisation];
     [_link.startTimer start];
-    [_link.sctpLink openFor:_link];
+    [_link.sctpLink openFor:_link sendAbortFirst:YES reason:@"eventPowerOn"];
     [_link notifyMtp3Off];
     return self;
 }
