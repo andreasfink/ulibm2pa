@@ -2716,4 +2716,204 @@ static NSDateFormatter *dateFormatter = NULL;
     /* FIXME: do something here */
 }
 
+- (UMSynchronizedSortedDictionary *)m2paStatusDict
+{
+    UMSynchronizedSortedDictionary *dict = [[UMSynchronizedSortedDictionary alloc]init];
+    dict[@"name"] = self.layerName;
+    dict[@"state.link.name"]  = _state.link.layerName;
+    dict[@"state.statusCode"] = @(_state.statusCode);
+    dict[@"state.class"] = [_state className];
+    switch(_state.statusCode)
+    {
+        case M2PA_STATUS_FOOS:
+            dict[@"state.description"] = @"M2PA_STATUS_FOOS";
+            break;
+        case M2PA_STATUS_DISCONNECTED:
+            dict[@"state.description"] = @"M2PA_STATUS_DISCONNECTED";
+            break;
+        case M2PA_STATUS_OFF:
+            dict[@"state.description"] = @"M2PA_STATUS_OFF";
+            break;
+        case M2PA_STATUS_OOS:
+            dict[@"state.description"] = @"M2PA_STATUS_OOS";
+            break;
+        case M2PA_STATUS_INITIAL_ALIGNMENT:
+            dict[@"state.description"] = @"M2PA_STATUS_INITIAL_ALIGNMENT";
+            break;
+        case M2PA_STATUS_ALIGNED_NOT_READY:
+            dict[@"state.description"] = @"M2PA_STATUS_ALIGNED_NOT_READY";
+            break;
+        case M2PA_STATUS_ALIGNED_READY:
+            dict[@"state.description"] = @"M2PA_STATUS_ALIGNED_READY";
+            break;
+        case M2PA_STATUS_IS:
+            dict[@"state.description"] = @"M2PA_STATUS_IS";
+            break;
+        default:
+            dict[@"state.description"] = @"M2PA_STATUS_INVALID";
+            break;
+    }
+    switch(_sctp_status)
+    {
+        case UMSOCKET_STATUS_FOOS:
+            dict[@"sctp-socket-status"] = @"UMSOCKET_STATUS_FOOS";
+            break;
+        case UMSOCKET_STATUS_OFF:
+            dict[@"sctp-socket-status"] = @"UMSOCKET_STATUS_OFF";
+            break;
+        case UMSOCKET_STATUS_OOS:
+            dict[@"sctp-socket-status"] = @"UMSOCKET_STATUS_OOS";
+            break;
+        case UMSOCKET_STATUS_IS:
+            dict[@"sctp-socket-status"] = @"UMSOCKET_STATUS_IS";
+            break;
+        case UMSOCKET_STATUS_LISTENING:
+            dict[@"sctp-socket-status"] = @"UMSOCKET_STATUS_LISTENING";
+            break;
+    }
+    if(_sctpLink.status != _sctp_status)
+    {
+        dict[@"sctp-status-mismatch"] = @(YES);
+        switch(_sctpLink.status)
+        {
+            case UMSOCKET_STATUS_FOOS:
+                dict[@"sctp.socket-status"] = @"UMSOCKET_STATUS_FOOS";
+                break;
+            case UMSOCKET_STATUS_OFF:
+                dict[@"sctp.socket-status"] = @"UMSOCKET_STATUS_OFF";
+                break;
+            case UMSOCKET_STATUS_OOS:
+                dict[@"sctp.socket-status"] = @"UMSOCKET_STATUS_OOS";
+                break;
+            case UMSOCKET_STATUS_IS:
+                dict[@"sctp.socket-status"] = @"UMSOCKET_STATUS_IS";
+                break;
+            case UMSOCKET_STATUS_LISTENING:
+                dict[@"sctp.socket-status"] = @"UMSOCKET_STATUS_LISTENING";
+                break;
+        }
+    }
+    dict[@"linkstate-busy"] = @(_linkstate_busy);
+    dict[@"congested"] = @(_congested);
+    dict[@"emergency"] = @(_emergency);
+    dict[@"local-processor-outage"] = @(_remote_processor_outage);
+    dict[@"remote-processor-outage"] = @(_remote_processor_outage);
+    dict[@"slc"] = @(_slc);
+    dict[@"forced-out-of-service"] = @(_forcedOutOfService);
+    dict[@"last-rx-fsn"] = @(_lastRxFsn);
+    dict[@"last-rx-bsn"] = @(_lastRxBsn);
+    dict[@"last-tx-fsn"] = @(_lastTxFsn);
+    dict[@"last-tx-bsn"] = @(_lastTxBsn);
+    dict[@"t4n"] = @(_t4n);
+    dict[@"t4e"] = @(_t4e);
+    dict[@"sctp"] = _sctpLink.layerName;
+
+    dict[@"t1"] = [_t1 timerDescription];
+    dict[@"t1r"] = [_t1r timerDescription];
+    dict[@"t2"] = [_t2 timerDescription];
+    dict[@"t3"] = [_t3 timerDescription];
+    dict[@"t4"] = [_t4 timerDescription];
+    dict[@"t4r"] = [_t4r timerDescription];
+    dict[@"t5"] = [_t5 timerDescription];
+    dict[@"t6"] = [_t6 timerDescription];
+    dict[@"t7"] = [_t7 timerDescription];
+
+    dict[@"t16"] = [_t16 timerDescription];
+    dict[@"t17"] = [_t17 timerDescription];
+    dict[@"t18"] = [_t18 timerDescription];
+
+    dict[@"use-ack-timer"] = @(_useAckTimer);
+    dict[@"ack-timer"] = [_ackTimer timerDescription];
+    dict[@"start-timer"] = [_startTimer timerDescription];
+    dict[@"speed"] = @(_speed);
+    dict[@"paused"] = @(_paused);
+    dict[@"further-proving"] = @(_furtherProving);
+    dict[@"reception-enabled"] = @(_receptionEnabled);
+    dict[@"window-size"] = @(_window_size);
+    switch(_pocStatus)
+    {
+        case PocStatus_idle:
+            dict[@"poc-status"] = @"PocStatus_idle";
+            break;
+        case PocStatus_inService:
+            dict[@"poc-status"] = @"PocStatus_inService";
+            break;
+        default:
+            dict[@"poc-status"] = @"invalid";
+            break;
+    }
+    dict[@"window-size"] = @(_window_size);
+    if(_link_down_time)
+    {
+        dict[@"link-down-time"] = _link_down_time;
+    }
+    if(_link_congestion_time)
+    {
+        dict[@"link-congestion-time"] = _link_congestion_time;
+    }
+    if(_link_speed_excess_time)
+    {
+        dict[@"link-speed-excess-time"] = _link_speed_excess_time;
+    }
+    if(_link_congestion_cleared_time)
+    {
+        dict[@"link-congestion-cleared-time"] = _link_congestion_cleared_time;
+    }
+    if(_link_speed_excess_cleared_time)
+    {
+        dict[@"link-speed-excess-cleared-time"] = _link_speed_excess_cleared_time;
+    }
+    dict[@"submission-speed"] = [_submission_speed getSpeedTripleJson];
+    dict[@"inbound-throughput-packets"] = [_inboundThroughputPackets getSpeedTripleJson];
+    dict[@"outbound-throughput-packets"] = [_outboundThroughputPackets getSpeedTripleJson];
+    dict[@"inbound-throughput-bytes"] = [_inboundThroughputBytes getSpeedTripleJson];
+    dict[@"outbound-throughput-bytes"] = [_outboundThroughputBytes getSpeedTripleJson];
+    dict[@"inbound-throughput-packets"] = [_submission_speed getSpeedTripleJson];
+
+    if(_link_up_time)
+    {
+        dict[@"link-up-time"] = _link_up_time;
+    }
+    if(_link_down_time)
+    {
+        dict[@"link-down-time"] = _link_down_time;
+    }
+    if(_link_congestion_time)
+    {
+        dict[@"link-congestion-time"] = _link_congestion_time;
+    }
+    if(_link_speed_excess_time)
+    {
+        dict[@"link-speed-excess-time"] = _link_speed_excess_time;
+    }
+    if(_link_congestion_cleared_time)
+    {
+        dict[@"link-congestion-cleared-time"] = _link_congestion_cleared_time;
+    }
+    if(_link_speed_excess_cleared_time)
+    {
+        dict[@"link-speed-excess-cleared-time"] = _link_speed_excess_cleared_time;
+    }
+    switch(_speed_status)
+    {
+        case SPEED_WITHIN_LIMIT:
+            dict[@"speed-status"] = @"within-limit";
+            break;
+        case SPEED_EXCEEDED:
+            dict[@"speed-status"] = @"exceeded";
+            break;
+    }
+    NSMutableArray *a = [[NSMutableArray alloc]init];
+    for(int i=0;i<MAX_LAST_EVENTS;i++)
+    {
+        NSString *event = _lastEvent[i];
+        if(event)
+        {
+            [a addObject:event];
+        }
+    }
+    dict[@"last-events"] = a;
+    return dict;
+}
+
 @end

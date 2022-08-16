@@ -546,5 +546,6 @@ typedef enum PocStatus
              dpc:(int)dpc;
 //- (void)sendEmptyMSU;
 - (void) linktestTimerReportsFailure;
+- (UMSynchronizedSortedDictionary *)m2paStatusDict;
 
 @end
