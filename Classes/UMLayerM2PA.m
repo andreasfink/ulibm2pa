@@ -155,11 +155,7 @@
             _outboundThroughputPackets  =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
             _inboundThroughputBytes     =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
             _outboundThroughputBytes    =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
-            _lastEventLock = [[UMMutex alloc]initWithName:@"last-event-lock"];
-            for(int i=0;i<MAX_LAST_EVENTS;i++)
-            {
-                _lastEvent[i]=@"";
-            }
+            _events = [[UMHistoryLog alloc]initWithMaxLines:100];
         }
         return self;
     }
@@ -1824,7 +1820,7 @@
     }
     [_stateMachineLogFeed debugText:@"PowerOff requested from upper layer"];
 
-    NSString *s = [NSString stringWithFormat:@"powerOff requested-from-mtp3 (%@)", task.reason ? task.reason : @""]];
+    NSString *s = [NSString stringWithFormat:@"powerOff requested-from-mtp3 (%@)", task.reason ? task.reason : @""];
     [self powerOff:s];
 }
 
@@ -1834,7 +1830,7 @@
     {
         [self logDebug:@"start"];
     }
-    [self addEvent:[NSString stringWithFormat:@"start (%@)", task.reason ? task.reason : @""]];
+    [_events addLogEntry:[NSString stringWithFormat:@"start (%@)", task.reason ? task.reason : @""]];
     [self start];
 
 }
@@ -1845,7 +1841,7 @@
     {
         [self logDebug:@"stop"];
     }
-    [self addEvent:[NSString stringWithFormat:@"stop (%@)", task.reason ? task.reason : @""]];
+    [_events addLogEntry:[NSString stringWithFormat:@"stop (%@)", task.reason ? task.reason : @""]];
     [self stop];
 }
 
@@ -2145,17 +2141,6 @@
     }
 }
 
-- (void)addEvent:(NSString *)s
-{
-    [_lastEventLock lock];
-    for(int i=MAX_LAST_EVENTS-1;i>0;i--)
-    {
-        _lastEvent[i] = _lastEvent[i-1];
-    }
-    _lastEvent[0] =s;
-    [_lastEventLock unlock];
-}
-
 - (int)sendLinkstatus:(M2PA_linkstate_message)linkstate synchronous:(BOOL)sync
 {
     /* we can not send linkstat messages while control is occuring as the state might change */
@@ -2172,10 +2157,8 @@
                 NSLog(@"sync=%d",sync ? 1 : 0);
                 NSLog(@"sctpLink.status=%d",_sctpLink.status);
                 NSLog(@"m2pa.state=%@ (%d) %@",self.stateString,self.stateCode,_state.description);
-                for(int i=MAX_LAST_EVENTS-1;i>=0;i--)
-                {
-                    NSLog(@"LastEvents%d: %@",i,_lastEvent[0]);
-                }
+                
+                NSLog(@"LastEvents: %@",[_events getLogForwardOrderWithDates]);
                 usleep(100000); /* sleep 0.1 sec */
                 return -1;
             case UMSOCKET_STATUS_OOS:
@@ -2893,18 +2876,14 @@ static NSDateFormatter *dateFormatter = NULL;
         case SPEED_EXCEEDED:
             dict[@"speed-status"] = @"exceeded";
             break;
-    }
-    NSMutableArray *a = [[NSMutableArray alloc]init];
-    for(int i=0;i<MAX_LAST_EVENTS;i++)
-    {
-        NSString *event = _lastEvent[i];
-        if(event)
-        {
-            [a addObject:event];
-        }
-    }
-    dict[@"last-events"] = a;
+    }    
+    dict[@"last-events"] = [_events getLogArrayWithDatesAndOrder:YES];
     return dict;
+}
+
+- (void)addEvent:(NSString *)string
+{
+    [_events addLogEntry:string];
 }
 
 @end
