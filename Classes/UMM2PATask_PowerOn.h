@@ -15,6 +15,11 @@
 @class UMLayerM2PA;
 
 @interface UMM2PATask_PowerOn : UMLayerTask
+{
+    NSString *_reason;
+}
+
+@property(readwrite,strong,atomic)  NSString *reason;
 
 - (UMM2PATask_PowerOn *)initWithReceiver:(UMLayerM2PA *)rx
                                   sender:(id<UMLayerM2PAUserProtocol>)tx;

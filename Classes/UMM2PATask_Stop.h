@@ -15,6 +15,11 @@
 @class UMLayerM2PA;
 
 @interface UMM2PATask_Stop : UMLayerTask
+{
+    NSString *_reason;
+}
+
+@property(readwrite,strong,atomic) NSString *reason;
 
 - (UMM2PATask_Stop *)initWithReceiver:(UMLayerM2PA *)rx
                                sender:(id<UMLayerM2PAUserProtocol>)tx;

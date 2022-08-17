@@ -1354,12 +1354,7 @@
     }
 }
 
-- (void)powerOnFor:(id<UMLayerM2PAUserProtocol>)caller
-{
-    [self powerOnFor:caller forced:NO];
-}
-
-- (void)powerOnFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced
+- (void)powerOnFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced reason:(NSString *)reason
 {
     if(forced)
     {
@@ -1367,38 +1362,28 @@
     }
     @autoreleasepool
     {
-        UMLayerTask *task = [[UMM2PATask_PowerOn alloc]initWithReceiver:self sender:caller];
+        UMM2PATask_PowerOn *task = [[UMM2PATask_PowerOn alloc]initWithReceiver:self sender:caller];
+        task.reason = reason;
         [self queueFromUpperWithPriority:task];
     }
 }
 
 
-- (void)powerOffFor:(id<UMLayerM2PAUserProtocol>)caller
+- (void)powerOffFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced reason:(NSString *)reason
 {
-    [self powerOffFor:caller forced:NO];
-}
-
-- (void)powerOffFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced
-{
-    
-
     _forcedOutOfService = forced;
     @autoreleasepool
     {
 #if defined(POWER_DEBUG)
         NSLog(@"powerOffFor called from %@ for m2pa %@ forced:%@",caller.layerName,_layerName,forced ? @"YES" : @"NO");
 #endif
-        UMLayerTask *task = [[UMM2PATask_PowerOff alloc]initWithReceiver:self sender:caller];
+        UMM2PATask_PowerOff *task = [[UMM2PATask_PowerOff alloc]initWithReceiver:self sender:caller];
+        task.reason = reason;
         [self queueFromUpperWithPriority:task];
     }
 }
 
-- (void)startFor:(id<UMLayerM2PAUserProtocol>)caller
-{
-    [self startFor:caller forced:NO];
-}
-
-- (void)startFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced
+- (void)startFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced reason:(NSString *)reason
 {
     
     if(forced)
@@ -1410,24 +1395,21 @@
 #if defined(POWER_DEBUG)
         NSLog(@"startFor called from %@ for m2pa %@ forced:%@",caller.layerName,_layerName,forced ? @"YES" : @"NO");
 #endif
-        UMLayerTask *task = [[UMM2PATask_Start alloc]initWithReceiver:self sender:caller];
+        UMM2PATask_Start *task = [[UMM2PATask_Start alloc]initWithReceiver:self sender:caller];
+        task.reason = reason;
         [self queueFromUpperWithPriority:task];
     }
 }
 
-- (void)stopFor:(id<UMLayerM2PAUserProtocol>)caller
-{
-    [self stopFor:caller forced:NO];
-}
-
-- (void)stopFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced
+- (void)stopFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced reason:(NSString *)reason
 {
     @autoreleasepool
     {
 #if defined(POWER_DEBUG)
         NSLog(@"stopFor called from %@ for m2pa %@ forced:%@",caller.layerName,_layerName,forced ? @"YES" : @"NO");
 #endif
-        UMLayerTask *task = [[UMM2PATask_Stop alloc]initWithReceiver:self sender:caller];
+        UMM2PATask_Stop *task = [[UMM2PATask_Stop alloc]initWithReceiver:self sender:caller];
+        task.reason = reason;
         [self queueFromUpperWithPriority:task];
     }
 }
@@ -1841,7 +1823,9 @@
         [self logDebug:@"powerOff"];
     }
     [_stateMachineLogFeed debugText:@"PowerOff requested from upper layer"];
-    [self powerOff:@"powerOff requested-from-mtp3"];
+
+    NSString *s = [NSString stringWithFormat:@"powerOff requested-from-mtp3 (%@)", task.reason ? task.reason : @""]];
+    [self powerOff:s];
 }
 
 - (void)_startTask:(UMM2PATask_Start *)task
@@ -1850,6 +1834,7 @@
     {
         [self logDebug:@"start"];
     }
+    [self addEvent:[NSString stringWithFormat:@"start (%@)", task.reason ? task.reason : @""]];
     [self start];
 
 }
@@ -1860,6 +1845,7 @@
     {
         [self logDebug:@"stop"];
     }
+    [self addEvent:[NSString stringWithFormat:@"stop (%@)", task.reason ? task.reason : @""]];
     [self stop];
 }
 

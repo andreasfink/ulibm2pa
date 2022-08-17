@@ -16,9 +16,11 @@
 @interface UMM2PATask_Start : UMLayerTask
 {
     id<UMLayerM2PAUserProtocol> _user;
+    NSString *_reason;
 }
 
 @property(readwrite,strong,atomic)     id<UMLayerM2PAUserProtocol> user;
+@property(readwrite,strong,atomic)     NSString *reason;
 
 - (UMM2PATask_Start *)initWithReceiver:(UMLayerM2PA *)rx
                                 sender:(id<UMLayerM2PAUserProtocol>)tx;

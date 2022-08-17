@@ -472,14 +472,10 @@ typedef enum PocStatus
           async:(BOOL)async
             dpc:(int)dpc;
 
-- (void)powerOnFor:(id<UMLayerM2PAUserProtocol>)caller;
-- (void)powerOffFor:(id<UMLayerM2PAUserProtocol>)caller;
-- (void)startFor:(id<UMLayerM2PAUserProtocol>)caller;
-- (void)stopFor:(id<UMLayerM2PAUserProtocol>)caller;
-- (void)powerOnFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced;
-- (void)powerOffFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced;
-- (void)startFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced;
-- (void)stopFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced;
+- (void)powerOnFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced reason:(NSString *)reason;
+- (void)powerOffFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced reason:(NSString *)reason;
+- (void)startFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced reason:(NSString *)reason;
+- (void)stopFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced reason:(NSString *)reason;
 
 - (void)emergencyFor:(id<UMLayerM2PAUserProtocol>)caller;
 - (void)emergencyCheasesFor:(id<UMLayerM2PAUserProtocol>)caller;
