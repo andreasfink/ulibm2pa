@@ -135,6 +135,10 @@
     /* other side is ready. we are ready when we are ready. */
     [self logStatemachineEvent:__func__];
     _ready_received = YES;
+    
+    /* quick workaround. if they are ready, we are too if */
+    [self sendLinkstateReady:YES];
+    return [[UMM2PAState_AlignedReady alloc]initWithLink:_link status:M2PA_STATUS_ALIGNED_READY];
     return self;
 }
 
