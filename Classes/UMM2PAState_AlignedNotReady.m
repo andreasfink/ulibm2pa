@@ -137,8 +137,11 @@
     _ready_received = YES;
     
     /* quick workaround. if they are ready, we are too if */
-    [self sendLinkstateReady:YES];
-    return [[UMM2PAState_AlignedReady alloc]initWithLink:_link status:M2PA_STATUS_ALIGNED_READY];
+    if(([_link.t4 isRunning]==NO) || ([_link.t4 isExpired]))
+    {
+        [self sendLinkstateReady:YES];
+        return [[UMM2PAState_AlignedReady alloc]initWithLink:_link status:M2PA_STATUS_ALIGNED_READY];
+    }
     return self;
 }
 
@@ -175,7 +178,7 @@
 - (UMM2PAState *)eventTimer4r
 {
     [self logStatemachineEvent:__func__];
-    if(_t4_expired)
+    if(([_link.t4 isExpired]) || (_t4_expired))
     {
         [_link.t1 stop];
         [_link.t2 stop];
@@ -197,11 +200,13 @@
 
 - (UMM2PAState *)eventTimer4
 {
+    _t4_expired = YES;
     [self logStatemachineEvent:__func__];
     [_link.t1 stop];
     [_link.t2 stop];
     [_link.t4r stop];
     [_link.t4 stop];
+    [self sendLinkstateReady:YES];
     return [[UMM2PAState_AlignedReady alloc]initWithLink:_link status:M2PA_STATUS_ALIGNED_READY];
 }
 
