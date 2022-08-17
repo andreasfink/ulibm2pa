@@ -155,7 +155,6 @@
             _outboundThroughputPackets  =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
             _inboundThroughputBytes     =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
             _outboundThroughputBytes    =  [[UMThroughputCounter alloc]initWithResolutionInSeconds: 1.0 maxDuration: 1260.0];
-            _events = [[UMHistoryLog alloc]initWithMaxLines:100];
         }
         return self;
     }
@@ -1830,7 +1829,7 @@
     {
         [self logDebug:@"start"];
     }
-    [_events addLogEntry:[NSString stringWithFormat:@"start (%@)", task.reason ? task.reason : @""]];
+    [self addToLayerHistoryLog:[NSString stringWithFormat:@"start (%@)", task.reason ? task.reason : @""]];
     [self start];
 
 }
@@ -1841,7 +1840,7 @@
     {
         [self logDebug:@"stop"];
     }
-    [_events addLogEntry:[NSString stringWithFormat:@"stop (%@)", task.reason ? task.reason : @""]];
+    [self addToLayerHistoryLog:[NSString stringWithFormat:@"stop (%@)", task.reason ? task.reason : @""]];
     [self stop];
 }
 
@@ -2157,8 +2156,6 @@
                 NSLog(@"sync=%d",sync ? 1 : 0);
                 NSLog(@"sctpLink.status=%d",_sctpLink.status);
                 NSLog(@"m2pa.state=%@ (%d) %@",self.stateString,self.stateCode,_state.description);
-                
-                NSLog(@"LastEvents: %@",[_events getLogForwardOrderWithDates]);
                 usleep(100000); /* sleep 0.1 sec */
                 return -1;
             case UMSOCKET_STATUS_OOS:
@@ -2877,13 +2874,8 @@ static NSDateFormatter *dateFormatter = NULL;
             dict[@"speed-status"] = @"exceeded";
             break;
     }    
-    dict[@"last-events"] = [_events getLogArrayWithDatesAndOrder:YES];
+    dict[@"last-events"] = [_layerHistory getLogArrayWithDatesAndOrder:YES];
     return dict;
-}
-
-- (void)addEvent:(NSString *)string
-{
-    [_events addLogEntry:string];
 }
 
 @end

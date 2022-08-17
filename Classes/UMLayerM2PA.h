@@ -285,7 +285,6 @@ typedef enum PocStatus
     NSMutableData 	*_control_link_buffer;
     SpeedStatus 	_speed_status;
     UMQueueSingle   *_waitingMessages;
-    UMHistoryLog *_events;
 }
 
 - (UMM2PAState *)state;
@@ -505,7 +504,6 @@ typedef enum PocStatus
 + (NSString *)m2paStatusString:(M2PA_Status) linkstate;
 - (void) sendCongestionClearedIndication;
 - (void) sendCongestionIndication;
-- (void)addEvent:(NSString *)string;
 
 -(void)cancelProcessorOutage;
 -(void)cancelLocalProcessorOutage;
