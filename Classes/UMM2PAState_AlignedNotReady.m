@@ -137,7 +137,7 @@
     _ready_received = YES;
     
     /* quick workaround. if they are ready, we are too if */
-    if(([_link.t4 isRunning]==NO) || ([_link.t4 isExpired]))
+    if(([_link.t4 isRunning]==NO) || ([_link.t4 isExpired]))
     {
         [self sendLinkstateReady:YES];
         return [[UMM2PAState_AlignedReady alloc]initWithLink:_link status:M2PA_STATUS_ALIGNED_READY];
