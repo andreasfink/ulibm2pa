@@ -2030,11 +2030,11 @@
         if([_state isKindOfClass:[UMM2PAState_OutOfService class]])
         {
             /* we are still in OOS so we have FOOS set */
-            [state sendLinkstateOutOfService:YES];
+            [_state sendLinkstateOutOfService:YES];
         }
         else if([_state isKindOfClass:[UMM2PAState_InitialAlignment class]])
         {
-            [state sendLinkstateAlignment:YES];
+            [_state sendLinkstateAlignment:YES];
         }
     }
     @catch(NSException *e)
