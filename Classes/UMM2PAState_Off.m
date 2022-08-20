@@ -78,6 +78,7 @@
     [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:sync];
     _link.linkstateOutOfServiceSent++;
     [self logStatemachineEventString:@"sendLinkstateOutOfService"];
+    [_link addToLayerHistoryLog:@"sendLinkstateOutOfService"];
 }
 
 - (UMM2PAState *)eventSctpUp

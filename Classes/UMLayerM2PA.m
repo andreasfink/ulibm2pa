@@ -2030,11 +2030,11 @@
         if([_state isKindOfClass:[UMM2PAState_OutOfService class]])
         {
             /* we are still in OOS so we have FOOS set */
-            [self sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:YES];
+            [state sendLinkstateOutOfService:YES];
         }
         else if([_state isKindOfClass:[UMM2PAState_InitialAlignment class]])
         {
-            [self sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT synchronous:YES];
+            [state sendLinkstateAlignment:YES];
         }
     }
     @catch(NSException *e)
@@ -2262,123 +2262,6 @@
 {
     
 }
-
-#ifdef UNUSED
-- (void)txcSendSIOS
-{
-    [self sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:YES];
-	[_t7 stop];
-}
-
--(void)txcSendSIPO
-{
-    [self sendLinkstatus:M2PA_LINKSTATE_PROCESSOR_OUTAGE synchronous:YES];
-	[_t7 stop];
-}
-
--(void)sendEmptyMSU
-{
-    [self sendData:NULL stream:M2PA_STREAM_USERDATA ackRequest:NULL dpc:0];
-}
-
-
--(void)txcSendMSU:(NSData *)msu ackRequest:(NSDictionary *)ackRequest dpc:(int)dpc
-{
-    if(msu == NULL)
-    {
-        return;
-    }
-    [_submission_speed increase];
-    [self checkSpeed];
-    [self sendData:msu
-            stream:M2PA_STREAM_USERDATA
-        ackRequest:ackRequest
-               dpc:dpc];
-}
-
-
--(void)txcSendSIO
-{
-    [self sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT synchronous:YES];
-    _linkstateAlignmentSent++;
-
-}
-
--(void)txcSendSIN
-{
-    UMMUTEX_LOCK(_controlLock);
-    @try
-    {
-        _linkstateProvingSent++;
-        [self sendLinkstatus:M2PA_LINKSTATE_PROVING_NORMAL synchronous:YES];
-    }
-    @catch(NSException *e)
-    {
-        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
-    }
-    @finally
-    {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
-}
-
--(void)txcSendSIE
-{
-    UMMUTEX_LOCK(_controlLock);
-    @try
-    {
-        _linkstateProvingSent++;
-        [self sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY synchronous:YES];
-    }
-    @catch(NSException *e)
-    {
-        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
-    }
-    @finally
-    {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
-}
-
--(void)txcSendEMPTY_DATA
-{
-    UMMUTEX_LOCK(_controlLock);
-    @try
-    {
-        [self sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY synchronous:YES];
-    }
-    @catch(NSException *e)
-    {
-        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
-    }
-    @finally
-    {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
-}
-
-
--(void)txcSendFISU
-{
-    UMMUTEX_LOCK(_controlLock);
-    @try
-    {
-        [self sendLinkstatus:M2PA_LINKSTATE_READY synchronous:YES];
-    }
-    @catch(NSException *e)
-    {
-        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
-    }
-    @finally
-    {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
-}
-
--(void)txcFlushBuffers
-{
-}
-#endif
 
 - (void)notifyMtp3Disconnected
 {

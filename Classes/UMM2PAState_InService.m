@@ -18,6 +18,7 @@
     self = [super initWithLink:link status:statusCode];
     {
         [_link.t1 stop];
+        [_link.t1r stop];
         [_link.t2 stop];
         [_link.t4r stop];
         [_link.t4 stop];
@@ -70,6 +71,21 @@
 - (UMM2PAState *)eventEmergencyCeases
 {
     [self logStatemachineEvent:__func__];
+    return self;
+}
+
+
+- (UMM2PAState *)eventTimer1
+{
+    [self logStatemachineEvent:__func__];
+    [_link.t1 stop];
+    return self;
+}
+
+- (UMM2PAState *)eventTimer1r
+{
+    [self logStatemachineEvent:__func__];
+    [_link.t1r stop];
     return self;
 }
 

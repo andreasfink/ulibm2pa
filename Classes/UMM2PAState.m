@@ -157,16 +157,6 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [self logStatemachineEvent:__func__];
     [_link.startTimer stop];
     [_link startupInitialisation];
-    /* we let the timer take care of this
-    if(_link.forcedOutOfService == NO)
-    {
-        [self sendLinkstateAlignment:YES];
-    }
-    else
-    {
-        [self sendLinkstateOutOfService:YES];
-    }
-    */
     [_link.t2 start];
     return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
@@ -353,6 +343,8 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [_link sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT synchronous:sync];
     _link.linkstateAlignmentSent++;
     [self logStatemachineEventString:@"sendLinkstateAlignment"];
+    [_link addToLayerHistoryLog:@"sendLinkstateAlignment"];
+
 }
 
 - (void) sendLinkstateProvingNormal:(BOOL)sync
@@ -362,12 +354,15 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
        && (_statusCode != M2PA_STATUS_ALIGNED_NOT_READY))
     {
         [_link logWarning:@"trying to sendLinkstateProvingNormal not in INITIAL ALIGNMENT or ALIGNED_NOT_READY state. Ignored"];
+        [_link addToLayerHistoryLog:@"trying to sendLinkstateProvingNormal not in INITIAL ALIGNMENT or ALIGNED_NOT_READY or OOS state. Ignored"];
+
     }
     else
     {
         [_link sendLinkstatus:M2PA_LINKSTATE_PROVING_NORMAL synchronous:sync];
         _link.linkstateProvingSent++;
         [self logStatemachineEventString:@"sendLinkstateProvingNormal"];
+        [_link addToLayerHistoryLog:@"sendLinkstateProvingNormal"];
     }
 }
 
@@ -378,12 +373,15 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
        && (_statusCode != M2PA_STATUS_ALIGNED_NOT_READY))
     {
         [_link logWarning:@"trying to sendLinkstateProvingEmergency not in INITIAL ALIGNMENT or ALIGNED_NOT_READY or OOS state. Ignored"];
+        [_link addToLayerHistoryLog:@"trying to sendLinkstateProvingEmergency not in INITIAL ALIGNMENT or ALIGNED_NOT_READY or OOS state. Ignored"];
     }
     else
     {
         [_link sendLinkstatus:M2PA_LINKSTATE_PROVING_EMERGENCY synchronous:sync];
         _link.linkstateProvingSent++;
         [self logStatemachineEventString:@"sendLinkstateProvingEmergency"];
+        [_link addToLayerHistoryLog:@"sendLinkstateProvingEmergency"];
+
     }
 }
 
@@ -392,6 +390,8 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [_link sendLinkstatus:M2PA_LINKSTATE_READY synchronous:sync];
     _link.linkstateReadySent++;
     [self logStatemachineEventString:@"sendLinkstateReady"];
+    [_link addToLayerHistoryLog:@"sendLinkstateReady"];
+
 }
 
 
@@ -400,6 +400,8 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [_link sendLinkstatus:M2PA_LINKSTATE_PROCESSOR_OUTAGE synchronous:sync];
     _link.linkstateProcessorOutageSent++;
     [self logStatemachineEventString:@"sendLinkstateProcessorOutage"];
+    [_link addToLayerHistoryLog:@"sendLinkstateProcessorOutage"];
+
 }
 
 - (void) sendLinkstateProcessorRecovered:(BOOL)sync
@@ -407,6 +409,8 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [_link sendLinkstatus:M2PA_LINKSTATE_PROCESSOR_RECOVERED synchronous:sync];
     _link.linkstateProcessorRecoveredSent++;
     [self logStatemachineEventString:@"sendLinkstateProcessorRecovered"];
+    [_link addToLayerHistoryLog:@"sendLinkstateProcessorRecovered"];
+
 }
 
 - (void) sendLinkstateBusy:(BOOL)sync
@@ -414,6 +418,8 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [_link sendLinkstatus:M2PA_LINKSTATE_BUSY synchronous:sync];
     _link.linkstateBusySent++;
     [self logStatemachineEventString:@"sendLinkstateBusy"];
+    [_link addToLayerHistoryLog:@"sendLinkstateBusy"];
+
 }
 
 - (void) sendLinkstateBusyEnded:(BOOL)sync
@@ -421,6 +427,8 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [_link sendLinkstatus:M2PA_LINKSTATE_BUSY_ENDED synchronous:sync];
     _link.linkstateBusyEndedSent++;
     [self logStatemachineEventString:@"sendLinkstateBusyEnded"];
+    [_link addToLayerHistoryLog:@"sendLinkstateBusyEnded"];
+
 }
 
 - (void) sendLinkstateOutOfService:(BOOL)sync
@@ -429,6 +437,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:sync];
     _link.linkstateOutOfServiceSent++;
     [self logStatemachineEventString:@"sendLinkstateOutOfService"];
+    [_link addToLayerHistoryLog:@"sendLinkstateOutOfService"];
 }
 
 @end

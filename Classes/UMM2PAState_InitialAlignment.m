@@ -147,7 +147,7 @@
 {
     _link.linkstateAlignmentSent++;
     [self sendLinkstateAlignment:YES];
-    [_link sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT synchronous:sync];
+    [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:sync];
 }
 
 - (UMM2PAState *)eventReceiveUserData:(NSData *)userData
