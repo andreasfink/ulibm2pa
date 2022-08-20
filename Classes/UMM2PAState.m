@@ -75,7 +75,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 - (void) logStatemachineEvent:(const char *)func forced:(BOOL)forced
 {
     NSString *s=NULL;
-    if((_link.logLevel <= UMLOG_DEBUG) || (_link.stateMachineLogFeed!=NULL) || (forced))
+    if((_link.logLevel <= UMLOG_DEBUG) || (_link.stateMachineLogFeed!=NULL) || (forced) || (_link.layerHistory))
     {
         /* func name is something like "[UMM2PAState eventNew]" */
         NSString *functionName  = UMM2PAState_currentMethodName(func);
