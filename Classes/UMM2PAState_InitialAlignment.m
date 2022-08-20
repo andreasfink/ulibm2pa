@@ -146,8 +146,7 @@
 - (void) sendLinkstateOutOfService:(BOOL)sync
 {
     _link.linkstateAlignmentSent++;
-    [self sendLinkstateAlignment:YES];
-    [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:sync];
+    [self sendLinkstateOutOfService:YES];
 }
 
 - (UMM2PAState *)eventReceiveUserData:(NSData *)userData
