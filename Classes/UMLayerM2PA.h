@@ -54,33 +54,33 @@
 
 /* default timer values */
 /* all timers are  in seconds */
-#define	M2PA_DEFAULT_T1	45.000000 /* 45s */
+#define	M2PA_DEFAULT_T1	           45.000000 /* 45s */
 /* T1:  alignment ready */
 /*  highspeed: 25-350s */
 /*  64k link: 40-50s	*/
 /*  4.8k: 500-600s */
-#define    M2PA_DEFAULT_T1R    1.000000
+#define    M2PA_DEFAULT_T1R        0.4000
 
 #define	M2PA_DEFAULT_T2	5.0 /* 5s . time we send ALIGNMENT messages out when being in Initial Alignment status */
 /* T2: not aligned */
 /* low: 5-50s */
 /* high: 70-150s */
 
-#define	M2PA_DEFAULT_T3	1.0 /* 1 sec */
+#define	M2PA_DEFAULT_T3	           1.000       /* 1 sec */
 /* T2: aligned  */
 /* 1-2s */
 
-#define M2PA_DEFAULT_T4_N_MIN     3.0
-#define M2PA_DEFAULT_T4_N_MAX     70.0
-#define	M2PA_DEFAULT_T4_N	      8.0		/* normal proving period  3-70s  8s */
+#define M2PA_DEFAULT_T4_N_MIN      3.000
+#define M2PA_DEFAULT_T4_N_MAX     70.000
+#define	M2PA_DEFAULT_T4_N	       8.000		/* normal proving period  3-70s  8s */
 
-#define M2PA_DEFAULT_T4_E_MIN     0.4
-#define M2PA_DEFAULT_T4_E_MAX     0.6
-#define	M2PA_DEFAULT_T4_E	      0.5     /* emergency proving period  0.4s - 0.6s : 0.5s*/
+#define M2PA_DEFAULT_T4_E_MIN      0.400
+#define M2PA_DEFAULT_T4_E_MAX      0.600
+#define	M2PA_DEFAULT_T4_E	       0.600     /* emergency proving period  0.4s - 0.6s : 0.5s*/
 
-#define M2PA_DEFAULT_T4_R_MIN     0.05
-#define M2PA_DEFAULT_T4_R_MAX     0.39   /* has to be smaller than M2PA_DEFAULT_T4_E */
-#define	M2PA_DEFAULT_T4_R	      0.100  /* resending timer of link status proving every 100ms */
+#define M2PA_DEFAULT_T4_R_MIN      0.050
+#define M2PA_DEFAULT_T4_R_MAX      0.395   /* has to be smaller than M2PA_DEFAULT_T4_E */
+#define	M2PA_DEFAULT_T4_R	       0.095  /* resending timer of link status proving every 95ms */
 
 #define M2TIMER_VALIDATE(value,default,min,max)  value = ((value<min) || (value >max)) ? default : value
 /*T4: proving period normal */
@@ -109,7 +109,7 @@
 
 #define    M2PA_DEFAULT_START_TIMER    30.0 /* 30s */
 
-#define    M2PA_DEFAULT_ACK_TIMER    0.100 /* 100ms */
+#define    M2PA_DEFAULT_ACK_TIMER       0.100 /* 100ms */
 
 #define    M2PA_DEFAULT_T16    200.0 /* 200s */
 #define    M2PA_DEFAULT_T17    0.25 /* 200s */

@@ -20,7 +20,7 @@
         [_link.t4 stop];
         [_link.t4r stop];
         // the timer will send it. we first have to return the correct state to the caller
-        //[self sendLinkstateAlignment:YES];
+        [self sendLinkstateAlignment:YES];
         [_link.t2 start];
     }
     return self;
