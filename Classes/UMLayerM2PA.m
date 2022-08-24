@@ -70,6 +70,11 @@
 #pragma mark -
 #pragma mark Initializer
 
+-(NSString *)layerType
+{
+    return @"m2pa";
+}
+
 - (NSString *)stateString
 {
     return _state.description;
