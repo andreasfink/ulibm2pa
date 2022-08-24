@@ -188,9 +188,6 @@ typedef enum PocStatus
     int     							_slc;
 	BOOL								_linkstate_busy;
     BOOL                                _forcedOutOfService;
-    //u_int32_t							_bsn_tx; /* backward sequence number. Last BSN Sequence number sent to the peer */
-    //u_int32_t							_fsn_tx; /* forward sequence number. Last sequence number sent */
-    //u_int32_t							_bsn_rx; /* backward sequence number. Last FSN number acked from the peer for our transmission */
 
     u_int32_t                           _lastRxFsn;    /* last received FSN */
     u_int32_t                           _lastRxBsn;    /* last received BSN */
