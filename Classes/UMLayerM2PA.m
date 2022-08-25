@@ -220,9 +220,18 @@
 #pragma mark SCTP Callbacks
 
 
+
 - (void) sctpStatusIndication:(UMLayer *)caller
                        userId:(id)uid
                        status:(UMSocketStatus)s
+{
+    return [self sctpStatusIndication:caller userId:uid status:s reason:NULL];
+}
+
+- (void) sctpStatusIndication:(UMLayer *)caller
+                       userId:(id)uid
+                       status:(UMSocketStatus)s
+                       reason:(NSString *)reason
 {
     @autoreleasepool
     {
@@ -253,7 +262,8 @@
         UMM2PATask_sctpStatusIndication *task = [[UMM2PATask_sctpStatusIndication alloc]initWithReceiver:self
                                                                                                   sender:caller
                                                                                                   userId:uid
-                                                                                                  status:s];
+                                                                                                  status:s
+                                                                                                  reason:reason];
         [self queueFromLowerWithPriority:task];
     }
 }
@@ -341,7 +351,7 @@
 
 - (void) _sctpStatusIndicationTask:(UMM2PATask_sctpStatusIndication *)task
 {
-    self.sctp_status = task.status;
+    [self setSctp_status:task.status reason:task.reason];
 }
 
 - (UMSocketStatus)sctp_status
@@ -349,7 +359,12 @@
     return _sctp_status;
 }
 
-- (void)setSctp_status:(UMSocketStatus )newStatus;
+- (void)setSctp_status:(UMSocketStatus )newStatus
+{
+    [self setSctp_status:newStatus reason:NULL];
+}
+
+- (void)setSctp_status:(UMSocketStatus )newStatus reason:(NSString *)reason
 {
     int old_sctp_status = _sctp_status;
     _sctp_status = newStatus;
@@ -364,7 +379,14 @@
        && (_sctp_status == UMSOCKET_STATUS_OFF))
     {
         /* SCTP Link has died */
-        [_state logStatemachineEvent:"sctp-link-died"];
+        if(reason==NULL)
+        {
+            [_state logStatemachineEvent:"sctp-link-died"];
+        }
+        else
+        {
+            [_state logStatemachineEvent:[NSString stringWithFormat:@"sctp-link-died %@",reason]];
+        }
         [self sctpReportsDown];
         [_sctpLink openFor:self sendAbortFirst:NO reason:@"sctp-link-died"];
     }

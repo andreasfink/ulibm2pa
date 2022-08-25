@@ -15,17 +15,20 @@
 
 @interface UMM2PATask_sctpStatusIndication : UMLayerTask
 {
-    id          userId;
-    UMSocketStatus status;
+    id              _userId;
+    UMSocketStatus  _status;
+    NSString        *_reason;
 }
 
-@property(readwrite,strong) id userId;
-@property(readwrite,assign) UMSocketStatus status;
+@property(readwrite,strong) id              userId;
+@property(readwrite,assign) UMSocketStatus  status;
+@property(readwrite,assign) NSString        *reason;
 
 - (UMM2PATask_sctpStatusIndication *)initWithReceiver:(UMLayerM2PA *)rx
                                                sender:(id)tx
                                                userId:(id)uid
-                                               status:(int)s;
+                                               status:(int)s
+                                               reason:(NSString *)reason;
 - (void)main;
 
 @end

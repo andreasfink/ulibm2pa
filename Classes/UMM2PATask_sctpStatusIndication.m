@@ -14,19 +14,18 @@
 
 @implementation UMM2PATask_sctpStatusIndication
 
-@synthesize userId;
-@synthesize status;
-
 - (UMM2PATask_sctpStatusIndication *)initWithReceiver:(UMLayerM2PA *)rx
                                                sender:(id)tx
                                                userId:(id)uid
-                                               status:(int)s;
+                                               status:(int)s
+                                               reason:(NSString*)reason;
 {
     self = [super initWithName:[[self class]description]  receiver:rx sender:tx requiresSynchronisation:NO];
     if(self)
     {
-        self.userId = uid;
-        self.status = s;
+        _userId = uid;
+        _status = s;
+        _reason = reason;
     }
     return self;
 }

@@ -372,6 +372,11 @@ typedef enum PocStatus
 
 - (void) sctpStatusIndication:(UMLayer *)caller
                        userId:(id)uid
+                       status:(UMSocketStatus)s
+                       reason:(NSString *)reason;
+
+- (void) sctpStatusIndication:(UMLayer *)caller
+                       userId:(id)uid
                        status:(UMSocketStatus)s;
 
 - (void) sctpDataIndication:(UMLayer *)caller
