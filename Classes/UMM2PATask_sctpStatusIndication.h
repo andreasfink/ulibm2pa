@@ -22,7 +22,7 @@
 
 @property(readwrite,strong) id              userId;
 @property(readwrite,assign) UMSocketStatus  status;
-@property(readwrite,assign) NSString        *reason;
+@property(readwrite,strong) NSString        *reason;
 
 - (UMM2PATask_sctpStatusIndication *)initWithReceiver:(UMLayerM2PA *)rx
                                                sender:(id)tx
