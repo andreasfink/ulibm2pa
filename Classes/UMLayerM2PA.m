@@ -385,7 +385,8 @@
         }
         else
         {
-            [_state logStatemachineEvent:[NSString stringWithFormat:@"sctp-link-died %@",reason]];
+            NSString *s = [NSString stringWithFormat:@"sctp-link-died %@",reason];
+            [_state logStatemachineEvent:s.UTF8String];
         }
         [self sctpReportsDown];
         [_sctpLink openFor:self sendAbortFirst:NO reason:@"sctp-link-died"];
