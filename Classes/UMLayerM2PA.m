@@ -2171,7 +2171,7 @@
 - (int)sendLinkstatus:(M2PA_linkstate_message)linkstate synchronous:(BOOL)sync
 {
     /* we can not send linkstat messages while control is occuring as the state might change */
-    [_controlLock lock];
+    UMMUTEX_LOCK(_controlLock);
     @autoreleasepool
     {
         NSString *ls = [UMLayerM2PA linkStatusString:linkstate];
@@ -2251,7 +2251,7 @@
                 ackRequest:NULL
                synchronous:sync];
     }
-    [_controlLock unlock];
+    UMMUTEX_UNLOCK(_controlLock);
     return 0;
 }
 
@@ -2279,7 +2279,6 @@
     self.local_processor_outage = NO;
     self.remote_processor_outage = NO;
 }
-
 
 -(void)cancelLocalProcessorOutage
 {
