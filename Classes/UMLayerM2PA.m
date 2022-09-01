@@ -1993,6 +1993,7 @@
     {
         _powerOnCounter++;
         self.state = [[UMM2PAState_Off alloc]initWithLink:self  status:M2PA_STATUS_OFF];
+        [self.state sendLinkstateOutOfService:YES];
         self.state = [_state eventPowerOn];
     }
     @catch(NSException *e)
