@@ -35,7 +35,7 @@
 - (UMM2PAState *)eventPowerOff
 {
     [self logStatemachineEvent:__func__];
-    [_link.sctpLink closeFor:_link];
+    [_link.sctpLink closeFor:_link reason:@"eventPowerOff"];
     [_link notifyMtp3Disconnected];
     return self;
 }

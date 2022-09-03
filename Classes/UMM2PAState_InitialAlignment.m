@@ -160,7 +160,7 @@
 {
     [self logStatemachineEvent:__func__];
     [self sendLinkstateAlignment:YES];
-    [_link.t2 start];
+    //[_link.t2 start];
     return self;
 }
 
