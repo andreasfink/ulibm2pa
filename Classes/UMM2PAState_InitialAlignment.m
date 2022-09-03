@@ -59,6 +59,7 @@
 - (UMM2PAState *)eventLinkstatusOutOfService
 {
     [self logStatemachineEvent:__func__];
+    [self sendLinkstateAlignment:YES];
     return self;
 }
 
