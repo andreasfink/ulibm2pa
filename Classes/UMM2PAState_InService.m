@@ -35,6 +35,7 @@
 - (UMM2PAState *)eventStop
 {
     [self logStatemachineEvent:__func__];
+    [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:YES];
     return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
@@ -50,16 +51,21 @@
     return [super eventSctpUp];
 }
 
+
 - (UMM2PAState *)eventSctpDown
 {
     [self logStatemachineEvent:__func__];
-    return [super eventSctpDown];
+    /* link failure event according to Q:703 07/96 page 5 */
+    /* we cant send OOS on a already dead link so we skip it */
+    // [self sendLinkstateOutOfService:YES];
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
 - (UMM2PAState *)eventLinkstatusOutOfService
 {
     [self logStatemachineEvent:__func__];
-    return [super eventLinkstatusOutOfService];
+    [self sendLinkstateOutOfService:YES];
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
 
@@ -108,25 +114,22 @@
 - (UMM2PAState *)eventLinkstatusAlignment
 {
     [self logStatemachineEvent:__func__];
-    if(_link.forcedOutOfService==YES)
-    {
-        return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
-    }
-    return [[UMM2PAState_NotAligned alloc]initWithLink:_link status:M2PA_STATUS_NOT_ALIGNED];
+    [self sendLinkstateOutOfService:YES];
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal
 {
-    [self logStatemachineEvent:__func__ forced:YES];
-    [self sendLinkstateReady:YES];
-    return self;
+    [self logStatemachineEvent:__func__];
+    [self sendLinkstateOutOfService:YES];
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
 - (UMM2PAState *)eventLinkstatusProvingEmergency
 {
-    [self logStatemachineEvent:__func__ forced:YES];
-    [self sendLinkstateReady:YES];
-    return self;
+    [self logStatemachineEvent:__func__];
+    [self sendLinkstateOutOfService:YES];
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
 - (UMM2PAState *)eventLinkstatusReady
@@ -161,7 +164,8 @@
     [self logStatemachineEvent:__func__];
     _link.remote_processor_outage = YES;
     [_link notifyMtp3RemoteProcessorOutage];
-    return self;
+    [_link sendLinkstatus:M2PA_LINKSTATE_READY synchronous:YES];
+    return [[UMM2PAState_ProcessorOutage alloc] initWithLink:_link status:M2PA_STATUS_PROCESSOR_OUTAGE];
 }
 
 - (UMM2PAState *)eventLinkstatusProcessorRecovered
@@ -211,5 +215,19 @@
                 dpc:dpc];
     return self;
 }
+
+- (UMM2PAState *) eventLocalProcessorOutage
+{
+    [self logStatemachineEvent:__func__ forced:YES];
+    [_link sendLinkstatus:M2PA_LINKSTATE_PROCESSOR_OUTAGE synchronous:YES];
+    return [[UMM2PAState_ProcessorOutage alloc] initWithLink:_link status:M2PA_STATUS_PROCESSOR_OUTAGE];
+}
+
+- (UMM2PAState *) eventLocalProcessorRecovery
+{
+    [self logStatemachineEvent:__func__ forced:YES];
+    return self;
+}
+
 
 @end

@@ -56,6 +56,7 @@
 - (UMM2PAState *)eventStop
 {
     [self logStatemachineEvent:__func__];
+    [self sendLinkstateOutOfService:YES];
     return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
@@ -74,7 +75,8 @@
 - (UMM2PAState *)eventSctpDown
 {
     [self logStatemachineEvent:__func__];
-    return [super eventSctpDown];
+    [self sendLinkstateOutOfService:YES];
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
 - (UMM2PAState *)eventLinkstatusOutOfService
@@ -108,15 +110,8 @@
 - (UMM2PAState *)eventLinkstatusAlignment
 {
     [self logStatemachineEvent:__func__];
-    if(_link.emergency)
-    {
-        [self sendLinkstateProvingEmergency:YES];
-    }
-    else
-    {
-        [self sendLinkstateProvingNormal:YES];
-    }
-    return self;
+    [self sendLinkstateOutOfService:YES];
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal
@@ -161,12 +156,15 @@
 - (UMM2PAState *)eventLinkstatusProcessorOutage
 {
     [self logStatemachineEvent:__func__];
+    _link.remote_processor_outage = YES;
+    return  [[UMM2PAState_ProcessorOutage alloc]initWithLink:_link status:M2PA_STATUS_PROCESSOR_OUTAGE];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusProcessorRecovered
 {
     [self logStatemachineEvent:__func__];
+    _link.remote_processor_outage = NO;
     return self;
 }
 
@@ -247,6 +245,8 @@
 {
     /* data processing is done outside by the caller */
     [self logStatemachineEvent:__func__ forced:YES];
+    _link.remote_processor_outage = YES;
+    return  [[UMM2PAState_ProcessorOutage alloc]initWithLink:_link status:M2PA_STATUS_PROCESSOR_OUTAGE];
     return self;
 }
 
@@ -259,5 +259,17 @@
     return self;
 }
 
+- (UMM2PAState *) eventLocalProcessorOutage
+{
+    [self logStatemachineEvent:__func__ forced:YES];
+    return self;
+}
+
+- (UMM2PAState *) eventLocalProcessorRecovery
+{
+    [self logStatemachineEvent:__func__ forced:YES];
+    [_link sendLinkstatus:M2PA_LINKSTATE_READY synchronous:YES];
+    return [[UMM2PAState_AlignedReady alloc] initWithLink:_link status:M2PA_STATUS_ALIGNED_READY];
+}
 
 @end

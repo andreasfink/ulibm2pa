@@ -151,21 +151,6 @@
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusProcessorOutage
-{
-    [self logStatemachineEvent:__func__];
-    _link.remote_processor_outage = YES;
-    [_link notifyMtp3RemoteProcessorOutage];
-    return self;
-}
-
-- (UMM2PAState *)eventLinkstatusProcessorRecovered
-{
-    [self logStatemachineEvent:__func__];
-    _link.remote_processor_outage = NO;
-    [_link notifyMtp3RemoteProcessorRecovered];
-    return self;
-}
 
 - (UMM2PAState *)eventError
 {
@@ -183,6 +168,38 @@
                                dpc:(int)dpc
 {
     return self;
+}
+
+- (UMM2PAState *) eventLocalProcessorOutage
+{
+    [self logStatemachineEvent:__func__ forced:YES];
+    [_link sendLinkstatus:M2PA_LINKSTATE_PROCESSOR_OUTAGE synchronous:YES];
+    return [[UMM2PAState_ProcessorOutage alloc] initWithLink:_link status:M2PA_STATUS_PROCESSOR_OUTAGE];
+}
+
+- (UMM2PAState *) eventLocalProcessorRecovery
+{
+    [self logStatemachineEvent:__func__ forced:YES];
+    [_link sendLinkstatus:M2PA_LINKSTATE_READY synchronous:YES];
+    return self;
+}
+
+- (UMM2PAState *)eventLinkstatusProcessorOutage
+{
+    [self logStatemachineEvent:__func__];
+    _link.remote_processor_outage = YES;
+    [_link notifyMtp3RemoteProcessorOutage];
+    [_link sendLinkstatus:M2PA_LINKSTATE_READY synchronous:YES];
+    return [[UMM2PAState_ProcessorOutage alloc] initWithLink:_link status:M2PA_STATUS_PROCESSOR_OUTAGE];
+}
+
+- (UMM2PAState *)eventLinkstatusProcessorRecovered
+{
+    [self logStatemachineEvent:__func__];
+    _link.remote_processor_outage = NO;
+    [_link notifyMtp3RemoteProcessorRecovered];
+    [_link sendLinkstatus:M2PA_LINKSTATE_READY synchronous:YES];
+    return [[UMM2PAState_InService alloc] initWithLink:_link status:M2PA_STATUS_IS];
 }
 
 @end

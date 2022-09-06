@@ -149,7 +149,10 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 - (UMM2PAState *)eventStop
 {
     [self logStatemachineEvent:__func__];
-    return self;
+    [_link.startTimer stop];
+    [_link startupInitialisation];
+    [_link notifyMtp3OutOfService];
+    return  [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
 - (UMM2PAState *)eventStart
@@ -171,6 +174,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 {
     [self logStatemachineEvent:__func__];
     [_link.startTimer stop];
+    [_link startupInitialisation];
     [_link notifyMtp3Stop];
     return [[UMM2PAState_Off alloc]initWithLink:_link status:M2PA_STATUS_OFF];
 }
@@ -180,6 +184,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [self logStatemachineEvent:__func__];
     [_link.startTimer stop];
     [_link startupInitialisation];
+    [_link notifyMtp3OutOfService];
     return  [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
