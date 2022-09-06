@@ -107,7 +107,7 @@
     {
         return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
     }
-    return [[UMM2PAState_NotAligned alloc]initWithLink:_link status:M2PA_STATUS_NOT_ALIGNED];
+    return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link status:M2PA_STATUS_INITIAL_ALIGNMENT];
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal

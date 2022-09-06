@@ -51,7 +51,7 @@
         return self;
     }
     [_link.t2 start];
-    return [[UMM2PAState_NotAligned alloc]initWithLink:_link status:M2PA_STATUS_NOT_ALIGNED];
+    return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link status:M2PA_STATUS_INITIAL_ALIGNMENT];
 }
 
 - (UMM2PAState *)eventSctpUp
@@ -101,7 +101,7 @@
         [self sendLinkstateOutOfService:YES];
         return self;
     }
-    return [[UMM2PAState_NotAligned alloc]initWithLink:_link status:M2PA_STATUS_NOT_ALIGNED];
+    return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link status:M2PA_STATUS_INITIAL_ALIGNMENT];
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal

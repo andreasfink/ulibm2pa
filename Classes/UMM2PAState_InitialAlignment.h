@@ -1,5 +1,5 @@
 //
-//  UMM2PAState_NotAligned.h
+//  UMM2PAState_InitialAlignment.h
 //  ulibm2pa
 //
 //  Created by Andreas Fink on 17.03.20.
@@ -9,7 +9,7 @@
 #import "UMM2PAState.h"
 
 
-@interface UMM2PAState_NotAligned : UMM2PAState
+@interface UMM2PAState_InitialAlignment : UMM2PAState
 
 @end
 

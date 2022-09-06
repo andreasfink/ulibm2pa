@@ -1,21 +1,21 @@
 //
-//  UMM2PAState_NotAligned.m
+//  UMM2PAState_InitialAlignment.m
 //  ulibm2pa
 //
 //  Created by Andreas Fink on 17.03.20.
 //  Copyright © 2020 Andreas Fink (andreas@fink.org). All rights reserved.
 //
 
-#import "UMM2PAState_NotAligned.h"
+#import "UMM2PAState_InitialAlignment.h"
 #import "UMM2PAState_allStates.h"
 #import "UMLayerM2PA.h"
 
-@implementation UMM2PAState_NotAligned
+@implementation UMM2PAState_InitialAlignment
 - (UMM2PAState *)initWithLink:(UMLayerM2PA *)link status:(M2PA_Status)statusCode
 {
     self =[super initWithLink:link  status:statusCode];
     {
-        _statusCode = M2PA_STATUS_NOT_ALIGNED;
+        _statusCode = M2PA_STATUS_INITIAL_ALIGNMENT;
         [_link.t2 stop];
         [_link.t4 stop];
         [_link.t4r stop];
@@ -28,13 +28,14 @@
 
 - (NSString *)description
 {
-    return @"not-aligned";
+    return @"initial-alignment";
 }
 
 
 - (UMM2PAState *)eventStop
 {
     [self logStatemachineEvent:__func__];
+    [self sendLinkstateOutOfService:YES];
     return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
@@ -53,7 +54,8 @@
 - (UMM2PAState *)eventSctpDown
 {
     [self logStatemachineEvent:__func__];
-    return [super eventSctpDown];
+    // [self sendLinkstateOutOfService:YES];
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
 - (UMM2PAState *)eventLinkstatusOutOfService
@@ -173,7 +175,7 @@
 {
     [self logStatemachineEvent:__func__ forced:YES];
     /* we dont expect data pdus in linkstate initial alignment */
-    [_link notifyMtp3:M2PA_STATUS_NOT_ALIGNED async:YES];
+    [_link notifyMtp3:M2PA_STATUS_INITIAL_ALIGNMENT async:YES];
     return self;
 }
 
