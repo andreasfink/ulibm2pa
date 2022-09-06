@@ -265,6 +265,7 @@ typedef enum PocStatus
     
     BOOL    _congested;
     BOOL    _emergency;
+    BOOL    _alignmentNotPossible;
     //BOOL    _autostart;
     int     _link_restarts;
     int     _ready_sent;
@@ -318,6 +319,7 @@ typedef enum PocStatus
 @property(readwrite,assign)     BOOL    level3Indication;
 
 @property(readwrite,assign)     BOOL    emergency;
+@property(readwrite,assign)     BOOL    alignmentNotPossible;
 @property(readwrite,assign)     int     link_restarts;
 @property(readwrite,assign)     int     ready_sent;
 @property(readwrite,assign)     BOOL    paused;

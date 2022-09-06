@@ -139,12 +139,15 @@
 - (UMM2PAState *)eventLinkstatusProcessorOutage
 {
     [self logStatemachineEvent:__func__];
+    _link.remote_processor_outage = YES;
+    return  [[UMM2PAState_ProcessorOutage alloc]initWithLink:_link status:M2PA_STATUS_PROCESSOR_OUTAGE];
     return self;
 }
 
 - (UMM2PAState *)eventLinkstatusProcessorRecovered
 {
     [self logStatemachineEvent:__func__];
+    _link.remote_processor_outage = NO;
     return self;
 }
 
@@ -197,7 +200,18 @@
              stream:M2PA_STREAM_USERDATA
          ackRequest:ackRequest
                 dpc:dpc];
-    return self;
+    return [[UMM2PAState_InService alloc]initWithLink:_link status:M2PA_STATUS_IS];
 }
+
+- (UMM2PAState *) eventLocalProcessorOutage
+{
+    [self logStatemachineEvent:__func__ forced:YES];
+    [_link sendLinkstatus:M2PA_LINKSTATE_PROCESSOR_OUTAGE synchronous:YES];
+    _link.linkstateProcessorOutageSent++;
+    [self logStatemachineEventString:@"sendProcessorOutage"];
+    [_link addToLayerHistoryLog:@"sendProcessorOutage"];
+    return [[UMM2PAState_AlignedNotReady alloc] initWithLink:_link status:M2PA_STATUS_ALIGNED_NOT_READY];
+}
+
 
 @end

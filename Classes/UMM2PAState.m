@@ -195,6 +195,17 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     return self;
 }
 
+- (UMM2PAState *) eventLocalProcessorOutage
+{
+    [self logStatemachineEvent:__func__ forced:YES];
+    [_link sendLinkstatus:M2PA_LINKSTATE_PROCESSOR_OUTAGE synchronous:YES];
+    _link.linkstateProcessorOutageSent++;
+    [self logStatemachineEventString:@"sendProcessorOutage"];
+    [_link addToLayerHistoryLog:@"sendProcessorOutage"];
+    return self;
+}
+
+
 - (UMM2PAState *)eventLinkstatusAlignment
 {
     [self logStatemachineEvent:__func__];
@@ -437,5 +448,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [self logStatemachineEventString:@"sendLinkstateOutOfService"];
     [_link addToLayerHistoryLog:@"sendLinkstateOutOfService"];
 }
+
+
 
 @end

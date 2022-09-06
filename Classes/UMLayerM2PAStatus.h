@@ -20,7 +20,8 @@ typedef	enum	M2PA_Status
     M2PA_STATUS_NOT_ALIGNED	         = 1002, /* alignment sent to remote. await alignment from remote */
     M2PA_STATUS_ALIGNED_NOT_READY	 = 1003, /* proving phase running. not enough proving received yet */
     M2PA_STATUS_ALIGNED_READY		 = 1004, /* proving phase running. enough proving received but remote is not yet happy */
-    M2PA_STATUS_IS					 = 1005, /* both sides where ready . live for traffic*/
+    M2PA_STATUS_IS                   = 1005, /* both sides where ready . live for traffic*/
+    M2PA_STATUS_PROCESSOR_OUTAGE     = 1006,
 } M2PA_Status;
 
 

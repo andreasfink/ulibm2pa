@@ -38,6 +38,7 @@
 - (UMM2PAState *)eventSctpError;                    /* SCTP reports an error */
 - (UMM2PAState *)eventEmergency;                    /* MTP3 tells his is an emergency link */
 - (UMM2PAState *)eventEmergencyCeases;              /* MTP3 tells his is not an emergency link */
+- (UMM2PAState *)eventLocalProcessorOutage;         /* MTP3 tells processor is out */
 - (UMM2PAState *)eventLinkstatusOutOfService;       /* other side sent us linkstatus out of service */
 - (UMM2PAState *)eventLinkstatusAlignment;          /* other side sent us linkstatus alignment */
 - (UMM2PAState *)eventLinkstatusProvingNormal;      /* other side sent us linkstatus proving normal */
