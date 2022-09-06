@@ -79,7 +79,7 @@
 - (UMM2PAState *)eventLinkstatusOutOfService
 {
     [self logStatemachineEvent:__func__];
-    return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link status:M2PA_STATUS_INITIAL_ALIGNMENT];
+    return [super eventLinkstatusOutOfService];
 }
 
 - (UMM2PAState *)eventEmergency

@@ -64,6 +64,7 @@
 
 - (UMM2PAState *)eventLinkstatusOutOfService
 {
+    [self logStatemachineEvent:__func__];
     return [super eventLinkstatusOutOfService];
 }
 
