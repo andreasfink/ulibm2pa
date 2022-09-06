@@ -50,7 +50,7 @@
         [self sendLinkstateOutOfService:YES];
         return self;
     }
-    [self sendLinkstateAlignment:YES];
+    [_link.t2 start];
     return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link status:M2PA_STATUS_INITIAL_ALIGNMENT];
 }
 

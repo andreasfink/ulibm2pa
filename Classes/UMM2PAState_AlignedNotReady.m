@@ -43,6 +43,7 @@
         _link.t4.seconds = t;   /* ending of proving period timer */
         [_link.t4 start];
         [_link.t4r start]; /* sending out status timer */
+        [_link.t3 start];
     }
     return self;
 }
@@ -174,6 +175,30 @@
     [self logStatemachineEvent:__func__];
     return self;
 }
+
+- (UMM2PAState *)eventTimer3
+{
+    [self logStatemachineEvent:__func__];
+    if(([_link.t4 isExpired]) || (_t4_expired))
+    {
+        [_link.t1 stop];
+        [_link.t2 stop];
+        [_link.t4 stop];
+        [_link.t4r stop];
+        [self sendLinkstateReady:YES];
+        return [[UMM2PAState_AlignedReady alloc]initWithLink:_link status:M2PA_STATUS_ALIGNED_READY];
+    }
+    if(_link.emergency)
+    {
+        [self sendLinkstateProvingEmergency:YES];
+    }
+    else
+    {
+        [self sendLinkstateProvingNormal:YES];
+    }
+    return self;
+}
+
 
 - (UMM2PAState *)eventTimer4r
 {

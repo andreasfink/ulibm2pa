@@ -1052,9 +1052,7 @@
 
 - (void)timerFires1
 {
-    [_t1 stop];
     [self queueTimerEvent:NULL timerName:@"t1"];
-
 }
 
 - (void)timerFires1r
@@ -1068,7 +1066,6 @@
 }
 - (void)timerFires3
 {
-    [_t3 stop];
     [self queueTimerEvent:NULL timerName:@"t3"];
 }
 - (void)timerFires4

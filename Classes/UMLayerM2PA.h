@@ -54,17 +54,26 @@
 
 /* default timer values */
 /* all timers are  in seconds */
-#define	M2PA_DEFAULT_T1	           45.000000 /* 45s */
+#define	M2PA_DEFAULT_T1	           45.000000 /* 45s. Time from Alignemnt to Alignment Ready received */
 /* T1:  alignment ready */
 /*  highspeed: 25-350s */
 /*  64k link: 40-50s	*/
 /*  4.8k: 500-600s */
 #define    M2PA_DEFAULT_T1R        0.4000
 
-#define	M2PA_DEFAULT_T2	5.0 /* 5s . time we send ALIGNMENT messages out when being in Initial Alignment status */
-/* T2: not aligned */
-/* low: 5-50s */
-/* high: 70-150s */
+#define	M2PA_DEFAULT_T2	5.0  /* time we wait for ALIGNMENT messages when being in Initial Alignment status */
+/* Q.702 (07/96) page 26 says   */
+/* T2: not aligned              */
+/* low: 5-50s                   */
+/* high: 70-150s                */
+
+/*
+ SIB Status Indication "B" ("Busy")
+ SIE Status Indication "E" ("emergency alignment")
+ SIN Status Indication "N" ("normal alignment")
+ SIO Status Indication "O" ("out of alignment")
+ SIOS Status Indication "OS" ("out of service") SIPO Status Indication "PO" ("processor outage")
+ */
 
 #define	M2PA_DEFAULT_T3	           1.000       /* 1 sec */
 /* T2: aligned  */
@@ -73,6 +82,7 @@
 #define M2PA_DEFAULT_T4_N_MIN      3.000
 #define M2PA_DEFAULT_T4_N_MAX     70.000
 #define	M2PA_DEFAULT_T4_N	       8.000		/* normal proving period  3-70s  8s */
+/* Proving» must last for a period of T4 before the link can enter the aligned ready state  */
 
 #define M2PA_DEFAULT_T4_E_MIN      0.400
 #define M2PA_DEFAULT_T4_E_MAX      0.600

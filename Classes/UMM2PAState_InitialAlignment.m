@@ -60,6 +60,8 @@
 {
     [self logStatemachineEvent:__func__];
     [self sendLinkstateAlignment:YES];
+    [_link.t2 stop];
+    [_link.t2 start];
     return self;
 }
 
@@ -159,6 +161,8 @@
 - (UMM2PAState *)eventTimer2
 {
     [self logStatemachineEvent:__func__];
+    _link.emergency = NO;
+    _link.alignmentNotPossible = YES;
     [self sendLinkstateAlignment:YES];
     return self;
 }
