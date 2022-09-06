@@ -318,6 +318,7 @@
         }
         if([_state isKindOfClass:[UMM2PAState_OutOfService class]])
         {
+            [_state sendLinkstateOutOfService:YES];
             [self start];
         }
     }
