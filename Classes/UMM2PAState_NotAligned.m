@@ -1,21 +1,21 @@
 //
-//  UMM2PAState_InitialAlignment.m
+//  UMM2PAState_NotAligned.m
 //  ulibm2pa
 //
 //  Created by Andreas Fink on 17.03.20.
 //  Copyright © 2020 Andreas Fink (andreas@fink.org). All rights reserved.
 //
 
-#import "UMM2PAState_InitialAlignment.h"
+#import "UMM2PAState_NotAligned.h"
 #import "UMM2PAState_allStates.h"
 #import "UMLayerM2PA.h"
 
-@implementation UMM2PAState_InitialAlignment
+@implementation UMM2PAState_NotAligned
 - (UMM2PAState *)initWithLink:(UMLayerM2PA *)link status:(M2PA_Status)statusCode
 {
     self =[super initWithLink:link  status:statusCode];
     {
-        _statusCode = M2PA_STATUS_INITIAL_ALIGNMENT;
+        _statusCode = M2PA_STATUS_NOT_ALIGNED;
         [_link.t2 stop];
         [_link.t4 stop];
         [_link.t4r stop];
@@ -28,7 +28,7 @@
 
 - (NSString *)description
 {
-    return @"initial-alignment";
+    return @"not-aligned";
 }
 
 
@@ -173,7 +173,7 @@
 {
     [self logStatemachineEvent:__func__ forced:YES];
     /* we dont expect data pdus in linkstate initial alignment */
-    [_link notifyMtp3:M2PA_STATUS_INITIAL_ALIGNMENT async:YES];
+    [_link notifyMtp3:M2PA_STATUS_NOT_ALIGNED async:YES];
     return self;
 }
 

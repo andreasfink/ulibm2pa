@@ -2059,7 +2059,7 @@
             /* we are still in OOS so we have FOOS set */
             [_state sendLinkstateOutOfService:YES];
         }
-        else if([_state isKindOfClass:[UMM2PAState_InitialAlignment class]])
+        else if([_state isKindOfClass:[UMM2PAState_NotAligned class]])
         {
             [_state sendLinkstateAlignment:YES];
         }
@@ -2149,7 +2149,7 @@
         case M2PA_STATUS_OOS:
             return @"OOS";
             break;
-        case M2PA_STATUS_INITIAL_ALIGNMENT:
+        case M2PA_STATUS_NOT_ALIGNED:
             return @"INITIAL-ALIGNMENT";
             break;
         case M2PA_STATUS_ALIGNED_NOT_READY:
@@ -2617,7 +2617,7 @@ static NSDateFormatter *dateFormatter = NULL;
         case M2PA_STATUS_OOS:
             dict[@"state.description"] = @"M2PA_STATUS_OOS";
             break;
-        case M2PA_STATUS_INITIAL_ALIGNMENT:
+        case M2PA_STATUS_NOT_ALIGNED:
             dict[@"state.description"] = @"M2PA_STATUS_INITIAL_ALIGNMENT";
             break;
         case M2PA_STATUS_ALIGNED_NOT_READY:
