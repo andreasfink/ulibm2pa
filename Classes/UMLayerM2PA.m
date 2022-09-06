@@ -139,7 +139,8 @@
                                         selector:@selector(timerFires2)
                                           object:NULL seconds:M2PA_DEFAULT_T2
                                             name:@"t2"
-                                         repeats:YES runInForeground:YES];
+                                         repeats:YES
+                                 runInForeground:YES];
             _t3 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires3) object:NULL seconds:M2PA_DEFAULT_T3 name:@"t3" repeats:NO runInForeground:YES];
             _t4 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires4) object:NULL seconds:M2PA_DEFAULT_T4_N name:@"t4" repeats:NO runInForeground:YES];
             _t4r = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires4r) object:NULL seconds:M2PA_DEFAULT_T4_R name:@"t4r" repeats:YES runInForeground:YES];
@@ -1063,7 +1064,6 @@
 
 - (void)timerFires2
 {
-    [_t2 stop];
     [self queueTimerEvent:NULL timerName:@"t2"];
 }
 - (void)timerFires3
