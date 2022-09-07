@@ -20,7 +20,6 @@
         [_link.t2 stop];
         [_link.t4r stop];
         [_link.t4 stop];
-        [self sendLinkstateReady:YES];
         _statusCode = M2PA_STATUS_ALIGNED_READY;
         /* we now send a READY signal every second
            until the other side sends READY as well or sends traffic
@@ -38,26 +37,47 @@
     return @"aligned-ready";
 }
 
-- (UMM2PAState *)eventStop
+#pragma mark -
+#pragma mark event handlers
+
+
+- (UMM2PAState *)eventPowerOn                   /* switch on the wire */
+{
+    [self logStatemachineEvent:__func__];
+    [_link addToLayerHistoryLog:@"poweron in aligned ready ignored"];
+    return self;
+}
+
+- (UMM2PAState *)eventPowerOff                  /* switch off the wire */
+{
+    [self logStatemachineEvent:__func__];
+    [_link addToLayerHistoryLog:@"poweroff in aligned ready ignored"];
+    return self;
+}
+
+
+- (UMM2PAState *)eventStart                     /* start the alignment process */
+{
+    [self logStatemachineEvent:__func__];
+    [_link addToLayerHistoryLog:@"start in aligned ready ignored"];
+    return self;
+}
+
+
+- (UMM2PAState *)eventStop                      /* stop the link */
 {
     [self logStatemachineEvent:__func__];
     [self sendLinkstateOutOfService:YES];
     return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
-- (UMM2PAState *)eventStart
+- (UMM2PAState *)eventSctpUp                     /* SCTP reports the 'wire' has come up*/
 {
     [self logStatemachineEvent:__func__];
     return self;
 }
 
-- (UMM2PAState *)eventSctpUp
-{
-    [self logStatemachineEvent:__func__];
-    return self;
-}
-
-- (UMM2PAState *)eventSctpDown
+- (UMM2PAState *)eventSctpDown                  /* SCTP reports the conncetion is lost */
 {
     [self logStatemachineEvent:__func__];
     /* link failure event according to Q:703 07/96 page 5 */
@@ -66,48 +86,75 @@
     return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
-- (UMM2PAState *)eventLinkstatusOutOfService
+- (UMM2PAState *)eventEmergency             /* MTP3 tells his is an emergency link */
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService:YES];
-    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
-}
-
-
-- (UMM2PAState *)eventEmergency
-{
-    [self logStatemachineEvent:__func__];
+    if(_link.emergency==NO)
+    {
+        _link.t4.seconds = _link.t4e;
+    }
     _link.emergency = YES;
     return self;
 }
 
-- (UMM2PAState *)eventEmergencyCeases
+- (UMM2PAState *)eventEmergencyCeases       /* MTP3 tells his is not an emergency link */
 {
     [self logStatemachineEvent:__func__];
     _link.emergency = NO;
+    if(_link.emergency==YES)
+    {
+        _link.t4.seconds = _link.t4n;
+    }
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusAlignment
+- (UMM2PAState *) eventLocalProcessorOutage         /* MTP3 tells processor is out */
+{
+    [self logStatemachineEvent:__func__ forced:YES];
+    [_link sendLinkstatus:M2PA_LINKSTATE_PROCESSOR_OUTAGE synchronous:YES];
+    _link.linkstateProcessorOutageSent++;
+    [self logStatemachineEventString:@"sendProcessorOutage"];
+    [_link addToLayerHistoryLog:@"sendProcessorOutage"];
+    return [[UMM2PAState_AlignedNotReady alloc] initWithLink:_link status:M2PA_STATUS_ALIGNED_NOT_READY];
+}
+
+- (UMM2PAState *) eventLocalProcessorRecovery       /* MTP3 tells processor is back */
+{
+    [self logStatemachineEvent:__func__ forced:YES];
+    return self;
+}
+
+#pragma mark -
+#pragma mark eventLinkstatus handlers
+
+- (UMM2PAState *)eventLinkstatusOutOfService /* other side sent us linkstatus out of service SIOS */
 {
     [self logStatemachineEvent:__func__];
     [self sendLinkstateOutOfService:YES];
     return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
-- (UMM2PAState *)eventLinkstatusProvingNormal
+
+- (UMM2PAState *)eventLinkstatusAlignment /* other side sent us linkstatus alignment SIO */
+{
+    [self logStatemachineEvent:__func__];
+    [self sendLinkstateOutOfService:YES];
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
+}
+
+- (UMM2PAState *)eventLinkstatusProvingNormal /* other side sent us linkstatus proving normal SIN */
 {
     [self logStatemachineEvent:__func__];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusProvingEmergency
+- (UMM2PAState *)eventLinkstatusProvingEmergency /* other side sent us linkstatus emergency normal SIE */
 {
     [self logStatemachineEvent:__func__];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusReady
+- (UMM2PAState *)eventLinkstatusReady   /* other side sent us linkstatus ready FISU */
 {
     [self logStatemachineEvent:__func__];
     [_link.t1 stop];
@@ -115,27 +162,23 @@
     [_link.t4r stop];
     [_link.t4 stop];
     [_link notifyMtp3InService];
-    if(_readySent==0)
-    {
-        [self sendLinkstateReady:YES];
-        _readySent = YES;
-    }
     return  [[UMM2PAState_InService alloc]initWithLink:_link status:M2PA_STATUS_IS];
 }
 
-- (UMM2PAState *)eventLinkstatusBusy
+- (UMM2PAState *)eventLinkstatusBusy        /* other side sent us linkstatus busy */
 {
     [self logStatemachineEvent:__func__];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusBusyEnded
+- (UMM2PAState *)eventLinkstatusBusyEnded   /* other side sent us linkstatus busy ended */
 {
     [self logStatemachineEvent:__func__];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusProcessorOutage
+
+- (UMM2PAState *)eventLinkstatusProcessorOutage /* other side sent us linkstatus processor outage SIPO */
 {
     [self logStatemachineEvent:__func__];
     _link.remote_processor_outage = YES;
@@ -143,40 +186,24 @@
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusProcessorRecovered
+- (UMM2PAState *)eventLinkstatusProcessorRecovered  /* other side sent us linkstatus processor recovered */
 {
     [self logStatemachineEvent:__func__];
     _link.remote_processor_outage = NO;
     return self;
 }
 
-- (UMM2PAState *)eventError
-{
-    [self logStatemachineEvent:__func__];
-    return self;
-}
 
-- (UMM2PAState *)eventTimer1
+- (UMM2PAState *)eventSendUserData:(NSData *)data
+                        ackRequest:(NSDictionary *)ackRequest
+                               dpc:(int)dpc
 {
-    [self logStatemachineEvent:__func__];
-    _readySent++;
-    [self sendLinkstateReady:YES];
-    [_link.t1 stop];
-    [_link.t2 stop];
-    [_link.t4r stop];
-    [_link.t4 stop];
-    [self logStatemachineEventString:@"t1 expired. going IS"];
+    [_link sendData:data
+             stream:M2PA_STREAM_USERDATA
+         ackRequest:ackRequest
+                dpc:dpc];
     return [[UMM2PAState_InService alloc]initWithLink:_link status:M2PA_STATUS_IS];
 }
-
-- (UMM2PAState *)eventTimer1r
-{
-    [self logStatemachineEvent:__func__];
-    _readySent++;
-    [self sendLinkstateReady:YES];
-    return self;
-}
-
 
 - (UMM2PAState *)eventReceiveUserData:(NSData *)userData
 {
@@ -191,30 +218,29 @@
     return [[UMM2PAState_InService alloc]initWithLink:_link status:M2PA_STATUS_IS];
 }
 
-- (UMM2PAState *)eventSendUserData:(NSData *)data
-                        ackRequest:(NSDictionary *)ackRequest
-                               dpc:(int)dpc
+
+
+#pragma mark -
+#pragma mark timers
+
+- (UMM2PAState *)eventTimer1                        /* timer 1 fired (alignment ready timer) */
 {
-    [_link sendData:data
-             stream:M2PA_STREAM_USERDATA
-         ackRequest:ackRequest
-                dpc:dpc];
+    [self logStatemachineEvent:__func__];
+    _readySent++;
+    [self sendLinkstateReady:YES];
+    [_link.t1 stop];
+    [_link.t2 stop];
+    [_link.t4r stop];
+    [_link.t4 stop];
+    [self logStatemachineEventString:@"t1 expired. going IS"];
     return [[UMM2PAState_InService alloc]initWithLink:_link status:M2PA_STATUS_IS];
 }
 
-- (UMM2PAState *) eventLocalProcessorOutage
+- (UMM2PAState *)eventTimer1r                       /* timer 1r fired (time to send alignment ready) */
 {
-    [self logStatemachineEvent:__func__ forced:YES];
-    [_link sendLinkstatus:M2PA_LINKSTATE_PROCESSOR_OUTAGE synchronous:YES];
-    _link.linkstateProcessorOutageSent++;
-    [self logStatemachineEventString:@"sendProcessorOutage"];
-    [_link addToLayerHistoryLog:@"sendProcessorOutage"];
-    return [[UMM2PAState_AlignedNotReady alloc] initWithLink:_link status:M2PA_STATUS_ALIGNED_NOT_READY];
-}
-
-- (UMM2PAState *) eventLocalProcessorRecovery
-{
-    [self logStatemachineEvent:__func__ forced:YES];
+    [self logStatemachineEvent:__func__];
+    _readySent++;
+    [self sendLinkstateReady:YES];
     return self;
 }
 

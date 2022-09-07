@@ -29,29 +29,36 @@
 - (void) logStatemachineEvent:(const char *)func forced:(BOOL)forced;
 - (void) logStatemachineEventString:(NSString *)str;
 - (void) logStatemachineEventString:(NSString *)str forced:(BOOL)forced;
+
+#pragma mark -
+#pragma mark event handlers
 - (UMM2PAState *)eventPowerOn;                      /* switch on the wire */
 - (UMM2PAState *)eventPowerOff;                     /* switch off the wire */
 - (UMM2PAState *)eventStart;                        /* start the alignment process */
 - (UMM2PAState *)eventStop;                         /* stop the link */
 - (UMM2PAState *)eventSctpUp;                       /* SCTP reports the 'wire' has come up*/
 - (UMM2PAState *)eventSctpDown;                     /* SCTP reports the conncetion is lost */
-- (UMM2PAState *)eventSctpError;                    /* SCTP reports an error */
 - (UMM2PAState *)eventEmergency;                    /* MTP3 tells his is an emergency link */
 - (UMM2PAState *)eventEmergencyCeases;              /* MTP3 tells his is not an emergency link */
 - (UMM2PAState *)eventLocalProcessorOutage;         /* MTP3 tells processor is out */
-- (UMM2PAState *)eventLinkstatusOutOfService;       /* other side sent us linkstatus out of service */
-- (UMM2PAState *)eventLinkstatusAlignment;          /* other side sent us linkstatus alignment */
-- (UMM2PAState *)eventLinkstatusProvingNormal;      /* other side sent us linkstatus proving normal */
-- (UMM2PAState *)eventLinkstatusProvingEmergency;   /* other side sent us linkstatus emergency normal */
-- (UMM2PAState *)eventLinkstatusReady;              /* other side sent us linkstatus ready */
+- (UMM2PAState *)eventLocalProcessorRecovery;       /* MTP3 tells processor is back */
+
+#pragma mark -
+#pragma mark eventLinkstatus handlers
+- (UMM2PAState *)eventLinkstatusOutOfService;       /* other side sent us linkstatus out of service SIOS */
+- (UMM2PAState *)eventLinkstatusAlignment;          /* other side sent us linkstatus alignment SIO */
+- (UMM2PAState *)eventLinkstatusProvingNormal;      /* other side sent us linkstatus proving normal SIN */
+- (UMM2PAState *)eventLinkstatusProvingEmergency;   /* other side sent us linkstatus emergency normal SIE */
+- (UMM2PAState *)eventLinkstatusReady;              /* other side sent us linkstatus ready FISU */
 - (UMM2PAState *)eventLinkstatusBusy;               /* other side sent us linkstatus busy */
 - (UMM2PAState *)eventLinkstatusBusyEnded;          /* other side sent us linkstatus busy ended */
-- (UMM2PAState *)eventLinkstatusProcessorOutage;    /* other side sent us linkstatus processor outage */
+- (UMM2PAState *)eventLinkstatusProcessorOutage;    /* other side sent us linkstatus processor outage SIPO */
 - (UMM2PAState *)eventLinkstatusProcessorRecovered; /* other side sent us linkstatus processor recovered */
 - (UMM2PAState *)eventSendUserData:(NSData *)data ackRequest:(NSDictionary *)ackRequest dpc:(int)dpc;
-- (UMM2PAState *)eventReceiveUserData:(NSData *)userData;
+- (UMM2PAState *)eventReceiveUserData:(NSData *)userData;   /* if data is NULL; its FISU, if not its MSU . FISU AT END OF ALIGNMENT IS LINKSTATE READY*/
 
-
+#pragma mark -
+#pragma mark timers
 - (UMM2PAState *)eventTimer1;                       /* timer 1 fired (alignment ready timer) */
 - (UMM2PAState *)eventTimer1r;                      /* timer 1r fired (time to send alignment ready) */
 - (UMM2PAState *)eventTimer2;                       /* timer 2 fired (not aligned timer) */
@@ -63,15 +70,17 @@
                                                             if remote stays longer than this, we go OOS) */
 - (UMM2PAState *)eventTimer7;                       /* timer 7 fired ((excessive delay of acknowledgement) */
 
-/* actions */
-- (void) sendLinkstateAlignment:(BOOL)sync;
-- (void) sendLinkstateProvingNormal:(BOOL)sync;
-- (void) sendLinkstateProvingEmergency:(BOOL)sync;
-- (void) sendLinkstateReady:(BOOL)sync;
-- (void) sendLinkstateProcessorOutage:(BOOL)sync;
-- (void) sendLinkstateProcessorRecovered:(BOOL)sync;
-- (void) sendLinkstateBusy:(BOOL)sync;
+#pragma mark -
+#pragma mark actions
+
+- (void) sendLinkstateAlignment:(BOOL)sync;             /* SIO */
+- (void) sendLinkstateProvingNormal:(BOOL)sync;         /* SIN */
+- (void) sendLinkstateProvingEmergency:(BOOL)sync;      /* SIE */
+- (void) sendLinkstateReady:(BOOL)sync;                 /* FISU at end of Alignment */
+- (void) sendLinkstateProcessorOutage:(BOOL)sync;       /* SIPO */
+- (void) sendLinkstateProcessorRecovered:(BOOL)sync;    /* SIPR */
+- (void) sendLinkstateBusy:(BOOL)sync;                  /* BUSY */
 - (void) sendLinkstateBusyEnded:(BOOL)sync;
-- (void) sendLinkstateOutOfService:(BOOL)sync;
+- (void) sendLinkstateOutOfService:(BOOL)sync;          /* SIOS */
 @end
 

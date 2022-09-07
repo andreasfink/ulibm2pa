@@ -32,17 +32,35 @@
     return @"in-service";
 }
 
-- (UMM2PAState *)eventStop
+
+#pragma mark -
+#pragma mark event handlers
+
+- (UMM2PAState *)eventPowerOn                   /* switch on the wire */
 {
     [self logStatemachineEvent:__func__];
-    [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:YES];
-    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
+    [_link addToLayerHistoryLog:@"poweron in in-service is ignored"];
+    return self;
+}
+
+- (UMM2PAState *)eventPowerOff                  /* switch off the wire */
+{
+    [self logStatemachineEvent:__func__];
+    [_link addToLayerHistoryLog:@"poweroff in in-service is ignored"];
+    return self;
 }
 
 - (UMM2PAState *)eventStart
 {
     [self logStatemachineEvent:__func__];
     return self;
+}
+
+- (UMM2PAState *)eventStop
+{
+    [self logStatemachineEvent:__func__];
+    [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:YES];
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
 - (UMM2PAState *)eventSctpUp
@@ -61,14 +79,6 @@
     return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
-- (UMM2PAState *)eventLinkstatusOutOfService
-{
-    [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService:YES];
-    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
-}
-
-
 - (UMM2PAState *)eventEmergency
 {
     [self logStatemachineEvent:__func__];
@@ -81,6 +91,87 @@
     return self;
 }
 
+
+
+#pragma mark -
+#pragma mark eventLinkstatus handlers
+
+- (UMM2PAState *)eventLinkstatusOutOfService            /* other side sent us linkstatus out of service SIOS */
+{
+    [self logStatemachineEvent:__func__];
+    [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:YES];
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
+}
+
+- (UMM2PAState *)eventLinkstatusAlignment               /* other side sent us linkstatus alignment SIO */
+{
+    [self logStatemachineEvent:__func__];
+    [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:YES];
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
+}
+
+- (UMM2PAState *)eventLinkstatusProvingNormal            /* other side sent us linkstatus proving normal SIN */
+{
+    [self logStatemachineEvent:__func__];
+    [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:YES];
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
+}
+
+- (UMM2PAState *)eventLinkstatusProvingEmergency        /* other side sent us linkstatus emergency SIE */
+{
+    [self logStatemachineEvent:__func__];
+    [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:YES];
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
+}
+
+- (UMM2PAState *)eventLinkstatusReady                   /* other side sent us linkstatus ready FISU */
+{
+    [self logStatemachineEvent:__func__];
+    [_link.t1 stop];
+    [_link.t2 stop];
+    [_link.t4r stop];
+    [_link.t4 stop];
+    [_link notifyMtp3InService];
+    return self;
+}
+
+- (UMM2PAState *)eventLinkstatusBusy                   /* other side sent us linkstatus ready FISU */
+{
+    [self logStatemachineEvent:__func__];
+    _link.congested = YES;
+    [_link notifyMtp3Congestion];
+    return self;
+}
+
+- (UMM2PAState *)eventLinkstatusBusyEnded
+{
+    [self logStatemachineEvent:__func__];
+    _link.congested = NO;
+    [_link notifyMtp3CongestionCleared];
+    return self;
+}
+
+- (UMM2PAState *)eventLinkstatusProcessorOutage                   /* other side sent us linkstatus processor outage SIPO */
+{
+    [self logStatemachineEvent:__func__];
+    [_link notifyMtp3RemoteProcessorOutage];
+    [_link sendLinkstatus:M2PA_LINKSTATE_READY synchronous:YES];
+    _link.remote_processor_outage = YES;
+    return  [[UMM2PAState_ProcessorOutage alloc]initWithLink:_link status:M2PA_STATUS_PROCESSOR_OUTAGE];
+}
+
+- (UMM2PAState *)eventLinkstatusProcessorRecovered                   /* other side sent us linkstatus processor recovered */
+{
+    [self logStatemachineEvent:__func__];
+    _link.remote_processor_outage = NO;
+    [_link notifyMtp3RemoteProcessorRecovered];
+    return self;
+}
+
+
+
+#pragma mark -
+#pragma mark timers
 
 - (UMM2PAState *)eventTimer1
 {
@@ -111,80 +202,11 @@
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusAlignment
-{
-    [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService:YES];
-    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
-}
-
-- (UMM2PAState *)eventLinkstatusProvingNormal
-{
-    [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService:YES];
-    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
-}
-
-- (UMM2PAState *)eventLinkstatusProvingEmergency
-{
-    [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService:YES];
-    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
-}
-
-- (UMM2PAState *)eventLinkstatusReady
-{
-    [self logStatemachineEvent:__func__];
-    [_link.t1 stop];
-    [_link.t2 stop];
-    [_link.t4r stop];
-    [_link.t4 stop];
-    [_link notifyMtp3InService];
-    return self;
-}
-
-- (UMM2PAState *)eventLinkstatusBusy
-{
-    [self logStatemachineEvent:__func__];
-    _link.congested = YES;
-    [_link notifyMtp3Congestion];
-    return self;
-}
-
-- (UMM2PAState *)eventLinkstatusBusyEnded
-{
-    [self logStatemachineEvent:__func__];
-    _link.congested = NO;
-    [_link notifyMtp3CongestionCleared];
-    return self;
-}
-
-- (UMM2PAState *)eventLinkstatusProcessorOutage
-{
-    [self logStatemachineEvent:__func__];
-    _link.remote_processor_outage = YES;
-    [_link notifyMtp3RemoteProcessorOutage];
-    [_link sendLinkstatus:M2PA_LINKSTATE_READY synchronous:YES];
-    return [[UMM2PAState_ProcessorOutage alloc] initWithLink:_link status:M2PA_STATUS_PROCESSOR_OUTAGE];
-}
-
-- (UMM2PAState *)eventLinkstatusProcessorRecovered
-{
-    [self logStatemachineEvent:__func__];
-    _link.remote_processor_outage = NO;
-    [_link notifyMtp3RemoteProcessorRecovered];
-    return self;
-}
-
-- (UMM2PAState *)eventError
-{
-    [self logStatemachineEvent:__func__];
-    return self;
-}
 
 - (UMM2PAState *)eventReceiveUserData:(NSData *)userData
 {
     /* we dont want to fill up the statemachine log with entries for every packet received. So we only log the first 3 */
+    /* the passing of the data to MTP3 happens outside this event machine  in UMLayerM2PA */
     if(_userDataReceived<3)
     {
         [self logStatemachineEvent:__func__];
