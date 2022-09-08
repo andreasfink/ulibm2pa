@@ -2367,7 +2367,7 @@
                                           status:M2PA_STATUS_OFF];
                 }
             }
-            _lastNotifiedStatus==M2PA_STATUS_OFF;
+            _lastNotifiedStatus=M2PA_STATUS_OFF;
         }
     }
 }
