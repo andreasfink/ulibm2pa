@@ -350,6 +350,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 - (UMM2PAState *)eventTimerOosRepeat
 {
     [self logStatemachineEvent:__func__];
+    [_link.oos_repeat_timer stop];
     return self;
 }
 
