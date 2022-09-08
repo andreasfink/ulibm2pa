@@ -184,9 +184,10 @@
 - (UMM2PAState *)eventLinkstatusReady       /* other side sent us linkstatus ready FISU */
 {
     [self logStatemachineEvent:__func__];
-    _link.remote_processor_outage = YES;
-    return  [[UMM2PAState_ProcessorOutage alloc]initWithLink:_link status:M2PA_STATUS_PROCESSOR_OUTAGE];
-    return self;
+    /* according to Q.703 we should go to processor outage here */
+    /* however in RFC 4165 this is handled differently by a special processor outage message */
+    [self sendLinkstateReady:YES];
+    return  [[UMM2PAState_AlignedReady alloc]initWithLink:_link status:M2PA_STATUS_ALIGNED_READY];
 }
 
 - (UMM2PAState *)eventLinkstatusBusy                /* other side sent us linkstatus busy */
