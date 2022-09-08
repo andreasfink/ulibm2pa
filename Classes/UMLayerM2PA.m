@@ -391,7 +391,8 @@
             [_state logStatemachineEvent:s.UTF8String];
         }
         [self sctpReportsDown];
-        [_sctpLink openFor:self sendAbortFirst:NO reason:@"sctp-link-died"];
+        /* this is the job of the state machine now */
+        //[_sctpLink openFor:self sendAbortFirst:NO reason:@"sctp-link-died"];
     }
     if( (old_sctp_status != UMSOCKET_STATUS_IS)
     && (_sctp_status == UMSOCKET_STATUS_IS))
