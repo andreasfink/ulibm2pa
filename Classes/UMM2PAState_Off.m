@@ -72,6 +72,7 @@
     [self logStatemachineEvent:__func__];
     [_link.startTimer stop];
     [_link startupInitialisation];
+    [_link stopReopenTimer1];
     [self sendLinkstateOutOfService:YES];
     return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
