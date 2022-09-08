@@ -2332,17 +2332,21 @@
 {
     @autoreleasepool
     {
-        NSArray *usrs = [_users arrayCopy];
-        for(UMLayerM2PAUser *u in usrs)
+        if(_lastNotifiedStatus!=M2PA_STATUS_DISCONNECTED)
         {
-            if([u.profile wantsM2PALinkstateMessages])
+            NSArray *usrs = [_users arrayCopy];
+            for(UMLayerM2PAUser *u in usrs)
             {
-                [u.user m2paStatusIndication:self
-                                         slc:_slc
-                                      userId:u.linkName
-                                      status:M2PA_STATUS_DISCONNECTED];
+                if([u.profile wantsM2PALinkstateMessages])
+                {
+                    [u.user m2paStatusIndication:self
+                                             slc:_slc
+                                          userId:u.linkName
+                                          status:M2PA_STATUS_DISCONNECTED];
+                }
             }
         }
+        _lastNotifiedStatus = M2PA_STATUS_DISCONNECTED;
     }
 }
 
@@ -2350,16 +2354,20 @@
 {
     @autoreleasepool
     {
-        NSArray *usrs = [_users arrayCopy];
-        for(UMLayerM2PAUser *u in usrs)
+        if(_lastNotifiedStatus!=M2PA_STATUS_OFF)
         {
-            if([u.profile wantsM2PALinkstateMessages])
+            NSArray *usrs = [_users arrayCopy];
+            for(UMLayerM2PAUser *u in usrs)
             {
-                [u.user m2paStatusIndication:self
-                                         slc:_slc
-                                      userId:u.linkName
-                                      status:M2PA_STATUS_OFF];
+                if([u.profile wantsM2PALinkstateMessages])
+                {
+                    [u.user m2paStatusIndication:self
+                                             slc:_slc
+                                          userId:u.linkName
+                                          status:M2PA_STATUS_OFF];
+                }
             }
+            _lastNotifiedStatus==M2PA_STATUS_OFF;
         }
     }
 }
@@ -2368,18 +2376,22 @@
 {
     @autoreleasepool
     {
-        NSArray *usrs = [_users arrayCopy];
-        for(UMLayerM2PAUser *u in usrs)
+        if(_lastNotifiedStatus!=status)
         {
-            if([u.profile wantsM2PALinkstateMessages])
+            NSArray *usrs = [_users arrayCopy];
+            for(UMLayerM2PAUser *u in usrs)
             {
-                [u.user m2paStatusIndication:self
-                                         slc:_slc
-                                      userId:u.linkName
-                                      status:status
-                                       async:async];
+                if([u.profile wantsM2PALinkstateMessages])
+                {
+                    [u.user m2paStatusIndication:self
+                                             slc:_slc
+                                          userId:u.linkName
+                                          status:status
+                                           async:async];
+                }
             }
         }
+        _lastNotifiedStatus = status;
     }
 }
 

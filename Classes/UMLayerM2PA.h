@@ -212,6 +212,8 @@ typedef enum PocStatus
     NSTimeInterval      				_t4e;
     UMLayerSctp     					*_sctpLink;
 
+    M2PA_Status                         _lastNotifiedStatus;
+    
 	UMTimer    *_t1;	/* Timer "alignment ready" */
 		/* Starts when entering PROVING state. Stops when AlignmentReady is received */
 		/* recommended values: 			*/
