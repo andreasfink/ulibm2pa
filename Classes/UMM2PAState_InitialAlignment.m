@@ -53,9 +53,7 @@
 
 - (UMM2PAState *)eventSctpDown
 {
-    [self logStatemachineEvent:__func__];
-    // [self sendLinkstateOutOfService:YES];
-    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
+    return [super eventSctpDown];
 }
 
 - (UMM2PAState *)eventLinkstatusOutOfService

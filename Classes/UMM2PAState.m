@@ -176,7 +176,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [_link.startTimer stop];
     [_link startupInitialisation];
     [_link notifyMtp3Stop];
-    return [[UMM2PAState_Off alloc]initWithLink:_link status:M2PA_STATUS_OFF];
+    return [[UMM2PAState_Off alloc]initWithLink:_link status:M2PA_STATUS_DISCONNECTED];
 }
 
 - (UMM2PAState *)eventEmergency

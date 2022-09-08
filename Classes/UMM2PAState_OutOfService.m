@@ -79,7 +79,6 @@
 
 - (UMM2PAState *)eventSctpDown
 {
-    [self logStatemachineEvent:__func__];
     return [super eventSctpDown];
 }
 

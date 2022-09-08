@@ -80,6 +80,7 @@
 {
     [self logStatemachineEvent:__func__];
     [_link.startTimer stop];
+    [_link startupInitialisation];
     [_link notifyMtp3Stop];
     return self;
 }

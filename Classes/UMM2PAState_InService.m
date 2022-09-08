@@ -72,11 +72,7 @@
 
 - (UMM2PAState *)eventSctpDown
 {
-    [self logStatemachineEvent:__func__];
-    /* link failure event according to Q:703 07/96 page 5 */
-    /* we cant send OOS on a already dead link so we skip it */
-    // [self sendLinkstateOutOfService:YES];
-    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
+    return [super eventSctpDown];
 }
 
 - (UMM2PAState *)eventEmergency

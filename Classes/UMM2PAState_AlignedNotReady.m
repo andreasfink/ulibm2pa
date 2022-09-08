@@ -91,9 +91,7 @@
 
 - (UMM2PAState *)eventSctpDown   /* SCTP reports the conncetion is lost */
 {
-    [self logStatemachineEvent:__func__];
-    //[self sendLinkstateOutOfService:YES];
-    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
+    return [super eventSctpDown];
 }
 
 - (UMM2PAState *)eventEmergency             /* MTP3 tells his is an emergency link */
