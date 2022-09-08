@@ -148,12 +148,6 @@
     return self;
 }
 
-- (void) sendLinkstateOutOfService:(BOOL)sync
-{
-    _link.linkstateAlignmentSent++;
-    [self sendLinkstateOutOfService:YES];
-}
-
 - (UMM2PAState *)eventReceiveUserData:(NSData *)userData
 {
     [self logStatemachineEvent:__func__ forced:YES];
