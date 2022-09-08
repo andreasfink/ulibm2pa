@@ -20,7 +20,7 @@
         [_link.t4 stop];
         [_link.t4r stop];
         // the timer will send it. we first have to return the correct state to the caller
-        [self sendLinkstateAlignment:YES];
+        //[self sendLinkstateAlignment:YES];
         [_link.t2 start];
     }
     return self;
@@ -35,6 +35,7 @@
 - (UMM2PAState *)eventStop
 {
     [self logStatemachineEvent:__func__];
+    [self sendLinkstateOutOfService:YES];
     return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
@@ -53,13 +54,16 @@
 - (UMM2PAState *)eventSctpDown
 {
     [self logStatemachineEvent:__func__];
-    return [super eventSctpDown];
+    // [self sendLinkstateOutOfService:YES];
+    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
 - (UMM2PAState *)eventLinkstatusOutOfService
 {
     [self logStatemachineEvent:__func__];
     [self sendLinkstateAlignment:YES];
+    [_link.t2 stop];
+    [_link.t2 start];
     return self;
 }
 
@@ -144,12 +148,6 @@
     return self;
 }
 
-- (void) sendLinkstateOutOfService:(BOOL)sync
-{
-    _link.linkstateAlignmentSent++;
-    [self sendLinkstateOutOfService:YES];
-}
-
 - (UMM2PAState *)eventReceiveUserData:(NSData *)userData
 {
     [self logStatemachineEvent:__func__ forced:YES];
@@ -159,6 +157,8 @@
 - (UMM2PAState *)eventTimer2
 {
     [self logStatemachineEvent:__func__];
+    _link.emergency = NO;
+    _link.alignmentNotPossible = YES;
     [self sendLinkstateAlignment:YES];
     return self;
 }

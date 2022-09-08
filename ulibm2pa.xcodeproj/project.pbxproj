@@ -16,6 +16,9 @@
 		A634B4941A2E913900854472 /* UMLayerM2PAUserProfile.h in Headers */ = {isa = PBXBuildFile; fileRef = A634B4921A2E913900854472 /* UMLayerM2PAUserProfile.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A634B4951A2E913900854472 /* UMLayerM2PAUserProfile.m in Sources */ = {isa = PBXBuildFile; fileRef = A634B4931A2E913900854472 /* UMLayerM2PAUserProfile.m */; };
 		A634B4961A2E913900854472 /* UMLayerM2PAUserProfile.m in Sources */ = {isa = PBXBuildFile; fileRef = A634B4931A2E913900854472 /* UMLayerM2PAUserProfile.m */; };
+		A6442CA928C7BA0A00304009 /* UMM2PAState_ProcessorOutage.h in Headers */ = {isa = PBXBuildFile; fileRef = A6442CA728C7BA0A00304009 /* UMM2PAState_ProcessorOutage.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A6442CAA28C7BA0A00304009 /* UMM2PAState_ProcessorOutage.m in Sources */ = {isa = PBXBuildFile; fileRef = A6442CA828C7BA0A00304009 /* UMM2PAState_ProcessorOutage.m */; };
+		A6442CAB28C7BAF000304009 /* UMM2PAState_ProcessorOutage.m in Sources */ = {isa = PBXBuildFile; fileRef = A6442CA828C7BA0A00304009 /* UMM2PAState_ProcessorOutage.m */; };
 		A662F7482421106F00A1A1A1 /* UMM2PAState.h in Headers */ = {isa = PBXBuildFile; fileRef = A662F7462421106F00A1A1A1 /* UMM2PAState.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A662F7492421106F00A1A1A1 /* UMM2PAState.m in Sources */ = {isa = PBXBuildFile; fileRef = A662F7472421106F00A1A1A1 /* UMM2PAState.m */; };
 		A6827E0E1E37FC6B00F3048B /* UMLayerM2PAApplicationContextProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = A6827E0C1E37FC6B00F3048B /* UMLayerM2PAApplicationContextProtocol.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -126,6 +129,8 @@
 		A634B48E1A2E7AE900854472 /* UMLayerM2PAUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UMLayerM2PAUser.m; sourceTree = "<group>"; };
 		A634B4921A2E913900854472 /* UMLayerM2PAUserProfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMLayerM2PAUserProfile.h; sourceTree = "<group>"; };
 		A634B4931A2E913900854472 /* UMLayerM2PAUserProfile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UMLayerM2PAUserProfile.m; sourceTree = "<group>"; };
+		A6442CA728C7BA0A00304009 /* UMM2PAState_ProcessorOutage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UMM2PAState_ProcessorOutage.h; sourceTree = "<group>"; };
+		A6442CA828C7BA0A00304009 /* UMM2PAState_ProcessorOutage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UMM2PAState_ProcessorOutage.m; sourceTree = "<group>"; };
 		A662F7462421106F00A1A1A1 /* UMM2PAState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UMM2PAState.h; sourceTree = "<group>"; };
 		A662F7472421106F00A1A1A1 /* UMM2PAState.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UMM2PAState.m; sourceTree = "<group>"; };
 		A6827E0C1E37FC6B00F3048B /* UMLayerM2PAApplicationContextProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMLayerM2PAApplicationContextProtocol.h; sourceTree = "<group>"; };
@@ -290,6 +295,8 @@
 				A6C3A116242120B200DB9AA0 /* UMM2PAState_AlignedReady.m */,
 				A6C3A121242120D800DB9AA0 /* UMM2PAState_InService.h */,
 				A6C3A122242120D800DB9AA0 /* UMM2PAState_InService.m */,
+				A6442CA728C7BA0A00304009 /* UMM2PAState_ProcessorOutage.h */,
+				A6442CA828C7BA0A00304009 /* UMM2PAState_ProcessorOutage.m */,
 				A68974311A2D277900854472 /* UMM2PATask_AdminAttach.h */,
 				A68974321A2D277900854472 /* UMM2PATask_AdminAttach.m */,
 				A6F5424E1A2F66D10090FC94 /* UMM2PATask_AdminAttachOrder.h */,
@@ -427,6 +434,7 @@
 				A6B717D61A3193860090FC94 /* UMM2PATask_sctpStatusIndication.h in Headers */,
 				A662F7482421106F00A1A1A1 /* UMM2PAState.h in Headers */,
 				A6C3A10B2421207900DB9AA0 /* UMM2PAState_OutOfService.h in Headers */,
+				A6442CA928C7BA0A00304009 /* UMM2PAState_ProcessorOutage.h in Headers */,
 				A689745B1A2D32F800854472 /* UMM2PATask_PowerOff.h in Headers */,
 				A68D975826B41A1900442769 /* UMM2PAUnackedPdu.h in Headers */,
 				A6C3A113242120A700DB9AA0 /* UMM2PAState_InitialAlignment.h in Headers */,
@@ -534,6 +542,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A6442CAA28C7BA0A00304009 /* UMM2PAState_ProcessorOutage.m in Sources */,
 				A6C3A1102421208C00DB9AA0 /* UMM2PAState_AlignedNotReady.m in Sources */,
 				A634B4951A2E913900854472 /* UMLayerM2PAUserProfile.m in Sources */,
 				A689746B1A2D332A00854472 /* UMM2PATask_Emergency.m in Sources */,
@@ -577,6 +586,7 @@
 				A68974581A2D32E900854472 /* UMM2PATask_PowerOn.m in Sources */,
 				A68974621A2D330600854472 /* UMM2PATask_Start.m in Sources */,
 				A68974531A2D328A00854472 /* UMM2PATask_Data.m in Sources */,
+				A6442CAB28C7BAF000304009 /* UMM2PAState_ProcessorOutage.m in Sources */,
 				A689745D1A2D32F800854472 /* UMM2PATask_PowerOff.m in Sources */,
 				A6E93D311A2CE59700854472 /* UMLayerM2PA.m in Sources */,
 				A6DA2B8D1A2E02F00090FC94 /* UMM2PATask_TimerEvent.m in Sources */,

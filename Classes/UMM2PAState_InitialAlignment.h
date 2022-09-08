@@ -1,5 +1,5 @@
 //
-//  UMM2PAState_AlignedNotReady.h
+//  UMM2PAState_InitialAlignment.h
 //  ulibm2pa
 //
 //  Created by Andreas Fink on 17.03.20.

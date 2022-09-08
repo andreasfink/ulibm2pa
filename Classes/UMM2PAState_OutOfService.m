@@ -22,9 +22,9 @@
         [_link.t2 stop];
         [_link.t4 stop];
         [_link.t4r stop];
-        // [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:YES];
         // we can not do this at this moment as we might still be in status UMMP2PAState off. so we let the timer send the first OOS */
-        [_link.t2 start]; /* heartbeat sending out OOS */
+        [_link.oos_repeat_timer stop];
+        [_link.oos_repeat_timer start]; /* heartbeat sending out OOS */
     }
     return self;
 }
@@ -35,8 +35,16 @@
     return @"out-of-service";
 }
 
+#pragma mark -
+#pragma mark event handlers
 
-- (UMM2PAState *)eventStop
+- (UMM2PAState *)eventPowerOn;                      /* switch on the wire */
+{
+    [self logStatemachineEvent:__func__];
+    return self;
+}
+
+- (UMM2PAState *)eventPowerOff;                     /* switch off the wire */
 {
     [self logStatemachineEvent:__func__];
     return self;
@@ -50,8 +58,15 @@
         [self sendLinkstateOutOfService:YES];
         return self;
     }
-    [self sendLinkstateAlignment:YES];
+    [_link.t2 start];
     return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link status:M2PA_STATUS_INITIAL_ALIGNMENT];
+}
+
+
+- (UMM2PAState *)eventStop
+{
+    [self logStatemachineEvent:__func__];
+    return self;
 }
 
 - (UMM2PAState *)eventSctpUp
@@ -67,6 +82,9 @@
     [self logStatemachineEvent:__func__];
     return [super eventSctpDown];
 }
+
+
+
 
 - (UMM2PAState *)eventLinkstatusOutOfService
 {
@@ -153,6 +171,13 @@
 }
 
 - (UMM2PAState *)eventTimer2
+{
+    [self logStatemachineEvent:__func__];
+    return self;
+}
+
+
+- (UMM2PAState *)eventTimerOosRepeat
 {
     [self logStatemachineEvent:__func__];
     [self sendLinkstateOutOfService:YES];

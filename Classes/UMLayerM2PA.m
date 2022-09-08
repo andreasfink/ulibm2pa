@@ -135,6 +135,15 @@
             _window_size = M2PA_DEFAULT_WINDOW_SIZE;
             _t1 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires1) object:NULL seconds:M2PA_DEFAULT_T1 name:@"t1" repeats:NO runInForeground:YES];
             _t1r = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires1r) object:NULL seconds:M2PA_DEFAULT_T1R name:@"t1r" repeats:NO runInForeground:YES];
+            
+            _oos_repeat_timer = [[UMTimer alloc]initWithTarget:self
+                                        selector:@selector(timerFiresOOSRepeat)
+                                          object:NULL seconds:M2PA_DEFAULT_REPEAT_OOS_TIMER
+                                            name:@"t2"
+                                         repeats:YES
+                                 runInForeground:YES];
+
+            
             _t2 = [[UMTimer alloc]initWithTarget:self
                                         selector:@selector(timerFires2)
                                           object:NULL seconds:M2PA_DEFAULT_T2
@@ -580,11 +589,10 @@
                 @try
                 {
                     self.state = [_state eventReceiveUserData:userData];
-                    if(![self.state isKindOfClass: [UMM2PAState_InService class]])
+                    if([self.state isKindOfClass: [UMM2PAState_InService class]])
                     {
-                        self.state = [[UMM2PAState_InService alloc]initWithLink:self status:M2PA_STATUS_IS];
+                        [self notifyMtp3UserData:userData];
                     }
-                    [self notifyMtp3UserData:userData];
                 }
                 @catch(NSException *e)
                 {
@@ -1053,9 +1061,7 @@
 
 - (void)timerFires1
 {
-    [_t1 stop];
     [self queueTimerEvent:NULL timerName:@"t1"];
-
 }
 
 - (void)timerFires1r
@@ -1067,9 +1073,15 @@
 {
     [self queueTimerEvent:NULL timerName:@"t2"];
 }
+
+- (void)timerFiresOOSRepeat
+{
+    [self queueTimerEvent:NULL timerName:@"oos-repeat"];
+}
+
+
 - (void)timerFires3
 {
-    [_t3 stop];
     [self queueTimerEvent:NULL timerName:@"t3"];
 }
 - (void)timerFires4
@@ -1282,6 +1294,26 @@
     @try
     {
         self.state = [_state eventTimer7];
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
+}
+
+- (void)_timerFiresOOSRepeat
+{
+    /* Figure 13/Q.703 (sheet 2 of 7) */
+    UMMUTEX_LOCK(_controlLock);
+    @try
+    {
+        self.state = [_state eventTimerOosRepeat];
+        _linkstate_busy = NO;
+        [_t7 stop];
     }
     @catch(NSException *e)
     {
@@ -1945,6 +1977,10 @@
         {
             [self _timerFires7];
         }
+        else     if([timerName isEqualToString:@"oos-repeat"])
+        {
+            [self _timerFiresOOSRepeat];
+        }
         else
         {
             UMAssert(0,@"Unknown timer fires: '%@'",timerName);
@@ -2183,10 +2219,6 @@
 
             case UMSOCKET_STATUS_OFF:
                 [self logDebug:[NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_OFF",ls ]];
-                NSLog(@"sctp_status=%d",_sctp_status);
-                NSLog(@"sync=%d",sync ? 1 : 0);
-                NSLog(@"sctpLink.status=%d",_sctpLink.status);
-                NSLog(@"m2pa.state=%@ (%d) %@",self.stateString,self.stateCode,_state.description);
                 usleep(100000); /* sleep 0.1 sec */
                 return -1;
             case UMSOCKET_STATUS_OOS:
@@ -2297,17 +2329,21 @@
 {
     @autoreleasepool
     {
-        NSArray *usrs = [_users arrayCopy];
-        for(UMLayerM2PAUser *u in usrs)
+        if(_lastNotifiedStatus!=M2PA_STATUS_DISCONNECTED)
         {
-            if([u.profile wantsM2PALinkstateMessages])
+            NSArray *usrs = [_users arrayCopy];
+            for(UMLayerM2PAUser *u in usrs)
             {
-                [u.user m2paStatusIndication:self
-                                         slc:_slc
-                                      userId:u.linkName
-                                      status:M2PA_STATUS_DISCONNECTED];
+                if([u.profile wantsM2PALinkstateMessages])
+                {
+                    [u.user m2paStatusIndication:self
+                                             slc:_slc
+                                          userId:u.linkName
+                                          status:M2PA_STATUS_DISCONNECTED];
+                }
             }
         }
+        _lastNotifiedStatus = M2PA_STATUS_DISCONNECTED;
     }
 }
 
@@ -2315,16 +2351,20 @@
 {
     @autoreleasepool
     {
-        NSArray *usrs = [_users arrayCopy];
-        for(UMLayerM2PAUser *u in usrs)
+        if(_lastNotifiedStatus!=M2PA_STATUS_OFF)
         {
-            if([u.profile wantsM2PALinkstateMessages])
+            NSArray *usrs = [_users arrayCopy];
+            for(UMLayerM2PAUser *u in usrs)
             {
-                [u.user m2paStatusIndication:self
-                                         slc:_slc
-                                      userId:u.linkName
-                                      status:M2PA_STATUS_OFF];
+                if([u.profile wantsM2PALinkstateMessages])
+                {
+                    [u.user m2paStatusIndication:self
+                                             slc:_slc
+                                          userId:u.linkName
+                                          status:M2PA_STATUS_OFF];
+                }
             }
+            _lastNotifiedStatus=M2PA_STATUS_OFF;
         }
     }
 }
@@ -2333,18 +2373,22 @@
 {
     @autoreleasepool
     {
-        NSArray *usrs = [_users arrayCopy];
-        for(UMLayerM2PAUser *u in usrs)
+        if(_lastNotifiedStatus!=status)
         {
-            if([u.profile wantsM2PALinkstateMessages])
+            NSArray *usrs = [_users arrayCopy];
+            for(UMLayerM2PAUser *u in usrs)
             {
-                [u.user m2paStatusIndication:self
-                                         slc:_slc
-                                      userId:u.linkName
-                                      status:status
-                                       async:async];
+                if([u.profile wantsM2PALinkstateMessages])
+                {
+                    [u.user m2paStatusIndication:self
+                                             slc:_slc
+                                          userId:u.linkName
+                                          status:status
+                                           async:async];
+                }
             }
         }
+        _lastNotifiedStatus = status;
     }
 }
 
