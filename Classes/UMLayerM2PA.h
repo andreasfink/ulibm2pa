@@ -61,6 +61,8 @@
 /*  4.8k: 500-600s */
 #define    M2PA_DEFAULT_T1R        0.4000
 
+#define    M2PA_DEFAULT_REPEAT_OOS_TIMER    1.0  /* how often do we send OOS while in OOS state */
+
 #define	M2PA_DEFAULT_T2	5.0  /* time we wait for ALIGNMENT messages when being in Initial Alignment status */
 /* Q.702 (07/96) page 26 says   */
 /* T2: not aligned              */
@@ -218,6 +220,8 @@ typedef enum PocStatus
 		/* Following successful alignment and proving procedure, the signalling terminal enters Aligned Ready state and the aligned ready time-out T1 is stopped on entry in the In-service state and the duration of time-out T1 should be chosen such that the remote end can perform four additional proving attempts. */
     UMTimer    *_t1r;    /* how fast are we sending reoccuring "alignment ready" */
 
+    UMTimer    *_oos_repeat_timer;    /* repeating LINKSTATE_OOS while in OOS state */
+
     UMTimer    *_t2;	/* Timer "not aligned" */
 		/* recommended values: 			*/
 		/* 64kbps T2 = 5-150 s 			*/
@@ -330,7 +334,8 @@ typedef enum PocStatus
 
 @property(readwrite,strong)     UMTimer  *t1;       /* T1:  alignment ready */
 @property(readwrite,strong)     UMTimer  *t1r;      /* T1R:  alignment ready repeat */
-@property(readwrite,strong)     UMTimer  *t2;      	/* T2: not aligned */
+@property(readwrite,strong)     UMTimer  *oos_repeat_timer;     
+@property(readwrite,strong)     UMTimer  *t2;          /* T2: not aligned */
 @property(readwrite,strong)     UMTimer  *t3;
 @property(readwrite,strong)     UMTimer  *t4;
 @property(readwrite,strong)     UMTimer  *t4r;

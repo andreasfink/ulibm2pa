@@ -135,6 +135,15 @@
             _window_size = M2PA_DEFAULT_WINDOW_SIZE;
             _t1 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires1) object:NULL seconds:M2PA_DEFAULT_T1 name:@"t1" repeats:NO runInForeground:YES];
             _t1r = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires1r) object:NULL seconds:M2PA_DEFAULT_T1R name:@"t1r" repeats:NO runInForeground:YES];
+            
+            _oos_repeat_timer = [[UMTimer alloc]initWithTarget:self
+                                        selector:@selector(timerFiresOOSRepeat)
+                                          object:NULL seconds:M2PA_DEFAULT_REPEAT_OOS_TIMER
+                                            name:@"t2"
+                                         repeats:YES
+                                 runInForeground:YES];
+
+            
             _t2 = [[UMTimer alloc]initWithTarget:self
                                         selector:@selector(timerFires2)
                                           object:NULL seconds:M2PA_DEFAULT_T2
@@ -1063,6 +1072,13 @@
 {
     [self queueTimerEvent:NULL timerName:@"t2"];
 }
+
+- (void)timerFiresOOSRepeat
+{
+    [self queueTimerEvent:NULL timerName:@"oos-repeat"];
+}
+
+
 - (void)timerFires3
 {
     [self queueTimerEvent:NULL timerName:@"t3"];
@@ -1277,6 +1293,26 @@
     @try
     {
         self.state = [_state eventTimer7];
+    }
+    @catch(NSException *e)
+    {
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+    }
+    @finally
+    {
+        UMMUTEX_UNLOCK(_controlLock);
+    }
+}
+
+- (void)_timerFiresOOSRepeat
+{
+    /* Figure 13/Q.703 (sheet 2 of 7) */
+    UMMUTEX_LOCK(_controlLock);
+    @try
+    {
+        self.state = [_state eventTimerOosRepeat];
+        _linkstate_busy = NO;
+        [_t7 stop];
     }
     @catch(NSException *e)
     {
@@ -1939,6 +1975,10 @@
         else 	if([timerName isEqualToString:@"t7"])
         {
             [self _timerFires7];
+        }
+        else     if([timerName isEqualToString:@"oos-repeat"])
+        {
+            [self _timerFiresOOSRepeat];
         }
         else
         {

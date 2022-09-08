@@ -69,6 +69,8 @@
 - (UMM2PAState *)eventTimer6;                       /* timer 6 fired (remote congestion timer.
                                                             if remote stays longer than this, we go OOS) */
 - (UMM2PAState *)eventTimer7;                       /* timer 7 fired ((excessive delay of acknowledgement) */
+- (UMM2PAState *)eventTimerOosRepeat;               /* timer OOS repeat fired */
+
 
 #pragma mark -
 #pragma mark actions

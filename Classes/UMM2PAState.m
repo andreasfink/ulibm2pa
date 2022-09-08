@@ -348,6 +348,12 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     return self;
 }
 
+- (UMM2PAState *)eventTimerOosRepeat
+{
+    [self logStatemachineEvent:__func__];
+    return self;
+}
+
 #pragma mark -
 #pragma mark actions
 
