@@ -82,6 +82,7 @@
 - (UMM2PAState *)eventLinkstatusAlignment
 {
     [self logStatemachineEvent:__func__];
+    [self sendLinkstateAlignment:YES];
     return [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link status:M2PA_STATUS_ALIGNED_NOT_READY];
 }
 
@@ -89,6 +90,7 @@
 {
     [self logStatemachineEvent:__func__];
     _link.emergency = NO;
+    [self sendLinkstateAlignment:YES];
     return [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link status:M2PA_STATUS_ALIGNED_NOT_READY];
 }
 
@@ -96,6 +98,7 @@
 {
     [self logStatemachineEvent:__func__];
     _link.emergency = YES;
+    [self sendLinkstateAlignment:YES];
     return [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link status:M2PA_STATUS_ALIGNED_NOT_READY];
 }
 
