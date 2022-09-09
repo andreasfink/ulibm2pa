@@ -22,13 +22,15 @@
         [_link.t4 stop];
         _t4_expired = NO;
         [_link.t4r stop];
-        double t;
-        M2TIMER_VALIDATE(_link.t4r.seconds,M2PA_DEFAULT_T4_R,M2PA_DEFAULT_T4_R_MIN,M2PA_DEFAULT_T4_R_MAX);
+        double t = _link.t4r.seconds;
+        M2TIMER_VALIDATE(t,M2PA_DEFAULT_T4_R,M2PA_DEFAULT_T4_R_MIN,M2PA_DEFAULT_T4_R_MAX);
+        _link.t4r.seconds = t;
         if(_link.emergency)
         {
             t = _link.t4e;
             M2TIMER_VALIDATE(t,M2PA_DEFAULT_T4_E,M2PA_DEFAULT_T4_E_MIN,M2PA_DEFAULT_T4_E_MAX);
             _link.t4e = t;
+            _link.t4.seconds = t;  /* ending of proving period timer */
             [self sendLinkstateProvingEmergency:YES];
         }
         else
@@ -36,11 +38,9 @@
             t = _link.t4n;
             M2TIMER_VALIDATE(t,M2PA_DEFAULT_T4_N,M2PA_DEFAULT_T4_N_MIN,M2PA_DEFAULT_T4_N_MAX);
             _link.t4n = t;
+            _link.t4.seconds = t;   /* ending of proving period timer */
             [self sendLinkstateProvingNormal:YES];
         }
-        
-        M2TIMER_VALIDATE(_link.t4r.seconds,M2PA_DEFAULT_T4_R,M2PA_DEFAULT_T4_R_MIN,M2PA_DEFAULT_T4_R_MAX);
-        _link.t4.seconds = t;   /* ending of proving period timer */
         [_link.t4 start];
         [_link.t4r start]; /* sending out status timer */
         [_link.t3 start];

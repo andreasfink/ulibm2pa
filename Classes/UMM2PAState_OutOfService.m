@@ -59,6 +59,7 @@
         return self;
     }
     [_link.t2 start];
+    [self sendLinkstateAlignment:YES];
     return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link status:M2PA_STATUS_INITIAL_ALIGNMENT];
 }
 
@@ -181,14 +182,6 @@
     [self logStatemachineEvent:__func__];
     [self sendLinkstateOutOfService:YES];
     return self;
-}
-
-- (void) sendLinkstateOutOfService:(BOOL)sync
-{
-    [self logStatemachineEvent:__func__];
-    [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:sync];
-    _link.linkstateOutOfServiceSent++;
-    [_link.stateMachineLogFeed debugText:@"sendLinkstateOutOfService"];
 }
 
 - (UMM2PAState *)eventReceiveUserData:(NSData *)userData

@@ -146,6 +146,13 @@
     return self;
 }
 
+- (UMM2PAState *)eventTimerOosRepeat
+{
+    [self logStatemachineEvent:__func__];
+    [_link.oos_repeat_timer stop];
+    return self;
+}
+
 - (UMM2PAState *)eventReceiveUserData:(NSData *)userData
 {
     [self logStatemachineEvent:__func__ forced:YES];
