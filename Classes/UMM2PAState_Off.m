@@ -58,10 +58,27 @@
     [self logStatemachineEvent:__func__];
     if(_link.sctpLink.status == UMSOCKET_STATUS_OFF)
     {
+        [_link addToLayerHistoryLog:@"opening sctp connection"];
         [_link startupInitialisation];
         [_link.startTimer start];
-        [_link.sctpLink openFor:_link sendAbortFirst:YES reason:@"eventPowerOn"];
+        [_link.sctpLink openFor:_link sendAbortFirst:YES reason:@"eventStart"];
         [_link notifyMtp3Off];
+    }
+    else if(_link.sctpLink.status == UMSOCKET_STATUS_FOOS)
+    {
+        [_link addToLayerHistoryLog:@"start with _link.sctpLink.status FOOS"];
+    }
+    else if(_link.sctpLink.status == UMSOCKET_STATUS_OOS)
+    {
+        [_link addToLayerHistoryLog:@"start with _link.sctpLink.status OOS"];
+    }
+    else if(_link.sctpLink.status == UMSOCKET_STATUS_IS)
+    {
+        [_link addToLayerHistoryLog:@"start with _link.sctpLink.status IS"];
+    }
+    else if(_link.sctpLink.status == UMSOCKET_STATUS_LISTENING)
+    {
+        [_link addToLayerHistoryLog:@"start with _link.sctpLink.status UMSOCKET_STATUS_LISTENING"];
     }
     return self;
 }
