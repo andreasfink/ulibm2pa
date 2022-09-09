@@ -138,8 +138,9 @@
             
             _oos_repeat_timer = [[UMTimer alloc]initWithTarget:self
                                         selector:@selector(timerFiresOOSRepeat)
-                                          object:NULL seconds:M2PA_DEFAULT_REPEAT_OOS_TIMER
-                                            name:@"t2"
+                                          object:NULL
+                                         seconds:M2PA_DEFAULT_REPEAT_OOS_TIMER
+                                            name:@"oos-repeat"
                                          repeats:YES
                                  runInForeground:YES];
 
@@ -2090,23 +2091,11 @@
     @try
     {
         _startCounter++;
-        if([_state isKindOfClass:[UMM2PAState_OutOfService class]])
-        {
-            self.state = [_state eventStart];
-        }
-        if([_state isKindOfClass:[UMM2PAState_OutOfService class]])
-        {
-            /* we are still in OOS so we have FOOS set */
-            [_state sendLinkstateOutOfService:YES];
-        }
-        else if([_state isKindOfClass:[UMM2PAState_InitialAlignment class]])
-        {
-            [_state sendLinkstateAlignment:YES];
-        }
+        self.state = [_state eventStart];
     }
     @catch(NSException *e)
     {
-            [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
     }
     @finally
     {
