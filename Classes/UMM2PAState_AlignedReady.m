@@ -138,8 +138,9 @@
 - (UMM2PAState *)eventLinkstatusAlignment /* other side sent us linkstatus alignment SIO */
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService:YES];
-    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
+//  [self sendLinkstateOutOfService:YES];
+//  return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
+    return self;
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal /* other side sent us linkstatus proving normal SIN */

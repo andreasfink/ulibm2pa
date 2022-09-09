@@ -58,8 +58,8 @@
         [self sendLinkstateOutOfService:YES];
         return self;
     }
-    [_link.t2 start];
     [self sendLinkstateAlignment:YES];
+    [_link.oos_repeat_timer stop];
     return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link status:M2PA_STATUS_INITIAL_ALIGNMENT];
 }
 
@@ -119,6 +119,8 @@
         [self sendLinkstateOutOfService:YES];
         return self;
     }
+    [self sendLinkstateAlignment:YES];
+    [_link.oos_repeat_timer stop];
     return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link status:M2PA_STATUS_INITIAL_ALIGNMENT];
 }
 

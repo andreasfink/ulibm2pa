@@ -108,11 +108,11 @@
 - (UMM2PAState *)eventEmergencyCeases       /* MTP3 tells his is not an emergency link */
 {
     [self logStatemachineEvent:__func__];
-    _link.emergency = NO;
     if(_link.emergency==YES)
     {
         _link.t4.seconds = _link.t4n;
     }
+    _link.emergency = NO;
     return self;
 }
 
@@ -163,8 +163,9 @@
 - (UMM2PAState *)eventLinkstatusAlignment       /* other side sent us linkstatus alignment SIO */
 {
     [self logStatemachineEvent:__func__];
-    [self sendLinkstateOutOfService:YES];
-    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
+    return self;
+//    [self sendLinkstateOutOfService:YES];
+//    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal       /* other side sent us linkstatus proving normal SIN */
