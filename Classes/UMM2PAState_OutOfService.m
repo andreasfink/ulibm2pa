@@ -24,7 +24,7 @@
         [_link.t4r stop];
         // we can not do this at this moment as we might still be in status UMMP2PAState off. so we let the timer send the first OOS */
         [_link.oos_repeat_timer stop];
-        [_link.oos_repeat_timer start]; /* heartbeat sending out OOS */
+        //[_link.oos_repeat_timer start]; /* heartbeat sending out OOS */
     }
     return self;
 }
@@ -58,8 +58,8 @@
         [self sendLinkstateOutOfService:YES];
         return self;
     }
-    [self sendLinkstateAlignment:YES];
     [_link.oos_repeat_timer stop];
+    [self sendLinkstateAlignment:YES];
     return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link status:M2PA_STATUS_INITIAL_ALIGNMENT];
 }
 
@@ -82,9 +82,6 @@
 {
     return [super eventSctpDown];
 }
-
-
-
 
 - (UMM2PAState *)eventLinkstatusOutOfService
 {
