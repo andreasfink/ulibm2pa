@@ -22,6 +22,7 @@
         [_link.t2 stop];
         [_link.t4r stop];
         [_link.t4 stop];
+        [_link resetSequenceNumbers];
         _statusCode = M2PA_STATUS_IS;
     }
     return self;
