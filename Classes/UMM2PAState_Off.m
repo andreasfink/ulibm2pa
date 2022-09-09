@@ -56,7 +56,13 @@
 - (UMM2PAState *)eventStart             /* start the alignment process */
 {
     [self logStatemachineEvent:__func__];
-    /* this shoud only occur in status OOS not in status OFF*/
+    if(_link.sctpLink.status == UMSOCKET_STATUS_OFF)
+    {
+        [_link startupInitialisation];
+        [_link.startTimer start];
+        [_link.sctpLink openFor:_link sendAbortFirst:YES reason:@"eventPowerOn"];
+        [_link notifyMtp3Off];
+    }
     return self;
 }
 
