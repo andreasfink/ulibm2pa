@@ -140,63 +140,63 @@
 #pragma mark -
 #pragma mark eventLinkstatus handlers
 
-- (UMM2PAState *)eventLinkstatusOutOfService    /* other side sent us linkstatus out of service SIOS */
+- (UMM2PAState *)eventLinkstatusOutOfService:(NSNumber *)socketNumber    /* other side sent us linkstatus out of service SIOS */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusAlignment       /* other side sent us linkstatus alignment SIO */
+- (UMM2PAState *)eventLinkstatusAlignment:(NSNumber *)socketNumber       /* other side sent us linkstatus alignment SIO */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusProvingNormal   /* other side sent us linkstatus proving normal SIN */
+- (UMM2PAState *)eventLinkstatusProvingNormal:(NSNumber *)socketNumber   /* other side sent us linkstatus proving normal SIN */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusProvingEmergency    /* other side sent us linkstatus emergency normal SIE */
+- (UMM2PAState *)eventLinkstatusProvingEmergency:(NSNumber *)socketNumber    /* other side sent us linkstatus emergency normal SIE */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusReady               /* other side sent us linkstatus ready FISU */
+- (UMM2PAState *)eventLinkstatusReady:(NSNumber *)socketNumber               /* other side sent us linkstatus ready FISU */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusBusy                /* other side sent us linkstatus busy */
+- (UMM2PAState *)eventLinkstatusBusy:(NSNumber *)socketNumber                /* other side sent us linkstatus busy */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusBusyEnded           /* other side sent us linkstatus busy ended */
+- (UMM2PAState *)eventLinkstatusBusyEnded:(NSNumber *)socketNumber           /* other side sent us linkstatus busy ended */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusProcessorOutage         /* other side sent us linkstatus processor outage SIPO */
+- (UMM2PAState *)eventLinkstatusProcessorOutage:(NSNumber *)socketNumber         /* other side sent us linkstatus processor outage SIPO */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusProcessorRecovered      /* other side sent us linkstatus processor recovered */
+- (UMM2PAState *)eventLinkstatusProcessorRecovered:(NSNumber *)socketNumber      /* other side sent us linkstatus processor recovered */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 
-- (UMM2PAState *)eventReceiveUserData:(NSData *)userData
+- (UMM2PAState *)eventReceiveUserData:(NSData *)userData socketNumber:(NSNumber *)socketNumber
 {
-    [self logStatemachineEvent:__func__ forced:YES];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 

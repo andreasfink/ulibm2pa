@@ -81,14 +81,14 @@
     return [super eventSctpDown];
 }
 
-- (UMM2PAState *)eventLinkstatusOutOfService
+- (UMM2PAState *)eventLinkstatusOutOfService:(NSNumber *)socketNumber
 {
     /*
       we are already in this state. we have to do nothing here as
       otherwise we will do start playing ping-pong. The proper
       action is MTP3 to send us start now (if not already done)
     */
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 
@@ -106,9 +106,9 @@
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusAlignment
+- (UMM2PAState *)eventLinkstatusAlignment:(NSNumber *)socketNumber
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     if(_link.forcedOutOfService==YES)
     {
         [self sendLinkstateOutOfService:YES];
@@ -119,45 +119,45 @@
     return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link status:M2PA_STATUS_INITIAL_ALIGNMENT];
 }
 
-- (UMM2PAState *)eventLinkstatusProvingNormal
+- (UMM2PAState *)eventLinkstatusProvingNormal:(NSNumber *)socketNumber
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusProvingEmergency
+- (UMM2PAState *)eventLinkstatusProvingEmergency:(NSNumber *)socketNumber
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusReady
+- (UMM2PAState *)eventLinkstatusReady:(NSNumber *)socketNumber
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusBusy
+- (UMM2PAState *)eventLinkstatusBusy:(NSNumber *)socketNumber
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusBusyEnded
+- (UMM2PAState *)eventLinkstatusBusyEnded:(NSNumber *)socketNumber
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusProcessorOutage
+- (UMM2PAState *)eventLinkstatusProcessorOutage:(NSNumber *)socketNumber
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusProcessorRecovered
+- (UMM2PAState *)eventLinkstatusProcessorRecovered:(NSNumber *)socketNumber
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 

@@ -153,16 +153,16 @@
 #pragma mark -
 #pragma mark eventLinkstatus handlers
 
-- (UMM2PAState *)eventLinkstatusOutOfService    /* other side sent us linkstatus out of service SIOS */
+- (UMM2PAState *)eventLinkstatusOutOfService:(NSNumber *)socketNumber    /* other side sent us linkstatus out of service SIOS */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     [self sendLinkstateOutOfService:YES];
     return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
-- (UMM2PAState *)eventLinkstatusAlignment       /* other side sent us linkstatus alignment SIO */
+- (UMM2PAState *)eventLinkstatusAlignment:(NSNumber *)socketNumber       /* other side sent us linkstatus alignment SIO */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     if(_link.emergency)
     {
         [self sendLinkstateProvingEmergency:YES];
@@ -176,49 +176,49 @@
 //    return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
-- (UMM2PAState *)eventLinkstatusProvingNormal       /* other side sent us linkstatus proving normal SIN */
+- (UMM2PAState *)eventLinkstatusProvingNormal:(NSNumber *)socketNumber       /* other side sent us linkstatus proving normal SIN */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusProvingEmergency    /* other side sent us linkstatus proving normal SIE */
+- (UMM2PAState *)eventLinkstatusProvingEmergency:(NSNumber *)socketNumber    /* other side sent us linkstatus proving normal SIE */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusReady       /* other side sent us linkstatus ready FISU */
+- (UMM2PAState *)eventLinkstatusReady:(NSNumber *)socketNumber       /* other side sent us linkstatus ready FISU */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     /* according to Q.703 we should go to processor outage here */
     /* however in RFC 4165 this is handled differently by a special processor outage message */
     [self sendLinkstateReady:YES];
     return  [[UMM2PAState_AlignedReady alloc]initWithLink:_link status:M2PA_STATUS_ALIGNED_READY];
 }
 
-- (UMM2PAState *)eventLinkstatusBusy                /* other side sent us linkstatus busy */
+- (UMM2PAState *)eventLinkstatusBusy:(NSNumber *)socketNumber                /* other side sent us linkstatus busy */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusBusyEnded           /* other side sent us linkstatus busy ended */
+- (UMM2PAState *)eventLinkstatusBusyEnded:(NSNumber *)socketNumber           /* other side sent us linkstatus busy ended */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusProcessorOutage     /* other side sent us linkstatus processor outage SIPO */
+- (UMM2PAState *)eventLinkstatusProcessorOutage:(NSNumber *)socketNumber     /* other side sent us linkstatus processor outage SIPO */
 {
-    [self logStatemachineEvent:__func__ forced:YES];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     _link.remote_processor_outage = YES;
     return  [[UMM2PAState_ProcessorOutage alloc]initWithLink:_link status:M2PA_STATUS_PROCESSOR_OUTAGE];
 }
 
-- (UMM2PAState *)eventLinkstatusProcessorRecovered
+- (UMM2PAState *)eventLinkstatusProcessorRecovered:(NSNumber *)socketNumber
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     _link.remote_processor_outage = NO;
     return self;
 }

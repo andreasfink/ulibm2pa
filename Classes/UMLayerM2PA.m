@@ -288,6 +288,21 @@
                  protocolId:(uint32_t)pid
                        data:(NSData *)d
 {
+    [self sctpDataIndication:caller
+                         userId:uid
+                       streamId:sid
+                     protocolId:pid
+                           data:d
+                      socket:NULL];
+}
+
+- (void) sctpDataIndication:(UMLayer *)caller
+                     userId:(id)uid
+                   streamId:(uint16_t)sid
+                 protocolId:(uint32_t)pid
+                       data:(NSData *)d
+                     socket:(NSNumber *)socketNumber
+{
     @autoreleasepool
     {
         UMM2PATask_sctpDataIndication *task = [[UMM2PATask_sctpDataIndication alloc]initWithReceiver:self
@@ -295,7 +310,8 @@
                                                                                               userId:uid
                                                                                             streamId:sid
                                                                                           protocolId:pid
-                                                                                                data:d];
+                                                                                                data:d
+                                                                                              socket:socketNumber];
         [self queueFromLower:task];
     }
 }
@@ -306,6 +322,7 @@
                     protocolId:(uint32_t)pid
                           data:(NSData *)d
                       incoming:(BOOL)in
+                        socket:(NSNumber *)socketNumber
 {
     @autoreleasepool
     {
@@ -480,11 +497,11 @@
 
             if((task.streamId == M2PA_STREAM_LINKSTATE) || ( message_type==2))
             {
-                [self sctpIncomingLinkstateMessage:task.data];
+                [self sctpIncomingLinkstateMessage:task.data socketNumber:task.socketNumber];
             }
             else if((task.streamId == M2PA_STREAM_USERDATA) && (message_type==1))
             {
-                [self sctpIncomingDataMessage:task.data];
+                [self sctpIncomingDataMessage:task.data socketNumber:task.socketNumber];
             }
             else
             {
@@ -527,7 +544,7 @@
     }
 }
 
-- (void) sctpIncomingDataMessage:(NSData *)data
+- (void) sctpIncomingDataMessage:(NSData *)data socketNumber:(NSNumber *)socketNumber
 {
     @autoreleasepool
     {
@@ -592,7 +609,7 @@
                 UMMUTEX_LOCK(_controlLock);
                 @try
                 {
-                    self.state = [_state eventReceiveUserData:userData];
+                    self.state = [_state eventReceiveUserData:userData socketNumber:socketNumber];
                     if([self.state isKindOfClass: [UMM2PAState_InService class]])
                     {
                         [self notifyMtp3UserData:userData];
@@ -676,7 +693,7 @@
     }
 }
 
-- (void) sctpIncomingLinkstateMessage:(NSData *)data
+- (void) sctpIncomingLinkstateMessage:(NSData *)data socketNumber:(NSNumber *)socketNumber
 {
     @autoreleasepool
     {
@@ -711,32 +728,32 @@
                 switch(linkstatus)
                 {
                     case M2PA_LINKSTATE_ALIGNMENT:				/* 1 */
-                        [self _alignment_received];
+                        [self _alignment_received:socketNumber];
                         break;
                     case M2PA_LINKSTATE_PROVING_NORMAL:			/* 2 */
-                        [self _proving_normal_received];
+                        [self _proving_normal_received:socketNumber];
                         break;
                     case M2PA_LINKSTATE_PROVING_EMERGENCY:		/* 3 */
-                        [self _proving_emergency_received];
+                        [self _proving_emergency_received:socketNumber];
                         break;
                     case M2PA_LINKSTATE_READY:					/* 4 */
-                        [self _linkstate_ready_received];
+                        [self _linkstate_ready_received:socketNumber];
                         break;
                     case M2PA_LINKSTATE_PROCESSOR_OUTAGE:		/* 5 */
-                        [self _linkstate_processor_outage_received];
+                        [self _linkstate_processor_outage_received:socketNumber];
                         break;
                     case M2PA_LINKSTATE_PROCESSOR_RECOVERED:	/* 6 */
-                        [self _linkstate_processor_recovered_received];
+                        [self _linkstate_processor_recovered_received:socketNumber];
                         break;
                     case M2PA_LINKSTATE_BUSY:					/* 7 */
-                        [self _linkstate_busy_received];
+                        [self _linkstate_busy_received:socketNumber];
                         break;
                     case M2PA_LINKSTATE_BUSY_ENDED:				/* 8 */
-                        [self _linkstate_busy_ended_received];
+                        [self _linkstate_busy_ended_received:socketNumber];
                         break;
                     case M2PA_LINKSTATE_OUT_OF_SERVICE:		/* 9 */
                         /* other side tells us they are out of service. I wil let mtp3 know and have it send us a start */
-                        [self _oos_received];
+                        [self _oos_received:socketNumber];
                         //m2pa_oos_received(link);
                         break;
                     default:
@@ -757,7 +774,7 @@
     }
 }
 
-- (void) _oos_received
+- (void) _oos_received:(NSNumber *)socketNumber
 {
     UMMUTEX_LOCK(_controlLock);
     @try
@@ -767,7 +784,7 @@
         {
             _state = [[UMM2PAState_Off alloc]initWithLink:self status:M2PA_STATUS_OFF];
         }
-        self.state = [_state eventLinkstatusOutOfService];
+        self.state = [_state eventLinkstatusOutOfService:socketNumber];
     }
     @finally
     {
@@ -775,12 +792,12 @@
     }
 }
 
-- (void) _alignment_received
+- (void) _alignment_received:(NSNumber *)socketNumber
 {
     UMMUTEX_LOCK(_controlLock);
     @try
     {
-        self.state = [_state eventLinkstatusAlignment];
+        self.state = [_state eventLinkstatusAlignment:socketNumber];
         _linkstateAlignmentReceived++;
         _linkstateProvingReceived=0;
         _linkstateProvingSent=0;
@@ -795,13 +812,13 @@
     }
 }
 
-- (void) _proving_normal_received
+- (void) _proving_normal_received:(NSNumber *)socketNumber
 {
     UMMUTEX_LOCK(_controlLock);
     @try
     {
         _linkstateProvingReceived++;
-        self.state = [_state eventLinkstatusProvingNormal];
+        self.state = [_state eventLinkstatusProvingNormal:socketNumber];
     }
     @catch(NSException *e)
     {
@@ -813,7 +830,7 @@
     }
 }
 
-- (void) _proving_emergency_received
+- (void) _proving_emergency_received:(NSNumber *)socketNumber
 {
     UMMUTEX_LOCK(_controlLock);
     @try
@@ -823,7 +840,7 @@
         {
             _emergency = YES;
         }
-        self.state = [_state eventLinkstatusProvingEmergency];
+        self.state = [_state eventLinkstatusProvingEmergency:socketNumber];
     }
     @catch(NSException *e)
     {
@@ -835,13 +852,13 @@
     }
 }
 
-- (void) _linkstate_ready_received
+- (void) _linkstate_ready_received:(NSNumber *)socketNumber
 {
     UMMUTEX_LOCK(_controlLock);
     @try
     {
         _linkstateReadyReceived++;
-        self.state = [_state eventLinkstatusReady];
+        self.state = [_state eventLinkstatusReady:socketNumber];
     }
     @catch(NSException *e)
     {
@@ -853,13 +870,13 @@
     }
 }
 
-- (void) _linkstate_processor_outage_received
+- (void) _linkstate_processor_outage_received:(NSNumber *)socketNumber
 {
     UMMUTEX_LOCK(_controlLock);
     @try
     {
         _linkstateProcessorOutageReceived++;
-        self.state = [_state eventLinkstatusProcessorOutage];
+        self.state = [_state eventLinkstatusProcessorOutage:socketNumber];
     }
     @catch(NSException *e)
     {
@@ -871,13 +888,13 @@
     }
 }
 
-- (void) _linkstate_processor_recovered_received
+- (void) _linkstate_processor_recovered_received:(NSNumber *)socketNumber
 {
     UMMUTEX_LOCK(_controlLock);
     @try
     {
         _linkstateProcessorRecoveredReceived++;
-        self.state = [_state eventLinkstatusProcessorRecovered];
+        self.state = [_state eventLinkstatusProcessorRecovered:socketNumber];
     }
     @catch(NSException *e)
     {
@@ -889,13 +906,13 @@
     }
 }
 
-- (void) _linkstate_busy_received
+- (void) _linkstate_busy_received:(NSNumber *)socketNumber
 {
     UMMUTEX_LOCK(_controlLock);
     @try
     {
         _linkstateBusyReceived++;
-        self.state = [_state eventLinkstatusBusy];
+        self.state = [_state eventLinkstatusBusy:socketNumber];
     }
     @catch(NSException *e)
     {
@@ -907,14 +924,14 @@
     }
 }
 
-- (void) _linkstate_busy_ended_received
+- (void) _linkstate_busy_ended_received:(NSNumber *)socketNumber
 {
     UMMUTEX_LOCK(_controlLock);
     @try
     {
         _linkstateBusyEndedReceived++;
 
-        self.state = [_state eventLinkstatusBusyEnded];
+        self.state = [_state eventLinkstatusBusyEnded:socketNumber];
     /* FIXME: this belongs into the state machine now */
         _link_congestion_cleared_time = [NSDate date];
         _congested = NO;
@@ -935,7 +952,7 @@
     }
 }
 
-- (void) linktestTimerReportsFailure
+- (void) linktestTimerReportsFailure:(NSNumber *)socketNumber
 {
     UMMUTEX_LOCK(_controlLock);
     @try
@@ -946,7 +963,7 @@
         }
         else
         {
-            self.state = [_state eventLinkstatusOutOfService];
+            self.state = [_state eventLinkstatusOutOfService:socketNumber];
         }
     }
     @catch(NSException *e)

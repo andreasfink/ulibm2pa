@@ -401,15 +401,16 @@ typedef enum PocStatus
                      userId:(id)uid
                    streamId:(uint16_t)sid
                  protocolId:(uint32_t)pid
-                       data:(NSData *)d;
+                       data:(NSData *)d
+                     socket:(NSNumber *)socketNumber;
 
 - (void) sctpMonitorIndication:(UMLayer *)caller
                         userId:(id)uid
                       streamId:(uint16_t)sid
                     protocolId:(uint32_t)pid
                           data:(NSData *)d
-                      incoming:(BOOL)in;
-
+                      incoming:(BOOL)in
+                        socket:(NSNumber *)socketNumber;
 
 #pragma mark -
 #pragma mark SCTP Callback Tasks
@@ -516,8 +517,8 @@ typedef enum PocStatus
 
 - (void)checkSpeed;
 - (int) sendLinkstatus:(M2PA_linkstate_message)linkstate synchronous:(BOOL)sync;
-- (void) sctpIncomingDataMessage:(NSData *)data;
-- (void) sctpIncomingLinkstateMessage:(NSData *)data;
+- (void) sctpIncomingDataMessage:(NSData *)data socketNumber:(NSNumber *)socketNumber;
+- (void) sctpIncomingLinkstateMessage:(NSData *)data socketNumber:(NSNumber *)socketNumber;
 + (NSString *)linkStatusString:(M2PA_linkstate_message) linkstate;
 + (NSString *)m2paStatusString:(M2PA_Status) linkstate;
 - (void) sendCongestionClearedIndication;

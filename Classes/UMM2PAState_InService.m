@@ -92,37 +92,37 @@
 #pragma mark -
 #pragma mark eventLinkstatus handlers
 
-- (UMM2PAState *)eventLinkstatusOutOfService            /* other side sent us linkstatus out of service SIOS */
+- (UMM2PAState *)eventLinkstatusOutOfService:(NSNumber *)socketNumber            /* other side sent us linkstatus out of service SIOS */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:YES];
     return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
-- (UMM2PAState *)eventLinkstatusAlignment               /* other side sent us linkstatus alignment SIO */
+- (UMM2PAState *)eventLinkstatusAlignment:(NSNumber *)socketNumber               /* other side sent us linkstatus alignment SIO */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:YES];
     return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
-- (UMM2PAState *)eventLinkstatusProvingNormal            /* other side sent us linkstatus proving normal SIN */
+- (UMM2PAState *)eventLinkstatusProvingNormal:(NSNumber *)socketNumber            /* other side sent us linkstatus proving normal SIN */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:YES];
     return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
-- (UMM2PAState *)eventLinkstatusProvingEmergency        /* other side sent us linkstatus emergency SIE */
+- (UMM2PAState *)eventLinkstatusProvingEmergency:(NSNumber *)socketNumber        /* other side sent us linkstatus emergency SIE */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:YES];
     return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
-- (UMM2PAState *)eventLinkstatusReady                   /* other side sent us linkstatus ready FISU */
+- (UMM2PAState *)eventLinkstatusReady:(NSNumber *)socketNumber                   /* other side sent us linkstatus ready FISU */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     [_link.t1 stop];
     [_link.t2 stop];
     [_link.t4 stop];
@@ -130,34 +130,34 @@
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusBusy                   /* other side sent us linkstatus ready FISU */
+- (UMM2PAState *)eventLinkstatusBusy:(NSNumber *)socketNumber                   /* other side sent us linkstatus ready FISU */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     _link.congested = YES;
     [_link notifyMtp3Congestion];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusBusyEnded
+- (UMM2PAState *)eventLinkstatusBusyEnded:(NSNumber *)socketNumber
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     _link.congested = NO;
     [_link notifyMtp3CongestionCleared];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusProcessorOutage                   /* other side sent us linkstatus processor outage SIPO */
+- (UMM2PAState *)eventLinkstatusProcessorOutage:(NSNumber *)socketNumber                   /* other side sent us linkstatus processor outage SIPO */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     [_link notifyMtp3RemoteProcessorOutage];
     [_link sendLinkstatus:M2PA_LINKSTATE_READY synchronous:YES];
     _link.remote_processor_outage = YES;
     return  [[UMM2PAState_ProcessorOutage alloc]initWithLink:_link status:M2PA_STATUS_PROCESSOR_OUTAGE];
 }
 
-- (UMM2PAState *)eventLinkstatusProcessorRecovered                   /* other side sent us linkstatus processor recovered */
+- (UMM2PAState *)eventLinkstatusProcessorRecovered:(NSNumber *)socketNumber                   /* other side sent us linkstatus processor recovered */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     _link.remote_processor_outage = NO;
     [_link notifyMtp3RemoteProcessorRecovered];
     return self;

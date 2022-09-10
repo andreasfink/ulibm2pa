@@ -50,10 +50,10 @@
     return [super eventSctpDown];
 }
 
-- (UMM2PAState *)eventLinkstatusOutOfService
+- (UMM2PAState *)eventLinkstatusOutOfService:(NSNumber *)socketNumber
 {
-    [self logStatemachineEvent:__func__];
-    return [super eventLinkstatusOutOfService];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
+    return [super eventLinkstatusOutOfService:(NSNumber *)socketNumber];
 }
 
 
@@ -92,9 +92,9 @@
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusAlignment
+- (UMM2PAState *)eventLinkstatusAlignment:(NSNumber *)socketNumber
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     if(_link.forcedOutOfService==YES)
     {
         return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
@@ -102,23 +102,23 @@
     return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link status:M2PA_STATUS_INITIAL_ALIGNMENT];
 }
 
-- (UMM2PAState *)eventLinkstatusProvingNormal
+- (UMM2PAState *)eventLinkstatusProvingNormal:(NSNumber *)socketNumber
 {
-    [self logStatemachineEvent:__func__ forced:YES];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     [self sendLinkstateReady:YES];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusProvingEmergency
+- (UMM2PAState *)eventLinkstatusProvingEmergency:(NSNumber *)socketNumber
 {
-    [self logStatemachineEvent:__func__ forced:YES];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     [self sendLinkstateReady:YES];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusReady
+- (UMM2PAState *)eventLinkstatusReady:(NSNumber *)socketNumber
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     [_link.t1 stop];
     [_link.t2 stop];
     [_link.t4 stop];
@@ -126,17 +126,17 @@
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusBusy
+- (UMM2PAState *)eventLinkstatusBusy:(NSNumber *)socketNumber
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     _link.congested = YES;
     [_link notifyMtp3Congestion];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusBusyEnded
+- (UMM2PAState *)eventLinkstatusBusyEnded:(NSNumber *)socketNumber
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     _link.congested = NO;
     [_link notifyMtp3CongestionCleared];
     return self;
@@ -175,18 +175,18 @@
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusProcessorOutage
+- (UMM2PAState *)eventLinkstatusProcessorOutage:(NSNumber *)socketNumber
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     _link.remote_processor_outage = YES;
     [_link notifyMtp3RemoteProcessorOutage];
     [_link sendLinkstatus:M2PA_LINKSTATE_READY synchronous:YES];
     return [[UMM2PAState_ProcessorOutage alloc] initWithLink:_link status:M2PA_STATUS_PROCESSOR_OUTAGE];
 }
 
-- (UMM2PAState *)eventLinkstatusProcessorRecovered
+- (UMM2PAState *)eventLinkstatusProcessorRecovered:(NSNumber *)socketNumber
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     _link.remote_processor_outage = NO;
     [_link notifyMtp3RemoteProcessorRecovered];
     [_link sendLinkstatus:M2PA_LINKSTATE_READY synchronous:YES];

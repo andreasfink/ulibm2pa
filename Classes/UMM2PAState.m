@@ -73,14 +73,31 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [self logStatemachineEvent:func forced:NO];
 }
 
-- (void) logStatemachineEvent:(const char *)func forced:(BOOL)forced
+- (void) logStatemachineEvent:(const char *)func socketNumber:(NSNumber *)socketNumber
+{
+    [self logStatemachineEvent:func forced:NO socketNumber:socketNumber];
+}
+
+- (void) logStatemachineEvent:(const char *)func forced:(BOOL)forced socketNumber:(NSNumber *)socketNumber
 {
     NSString *s=NULL;
     if((_link.logLevel <= UMLOG_DEBUG) || (_link.stateMachineLogFeed!=NULL) || (forced) || (_link.layerHistory))
     {
         /* func name is something like "[UMM2PAState eventNew]" */
         NSString *functionName  = UMM2PAState_currentMethodName(func);
-        s = [NSString stringWithFormat:@"EVENT %@ in STATE %@",functionName,[self description]];
+        if(_link.sctpLink.directSocket)
+        {
+            s = [NSString stringWithFormat:@"EVENT(d=%d) %@ in STATE %@",_link.sctpLink.directSocket.sock,functionName,[self description]];
+
+        }
+        else if(_link.sctpLink.listener.umsocket)
+        {
+            s = [NSString stringWithFormat:@"EVENT(l=%d) %@ in STATE %@",_link.sctpLink.listener.umsocket.sock,functionName,[self description]];
+        }
+        else
+        {
+            s = [NSString stringWithFormat:@"EVENT %@ in STATE %@",functionName,[self description]];
+        }
     }
     if((_link.logLevel <= UMLOG_DEBUG) && (s))
     {
@@ -222,18 +239,18 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 
 #pragma mark -
 #pragma mark eventLinkstatus handlers
-- (UMM2PAState *)eventLinkstatusOutOfService /* other side sent us linkstatus out of service SIOS */
+- (UMM2PAState *)eventLinkstatusOutOfService:(NSNumber *)socketNumber /* other side sent us linkstatus out of service SIOS */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     [_link.startTimer stop];
     [_link startupInitialisation];
     [_link notifyMtp3OutOfService];
     return  [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
-- (UMM2PAState *)eventLinkstatusAlignment   /* other side sent us linkstatus alignment SIO */
+- (UMM2PAState *)eventLinkstatusAlignment:(NSNumber *)socketNumber   /* other side sent us linkstatus alignment SIO */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     if(_link.forcedOutOfService==YES)
     {
         return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
@@ -241,21 +258,21 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link status:M2PA_STATUS_INITIAL_ALIGNMENT];
 }
 
-- (UMM2PAState *)eventLinkstatusProvingNormal       /* other side sent us linkstatus proving normal SIN */
+- (UMM2PAState *)eventLinkstatusProvingNormal:(NSNumber *)socketNumber       /* other side sent us linkstatus proving normal SIN */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusProvingEmergency     /* other side sent us linkstatus emergency normal SIE */
+- (UMM2PAState *)eventLinkstatusProvingEmergency:(NSNumber *)socketNumber     /* other side sent us linkstatus emergency normal SIE */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusReady               /* other side sent us linkstatus ready FISU */
+- (UMM2PAState *)eventLinkstatusReady:(NSNumber *)socketNumber               /* other side sent us linkstatus ready FISU */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     [_link.t1 stop];
     [_link.t2 stop];
     [_link.repeatTimer stop];
@@ -264,30 +281,30 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     return  [[UMM2PAState_InService alloc]initWithLink:_link status:M2PA_STATUS_IS];
 }
 
-- (UMM2PAState *)eventLinkstatusBusy                /* other side sent us linkstatus busy */
+- (UMM2PAState *)eventLinkstatusBusy:(NSNumber *)socketNumber                /* other side sent us linkstatus busy */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     _link.congested = YES;
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusBusyEnded           /* other side sent us linkstatus busy ended */
+- (UMM2PAState *)eventLinkstatusBusyEnded:(NSNumber *)socketNumber           /* other side sent us linkstatus busy ended */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     _link.congested = NO;
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusProcessorOutage         /* other side sent us linkstatus processor outage SIPO */
+- (UMM2PAState *)eventLinkstatusProcessorOutage:(NSNumber *)socketNumber         /* other side sent us linkstatus processor outage SIPO */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     _link.remote_processor_outage = YES;
     return self;
 }
 
-- (UMM2PAState *)eventLinkstatusProcessorRecovered      /* other side sent us linkstatus processor recovered */
+- (UMM2PAState *)eventLinkstatusProcessorRecovered:(NSNumber *)socketNumber      /* other side sent us linkstatus processor recovered */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     _link.remote_processor_outage = NO;
     return self;
 }

@@ -15,24 +15,26 @@
 
 @interface UMM2PATask_sctpDataIndication : UMLayerTask
 {
-    id          userId;
-    uint16_t    streamId;
-    uint32_t    protocolId;
-    NSData      *data;
-    
+    id          _userId;
+    uint16_t    _streamId;
+    uint32_t    _protocolId;
+    NSData      *_data;
+    NSNumber    *_socketNumber;
 }
 
 @property(readwrite,strong) id          userId;
 @property(readwrite,assign) uint16_t    streamId;
 @property(readwrite,assign) uint32_t    protocolId;
 @property(readwrite,strong) NSData *    data;
+@property(readwrite,strong) NSNumber *  socketNumber;
 
 - (UMM2PATask_sctpDataIndication *)initWithReceiver:(UMLayerM2PA *)rx
                                              sender:(id)tx
                                              userId:(id)uid
                                            streamId:(uint16_t)str
                                          protocolId:(uint32_t)prot
-                                               data:(NSData *)d;
+                                               data:(NSData *)d
+                                             socket:(NSNumber*)socketNumber;
 - (void)main;
 
 @end

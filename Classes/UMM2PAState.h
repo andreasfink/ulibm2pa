@@ -27,6 +27,8 @@
 - (UMM2PAState *)initWithLink:(UMLayerM2PA *)link status:(M2PA_Status)statusCode;
 - (void) logStatemachineEvent:(const char *)func;
 - (void) logStatemachineEvent:(const char *)func forced:(BOOL)forced;
+- (void) logStatemachineEvent:(const char *)func socketNumber:(NSNumber *)socketNumber;
+- (void) logStatemachineEvent:(const char *)func forced:(BOOL)forced socketNumber:(NSNumber *)socketNumber;
 - (void) logStatemachineEventString:(NSString *)str;
 - (void) logStatemachineEventString:(NSString *)str forced:(BOOL)forced;
 
@@ -45,17 +47,17 @@
 
 #pragma mark -
 #pragma mark eventLinkstatus handlers
-- (UMM2PAState *)eventLinkstatusOutOfService;       /* other side sent us linkstatus out of service SIOS */
-- (UMM2PAState *)eventLinkstatusAlignment;          /* other side sent us linkstatus alignment SIO */
-- (UMM2PAState *)eventLinkstatusProvingNormal;      /* other side sent us linkstatus proving normal SIN */
-- (UMM2PAState *)eventLinkstatusProvingEmergency;   /* other side sent us linkstatus emergency normal SIE */
-- (UMM2PAState *)eventLinkstatusReady;              /* other side sent us linkstatus ready FISU */
-- (UMM2PAState *)eventLinkstatusBusy;               /* other side sent us linkstatus busy */
-- (UMM2PAState *)eventLinkstatusBusyEnded;          /* other side sent us linkstatus busy ended */
-- (UMM2PAState *)eventLinkstatusProcessorOutage;    /* other side sent us linkstatus processor outage SIPO */
-- (UMM2PAState *)eventLinkstatusProcessorRecovered; /* other side sent us linkstatus processor recovered */
+- (UMM2PAState *)eventLinkstatusOutOfService:(NSNumber *)socketNumber;       /* other side sent us linkstatus out of service SIOS */
+- (UMM2PAState *)eventLinkstatusAlignment:(NSNumber *)socketNumber;          /* other side sent us linkstatus alignment SIO */
+- (UMM2PAState *)eventLinkstatusProvingNormal:(NSNumber *)socketNumber;      /* other side sent us linkstatus proving normal SIN */
+- (UMM2PAState *)eventLinkstatusProvingEmergency:(NSNumber *)socketNumber;   /* other side sent us linkstatus emergency normal SIE */
+- (UMM2PAState *)eventLinkstatusReady:(NSNumber *)socketNumber;              /* other side sent us linkstatus ready FISU */
+- (UMM2PAState *)eventLinkstatusBusy:(NSNumber *)socketNumber;               /* other side sent us linkstatus busy */
+- (UMM2PAState *)eventLinkstatusBusyEnded:(NSNumber *)socketNumber;          /* other side sent us linkstatus busy ended */
+- (UMM2PAState *)eventLinkstatusProcessorOutage:(NSNumber *)socketNumber;    /* other side sent us linkstatus processor outage SIPO */
+- (UMM2PAState *)eventLinkstatusProcessorRecovered:(NSNumber *)socketNumber; /* other side sent us linkstatus processor recovered */
 - (UMM2PAState *)eventSendUserData:(NSData *)data ackRequest:(NSDictionary *)ackRequest dpc:(int)dpc;
-- (UMM2PAState *)eventReceiveUserData:(NSData *)userData;   /* if data is NULL; its FISU, if not its MSU . FISU AT END OF ALIGNMENT IS LINKSTATE READY*/
+- (UMM2PAState *)eventReceiveUserData:(NSData *)userData socketNumber:(NSNumber *)socketNumber;   /* if data is NULL; its FISU, if not its MSU . FISU AT END OF ALIGNMENT IS LINKSTATE READY*/
 
 #pragma mark -
 #pragma mark timers

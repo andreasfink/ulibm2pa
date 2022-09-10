@@ -14,27 +14,22 @@
 
 @implementation UMM2PATask_sctpDataIndication
 
-@synthesize userId;
-@synthesize streamId;
-@synthesize protocolId;
-@synthesize data;
-
-
-
 - (UMM2PATask_sctpDataIndication *)initWithReceiver:(UMLayerM2PA *)rx
                                              sender:(id)tx
                                              userId:(id)uid
                                            streamId:(uint16_t)str
                                          protocolId:(uint32_t)prot
-                                               data:(NSData *)d;
+                                               data:(NSData *)d
+                                             socket:(NSNumber *)socketNumber;
 {
     self = [super initWithName:[[self class]description]  receiver:rx sender:tx requiresSynchronisation:NO];
     if(self)
     {
-        self.streamId = str;
-        self.protocolId = prot;
-        self.userId = uid;
-        self.data = d;
+        _streamId = str;
+        _protocolId = prot;
+        _userId = uid;
+        _data = d;
+        _socketNumber = socketNumber;
     }
     return self;
 }
