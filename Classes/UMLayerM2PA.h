@@ -52,6 +52,10 @@
  
  */
 
+/* macro to make sure a value is within specific timer bounds */
+#define M2TIMER_VALIDATE(value,default,min,max)  \
+    ((value==0) ? default : ((value < min) ? min : ((value>max) ? max : value)))
+
 /* default timer values */
 /* all timers are  in seconds */
 #define	M2PA_DEFAULT_T1	           45.000000 /* 45s. Time from Alignemnt to Alignment Ready received */
@@ -94,7 +98,6 @@
 #define M2PA_DEFAULT_T4_R_MAX      0.395   /* has to be smaller than M2PA_DEFAULT_T4_E */
 #define	M2PA_DEFAULT_T4_R	       0.095  /* resending timer of link status proving every 95ms */
 
-#define M2TIMER_VALIDATE(value,default,min,max)  value = ((value<min) || (value >max)) ? default : value
 /*T4: proving period normal */
 /*  highspeed: 3-70s */
 /*  64k:	7.5-9.5s, nominal 8.5s */

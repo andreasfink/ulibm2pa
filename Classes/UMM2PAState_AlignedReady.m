@@ -228,7 +228,6 @@
     [self sendLinkstateReady:YES];
     [_link.t1 stop];
     [_link.t2 stop];
-    [_link.t4r stop];
     [_link.t4 stop];
     [self logStatemachineEventString:@"t1 expired. going IS"];
     return [[UMM2PAState_InService alloc]initWithLink:_link status:M2PA_STATUS_IS];
