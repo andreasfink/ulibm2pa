@@ -18,7 +18,6 @@
     {
         [_link.t1 stop];
         [_link.t2 stop];
-        [_link.t4r stop];
         [_link.t4 stop];
         _statusCode = M2PA_STATUS_ALIGNED_READY;
         /* we now send a READY signal every second
@@ -138,7 +137,7 @@
 - (UMM2PAState *)eventLinkstatusAlignment /* other side sent us linkstatus alignment SIO */
 {
     [self logStatemachineEvent:__func__];
-//  [self sendLinkstateOutOfService:YES];
+    [self sendLinkstateReady:YES];
 //  return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
     return self;
 }
@@ -160,7 +159,6 @@
     [self logStatemachineEvent:__func__];
     [_link.t1 stop];
     [_link.t2 stop];
-    [_link.t4r stop];
     [_link.t4 stop];
     [_link notifyMtp3InService];
     return  [[UMM2PAState_InService alloc]initWithLink:_link status:M2PA_STATUS_IS];
@@ -212,7 +210,6 @@
     [_link.t1 stop];
     [_link.t1r stop];
     [_link.t2 stop];
-    [_link.t4r stop];
     [_link.t4 stop];
     [self logStatemachineEventString:@"receiveUserData going IS"];
     [_link notifyMtp3InService];

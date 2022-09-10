@@ -236,11 +236,7 @@
     [self logStatemachineEvent:__func__ forced:YES];
     return self;
 }
-- (UMM2PAState *)eventTimer4r                      /* timer 4r fired (time between proving packets being sent) */
-{
-    [self logStatemachineEvent:__func__ forced:YES];
-    return self;
-}
+
 - (UMM2PAState *)eventTimer5                       /* timer 5 fired */
 {
     [self logStatemachineEvent:__func__ forced:YES];
@@ -256,7 +252,7 @@
     [self logStatemachineEvent:__func__ forced:YES];
     return self;
 }
-- (UMM2PAState *)eventTimerOosRepeat               /* timer OOS repeat fired */
+- (UMM2PAState *)eventRepeatTimer               /* timer OOS repeat fired */
 {
     [self logStatemachineEvent:__func__ forced:YES];
     return self;

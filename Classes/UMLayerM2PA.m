@@ -136,8 +136,8 @@
             _t1 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires1) object:NULL seconds:M2PA_DEFAULT_T1 name:@"t1" repeats:NO runInForeground:YES];
             _t1r = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires1r) object:NULL seconds:M2PA_DEFAULT_T1R name:@"t1r" repeats:NO runInForeground:YES];
             
-            _oos_repeat_timer = [[UMTimer alloc]initWithTarget:self
-                                        selector:@selector(timerFiresOOSRepeat)
+            _repeatTimer = [[UMTimer alloc]initWithTarget:self
+                                        selector:@selector(repeatTimerFires)
                                           object:NULL
                                          seconds:M2PA_DEFAULT_REPEAT_OOS_TIMER
                                             name:@"oos-repeat"
@@ -147,13 +147,13 @@
             
             _t2 = [[UMTimer alloc]initWithTarget:self
                                         selector:@selector(timerFires2)
-                                          object:NULL seconds:M2PA_DEFAULT_T2
+                                          object:NULL
+                                         seconds:M2PA_DEFAULT_T2
                                             name:@"t2"
-                                         repeats:YES
+                                         repeats:NO
                                  runInForeground:YES];
             _t3 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires3) object:NULL seconds:M2PA_DEFAULT_T3 name:@"t3" repeats:NO runInForeground:YES];
             _t4 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires4) object:NULL seconds:M2PA_DEFAULT_T4_N name:@"t4" repeats:NO runInForeground:YES];
-            _t4r = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires4r) object:NULL seconds:M2PA_DEFAULT_T4_R name:@"t4r" repeats:YES runInForeground:YES];
             _t5 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires5) object:NULL seconds:M2PA_DEFAULT_T5 name:@"t5" repeats:NO runInForeground:YES];
             _t6 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires6) object:NULL seconds:M2PA_DEFAULT_T6 name:@"t6" repeats:NO runInForeground:YES];
             _t7 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires7) object:NULL seconds:M2PA_DEFAULT_T7 name:@"t7" repeats:NO runInForeground:YES];
@@ -162,8 +162,11 @@
             _t18 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires18) object:NULL seconds:M2PA_DEFAULT_T18 name:@"t18" repeats:NO runInForeground:YES];
             _ackTimer = [[UMTimer alloc]initWithTarget:self selector:@selector(ackTimerFires) object:NULL seconds:M2PA_DEFAULT_ACK_TIMER name:@"ack-timer" repeats:NO runInForeground:YES];
             _startTimer = [[UMTimer alloc]initWithTarget:self selector:@selector(startTimerFires) object:NULL seconds:M2PA_DEFAULT_START_TIMER name:@"start-timer" repeats:NO runInForeground:YES];
+            _repeatTimer = [[UMTimer alloc]initWithTarget:self selector:@selector(repeatTimerFires) object:NULL seconds:0.5 name:@"repeat-timer" repeats:NO runInForeground:YES];
+
             _t4n = M2PA_DEFAULT_T4_N;
             _t4e = M2PA_DEFAULT_T4_E;
+            _t4r = M2PA_DEFAULT_T4_R;
             _control_link_buffer        = [[NSMutableData alloc] init];
             _data_link_buffer           = [[NSMutableData alloc] init];
             _waitingMessages            = [[UMQueueSingle alloc]init];
@@ -1075,11 +1078,10 @@
     [self queueTimerEvent:NULL timerName:@"t2"];
 }
 
-- (void)timerFiresOOSRepeat
+- (void)repeatTimerFires
 {
-    [self queueTimerEvent:NULL timerName:@"oos-repeat"];
+    [self queueTimerEvent:NULL timerName:@"repeat"];
 }
-
 
 - (void)timerFires3
 {
@@ -1089,11 +1091,6 @@
 {
     [_t4 stop];
 	[self queueTimerEvent:NULL timerName:@"t4"];
-}
-
-- (void)timerFires4r
-{
-	[self queueTimerEvent:NULL timerName:@"t4r"];
 }
 
 - (void)timerFires5
@@ -1118,7 +1115,6 @@
     [_t16 stop];
     [self queueTimerEvent:NULL timerName:@"t16"];
 }
-
 
 - (void)timerFires17
 {
@@ -1236,12 +1232,12 @@
     }
 }
 
-- (void)_timerFires4r
+- (void)_repeatTimerFires
 {
     UMMUTEX_LOCK(_controlLock);
     @try
     {
-        self.state = [_state eventTimer4r];
+        self.state = [_state eventRepeatTimer];
     }
     @catch(NSException *e)
     {
@@ -1306,25 +1302,6 @@
     }
 }
 
-- (void)_timerFiresOOSRepeat
-{
-    /* Figure 13/Q.703 (sheet 2 of 7) */
-    UMMUTEX_LOCK(_controlLock);
-    @try
-    {
-        self.state = [_state eventTimerOosRepeat];
-        _linkstate_busy = NO;
-        [_t7 stop];
-    }
-    @catch(NSException *e)
-    {
-        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
-    }
-    @finally
-    {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
-}
 
 
 #pragma mark -
@@ -1962,9 +1939,9 @@
         {
             [self _timerFires4];
         }
-        else 	if([timerName isEqualToString:@"t4r"])
+        else 	if([timerName isEqualToString:@"repeat"])
         {
-            [self _timerFires4r];
+            [self _repeatTimerFires];
         }
         else 	if([timerName isEqualToString:@"t5"])
         {
@@ -1977,10 +1954,6 @@
         else 	if([timerName isEqualToString:@"t7"])
         {
             [self _timerFires7];
-        }
-        else     if([timerName isEqualToString:@"oos-repeat"])
-        {
-            [self _timerFiresOOSRepeat];
         }
         else
         {
@@ -2442,7 +2415,7 @@
     config[@"t3"] =@(_t3.seconds);
     config[@"t4e"] =@(_t4e);
     config[@"t4n"] =@(_t4n);
-    config[@"t4r"] =@(_t4r.seconds);
+    config[@"t4r"] =@(_t4r);
     config[@"t5"] =@(_t5.seconds);
     config[@"t6"] =@(_t6.seconds);
     config[@"t7"] =@(_t7.seconds);
@@ -2506,7 +2479,7 @@
         }
         if (cfg[@"t4r"])
         {
-            _t4r.seconds = [cfg[@"t4r"] doubleValue];
+            _t4r = [cfg[@"t4r"] doubleValue];
         }
         if (cfg[@"t5"])
         {
@@ -2730,15 +2703,13 @@ static NSDateFormatter *dateFormatter = NULL;
     dict[@"t2"] = [_t2 timerDescription];
     dict[@"t3"] = [_t3 timerDescription];
     dict[@"t4"] = [_t4 timerDescription];
-    dict[@"t4r"] = [_t4r timerDescription];
     dict[@"t5"] = [_t5 timerDescription];
     dict[@"t6"] = [_t6 timerDescription];
     dict[@"t7"] = [_t7 timerDescription];
-
     dict[@"t16"] = [_t16 timerDescription];
     dict[@"t17"] = [_t17 timerDescription];
-    dict[@"t18"] = [_t18 timerDescription];
 
+    dict[@"repeat_timer"] = [_repeatTimer timerDescription];
     dict[@"use-ack-timer"] = @(_useAckTimer);
     dict[@"ack-timer"] = [_ackTimer timerDescription];
     dict[@"start-timer"] = [_startTimer timerDescription];

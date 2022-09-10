@@ -209,7 +209,8 @@ typedef enum PocStatus
     UMSynchronizedDictionary            *_unackedMsu;
     u_int32_t							_outstanding;
     NSTimeInterval      				_t4n;
-    NSTimeInterval      				_t4e;
+    NSTimeInterval                      _t4e;
+    NSTimeInterval                      _t4r;
     UMLayerSctp     					*_sctpLink;
 
     M2PA_Status                         _lastNotifiedStatus;
@@ -222,7 +223,7 @@ typedef enum PocStatus
 		/* Following successful alignment and proving procedure, the signalling terminal enters Aligned Ready state and the aligned ready time-out T1 is stopped on entry in the In-service state and the duration of time-out T1 should be chosen such that the remote end can perform four additional proving attempts. */
     UMTimer    *_t1r;    /* how fast are we sending reoccuring "alignment ready" */
 
-    UMTimer    *_oos_repeat_timer;    /* repeating LINKSTATE_OOS while in OOS state */
+    UMTimer    *_repeatTimer;    /* repeating LINKSTATE_OOS while in OOS state or  repeating ALIGNMENT in initial alignment, repeating PROVING in ALIGNMENT-NOT-READY */
 
     UMTimer    *_t2;	/* Timer "not aligned" */
 		/* recommended values: 			*/
@@ -241,7 +242,6 @@ typedef enum PocStatus
 		 	Expiry of timer T4 (see 12.3) indicates a successful proving period unless the proving
 		 	period has been previously aborted up to four times.
 		 */
-    UMTimer    *_t4r;	/* intervall to send alignment messages */
     UMTimer    *_t5; /* Timer T5 "sending SIB" */
 		/* recommended value: 80-120ms */
 
@@ -336,18 +336,18 @@ typedef enum PocStatus
 
 @property(readwrite,strong)     UMTimer  *t1;       /* T1:  alignment ready */
 @property(readwrite,strong)     UMTimer  *t1r;      /* T1R:  alignment ready repeat */
-@property(readwrite,strong)     UMTimer  *oos_repeat_timer;     
 @property(readwrite,strong)     UMTimer  *t2;          /* T2: not aligned */
 @property(readwrite,strong)     UMTimer  *t3;
 @property(readwrite,strong)     UMTimer  *t4;
-@property(readwrite,strong)     UMTimer  *t4r;
 @property(readwrite,strong)     UMTimer  *t5;
 @property(readwrite,strong)     UMTimer  *t6;
 @property(readwrite,strong)     UMTimer  *t7;
 @property(readwrite,strong)     UMTimer  *ackTimer;
+@property(readwrite,strong)     UMTimer  *repeatTimer;
 @property(readwrite,assign)     NSTimeInterval      t4n;
 @property(readwrite,assign)     NSTimeInterval      t4e;
-//@property(readwrite,assign,atomic) M2PA_Status m2pa_status; // this one has proper getter and setter 
+@property(readwrite,assign)     NSTimeInterval      t4r;
+//@property(readwrite,assign,atomic) M2PA_Status m2pa_status; // this one has proper getter and setter
 @property(readwrite,assign,atomic) UMSocketStatus sctp_status;
 @property(readwrite,assign,atomic)  SpeedStatus speed_status;
 
@@ -449,7 +449,6 @@ typedef enum PocStatus
 - (void)timerFires2;
 - (void)timerFires3;
 - (void)timerFires4;
-- (void)timerFires4r;
 - (void)timerFires5;
 - (void)timerFires6;
 - (void)timerFires7;
@@ -457,11 +456,10 @@ typedef enum PocStatus
 - (void)_timerFires2;
 - (void)_timerFires3;
 - (void)_timerFires4;
-- (void)_timerFires4r;
 - (void)_timerFires5;
 - (void)_timerFires6;
 - (void)_timerFires7;
-
+- (void)_repeatTimerFires;
 - (void)ackTimerFires;
 
 #pragma mark -

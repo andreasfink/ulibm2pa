@@ -21,10 +21,9 @@
         [_link.t2 stop];
         [_link.t4 stop];
         _t4_expired = NO;
-        [_link.t4r stop];
-        double t = _link.t4r.seconds;
+        double t = _link.t4r;
         M2TIMER_VALIDATE(t,M2PA_DEFAULT_T4_R,M2PA_DEFAULT_T4_R_MIN,M2PA_DEFAULT_T4_R_MAX);
-        _link.t4r.seconds = t;
+        _link.t4r = t;
         if(_link.emergency)
         {
             t = _link.t4e;
@@ -42,7 +41,8 @@
             [self sendLinkstateProvingNormal:YES];
         }
         [_link.t4 start];
-        [_link.t4r start]; /* sending out status timer */
+        _link.repeatTimer.seconds = _link.t4r;
+        [_link.repeatTimer start]; /* sending out status timer */
         [_link.t3 start];
     }
     return self;
@@ -255,7 +255,6 @@
         [_link.t1 stop];
         [_link.t2 stop];
         [_link.t4 stop];
-        [_link.t4r stop];
         [self sendLinkstateReady:YES];
         return [[UMM2PAState_AlignedReady alloc]initWithLink:_link status:M2PA_STATUS_ALIGNED_READY];
     }
@@ -276,14 +275,13 @@
     [self logStatemachineEvent:__func__];
     [_link.t1 stop];
     [_link.t2 stop];
-    [_link.t4r stop];
     [_link.t4 stop];
     [self sendLinkstateReady:YES];
     return [[UMM2PAState_AlignedReady alloc]initWithLink:_link status:M2PA_STATUS_ALIGNED_READY];
 }
 
 
-- (UMM2PAState *)eventTimer4r                      /* timer 4r fired (time between proving packets being sent) */
+- (UMM2PAState *)eventRepeatTimer                      /* timer 4r fired (time between proving packets being sent) */
 {
     [self logStatemachineEvent:__func__];
     if(([_link.t4 isExpired]) || (_t4_expired))
@@ -291,7 +289,7 @@
         [_link.t1 stop];
         [_link.t2 stop];
         [_link.t4 stop];
-        [_link.t4r stop];
+        [_link.repeatTimer stop];
         [self sendLinkstateReady:YES];
         return [[UMM2PAState_AlignedReady alloc]initWithLink:_link status:M2PA_STATUS_ALIGNED_READY];
     }

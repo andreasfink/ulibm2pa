@@ -20,7 +20,6 @@
         [_link.t1 stop];
         [_link.t1r stop];
         [_link.t2 stop];
-        [_link.t4r stop];
         [_link.t4 stop];
         [_link resetSequenceNumbers];
         _statusCode = M2PA_STATUS_IS;
@@ -126,7 +125,6 @@
     [self logStatemachineEvent:__func__];
     [_link.t1 stop];
     [_link.t2 stop];
-    [_link.t4r stop];
     [_link.t4 stop];
     [_link notifyMtp3InService];
     return self;
@@ -192,10 +190,10 @@
     return self;
 }
 
-- (UMM2PAState *)eventTimer4r
+- (UMM2PAState *)eventRepeatTimer
 {
     [self logStatemachineEvent:__func__];
-    [_link.t4r stop];
+    [_link.repeatTimer stop];
     return self;
 }
 

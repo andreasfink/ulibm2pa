@@ -64,12 +64,11 @@
 - (UMM2PAState *)eventTimer2;                       /* timer 2 fired (not aligned timer) */
 - (UMM2PAState *)eventTimer3;                       /* timer 3 fired (waiting for first proving. alignment timer) */
 - (UMM2PAState *)eventTimer4;                       /* timer 4 fired (proving period) */
-- (UMM2PAState *)eventTimer4r;                      /* timer 4r fired (time between proving packets being sent) */
 - (UMM2PAState *)eventTimer5;                       /* timer 5 fired */
 - (UMM2PAState *)eventTimer6;                       /* timer 6 fired (remote congestion timer.
                                                             if remote stays longer than this, we go OOS) */
 - (UMM2PAState *)eventTimer7;                       /* timer 7 fired ((excessive delay of acknowledgement) */
-- (UMM2PAState *)eventTimerOosRepeat;               /* timer OOS repeat fired */
+- (UMM2PAState *)eventRepeatTimer;               /* timer OOS repeat fired */
 
 
 #pragma mark -

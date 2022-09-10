@@ -20,11 +20,9 @@
     {
         _statusCode = M2PA_STATUS_OOS;
         [_link.t2 stop];
-        [_link.t4 stop];
-        [_link.t4r stop];
         // we can not do this at this moment as we might still be in status UMMP2PAState off. so we let the timer send the first OOS */
-        [_link.oos_repeat_timer stop];
-        [_link.oos_repeat_timer start]; /* heartbeat sending out OOS */
+        [_link.repeatTimer stop];
+        [_link.repeatTimer start]; /* heartbeat sending out OOS */
     }
     return self;
 }
@@ -58,7 +56,7 @@
         [self sendLinkstateOutOfService:YES];
         return self;
     }
-    [_link.oos_repeat_timer stop];
+    [_link.repeatTimer stop];
     [self sendLinkstateAlignment:YES];
     return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link status:M2PA_STATUS_INITIAL_ALIGNMENT];
 }
@@ -117,7 +115,7 @@
         return self;
     }
     [self sendLinkstateAlignment:YES];
-    [_link.oos_repeat_timer stop];
+    [_link.repeatTimer stop];
     return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link status:M2PA_STATUS_INITIAL_ALIGNMENT];
 }
 
@@ -176,7 +174,7 @@
 }
 
 
-- (UMM2PAState *)eventTimerOosRepeat
+- (UMM2PAState *)eventRepeatTimer
 {
     [self logStatemachineEvent:__func__];
     [self sendLinkstateOutOfService:YES];

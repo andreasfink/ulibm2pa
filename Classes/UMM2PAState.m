@@ -42,6 +42,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 
 - (UMM2PAState *)initWithLink:(UMLayerM2PA *)link status:(M2PA_Status)statusCode
 {
+    [_link.repeatTimer stop];
     _statusCode = statusCode;
     NSAssert(link!=NULL,@"link can not be NULL");
     self = [super init];
@@ -257,7 +258,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [self logStatemachineEvent:__func__];
     [_link.t1 stop];
     [_link.t2 stop];
-    [_link.t4r stop];
+    [_link.repeatTimer stop];
     [_link.t4 stop];
     [_link notifyMtp3InService];
     return  [[UMM2PAState_InService alloc]initWithLink:_link status:M2PA_STATUS_IS];
@@ -323,11 +324,6 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     return self;
 }
 
-- (UMM2PAState *)eventTimer4r                           /* timer 4r fired (time between proving packets being sent) */
-{
-    [self logStatemachineEvent:__func__];
-    return self;
-}
 
 - (UMM2PAState *)eventTimer5                            /* timer 5 fired */
 {
@@ -347,10 +343,10 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     return self;
 }
 
-- (UMM2PAState *)eventTimerOosRepeat
+- (UMM2PAState *)eventRepeatTimer
 {
     [self logStatemachineEvent:__func__];
-    [_link.oos_repeat_timer stop];
+    [_link.repeatTimer stop];
     return self;
 }
 

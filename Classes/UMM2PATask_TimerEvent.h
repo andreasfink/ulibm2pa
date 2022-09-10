@@ -16,7 +16,7 @@
 
 @interface UMM2PATask_TimerEvent : UMLayerTask
 {
-    NSString *_timerName; /*timer 4r = -4 */
+    NSString *_timerName; 
 }
 
 @property(readwrite,strong) NSString *timerName;

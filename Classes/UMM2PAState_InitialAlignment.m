@@ -13,12 +13,12 @@
 @implementation UMM2PAState_InitialAlignment
 - (UMM2PAState *)initWithLink:(UMLayerM2PA *)link status:(M2PA_Status)statusCode
 {
+    [_link.repeatTimer stop];
     self =[super initWithLink:link  status:statusCode];
     {
         _statusCode = M2PA_STATUS_INITIAL_ALIGNMENT;
         [_link.t2 stop];
         [_link.t4 stop];
-        [_link.t4r stop];
         // the timer will send it. we first have to return the correct state to the caller
         [self sendLinkstateAlignment:YES];
         [_link.t2 start];
@@ -145,16 +145,11 @@
     return self;
 }
 
-- (UMM2PAState *)eventTimer4r
-{
-    [_link.t4r stop];
-    return self;
-}
 
-- (UMM2PAState *)eventTimerOosRepeat
+- (UMM2PAState *)eventRepeatTimer
 {
     [self logStatemachineEvent:__func__];
-    [_link.oos_repeat_timer stop];
+    [_link.repeatTimer stop];
     return self;
 }
 
@@ -165,6 +160,15 @@
 }
 
 - (UMM2PAState *)eventTimer2
+{
+    [self logStatemachineEvent:__func__];
+    _link.emergency = NO;
+    _link.alignmentNotPossible = YES;
+    [self sendLinkstateAlignment:YES];
+    return self;
+}
+
+- (UMM2PAState *)eventTimer2r
 {
     [self logStatemachineEvent:__func__];
     _link.emergency = NO;
