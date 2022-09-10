@@ -78,6 +78,11 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [self logStatemachineEvent:func forced:NO socketNumber:socketNumber];
 }
 
+- (void) logStatemachineEvent:(const char *)func forced:(BOOL)forced
+{
+    [self logStatemachineEvent:func forced:forced socketNumber:NULL];
+}
+
 - (void) logStatemachineEvent:(const char *)func forced:(BOOL)forced socketNumber:(NSNumber *)socketNumber
 {
     NSString *s=NULL;
