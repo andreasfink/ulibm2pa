@@ -198,13 +198,13 @@
 }
 
 
-- (UMM2PAState *)eventReceiveUserData:(NSData *)userData
+- (UMM2PAState *)eventReceiveUserData:(NSData *)userData socketNumber:(NSNumber *)socketNumber
 {
     /* we dont want to fill up the statemachine log with entries for every packet received. So we only log the first 3 */
     /* the passing of the data to MTP3 happens outside this event machine  in UMLayerM2PA */
     if(_userDataReceived<3)
     {
-        [self logStatemachineEvent:__func__];
+        [self logStatemachineEvent:__func__ socketNumber:socketNumber];
         _userDataReceived++;
     }
     else if(_userDataReceived==3)

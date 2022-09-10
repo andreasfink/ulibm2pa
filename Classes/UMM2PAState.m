@@ -236,9 +236,10 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     return self;
 }
 
-- (UMM2PAState *)eventReceiveUserData:(NSData *)userData
+- (UMM2PAState *)eventReceiveUserData:(NSData *)userData socketNumber:(NSNumber *)socketNumber
+/* if data is NULL; its FISU, if not its MSU . FISU AT END OF ALIGNMENT IS LINKSTATE READY*/
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 

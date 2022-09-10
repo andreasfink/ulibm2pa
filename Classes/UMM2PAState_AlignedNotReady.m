@@ -131,10 +131,10 @@
     return [[UMM2PAState_AlignedReady alloc] initWithLink:_link status:M2PA_STATUS_ALIGNED_READY];
 }
 
-- (UMM2PAState *)eventReceiveUserData:(NSData *)userData
+- (UMM2PAState *)eventReceiveUserData:(NSData *)userData socketNumber:(NSNumber *)socketNumber
 {
     /* data processing is done outside by the caller */
-    [self logStatemachineEvent:__func__ forced:YES];
+    [self logStatemachineEvent:__func__ forced:YES socketNumber:socketNumber];
     _link.remote_processor_outage = YES;
     return  [[UMM2PAState_ProcessorOutage alloc]initWithLink:_link status:M2PA_STATUS_PROCESSOR_OUTAGE];
     return self;

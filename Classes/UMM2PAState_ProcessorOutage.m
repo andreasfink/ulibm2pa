@@ -149,8 +149,9 @@
     return self;
 }
 
-- (UMM2PAState *)eventReceiveUserData:(NSData *)userData
+- (UMM2PAState *)eventReceiveUserData:(NSData *)userData socketNumber:(NSNumber *)socketNumber
 {
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 
