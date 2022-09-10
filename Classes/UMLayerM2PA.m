@@ -952,7 +952,7 @@
     }
 }
 
-- (void) linktestTimerReportsFailure:(NSNumber *)socketNumber
+- (void) linktestTimerReportsFailure
 {
     UMMUTEX_LOCK(_controlLock);
     @try
