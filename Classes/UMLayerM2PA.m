@@ -963,7 +963,7 @@
         }
         else
         {
-            self.state = [_state eventLinkstatusOutOfService:socketNumber];
+            self.state = [_state eventLinkstatusOutOfService:NULL];
         }
     }
     @catch(NSException *e)
