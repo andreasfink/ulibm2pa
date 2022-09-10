@@ -18,7 +18,8 @@
                                                sender:(id)tx
                                                userId:(id)uid
                                                status:(int)s
-                                               reason:(NSString*)reason;
+                                               reason:(NSString*)reason
+                                               socket:(NSNumber *)socketNumber;
 {
     self = [super initWithName:[[self class]description]  receiver:rx sender:tx requiresSynchronisation:NO];
     if(self)
@@ -26,6 +27,7 @@
         _userId = uid;
         _status = s;
         _reason = reason;
+        _socketNumber = socketNumber;
     }
     return self;
 }

@@ -38,8 +38,8 @@
 - (UMM2PAState *)eventPowerOff;                     /* switch off the wire */
 - (UMM2PAState *)eventStart;                        /* start the alignment process */
 - (UMM2PAState *)eventStop;                         /* stop the link */
-- (UMM2PAState *)eventSctpUp;                       /* SCTP reports the 'wire' has come up*/
-- (UMM2PAState *)eventSctpDown;                     /* SCTP reports the conncetion is lost */
+- (UMM2PAState *)eventSctpUp:(NSNumber*)socketNumber;   /* SCTP reports the 'wire' has come up*/
+- (UMM2PAState *)eventSctpDown:(NSNumber*)socketNumber; /* SCTP reports the conncetion is lost */
 - (UMM2PAState *)eventEmergency;                    /* MTP3 tells his is an emergency link */
 - (UMM2PAState *)eventEmergencyCeases;              /* MTP3 tells his is not an emergency link */
 - (UMM2PAState *)eventLocalProcessorOutage;         /* MTP3 tells processor is out */

@@ -45,15 +45,15 @@
     return self;
 }
 
-- (UMM2PAState *)eventSctpUp
+- (UMM2PAState *)eventSctpUp:(NSNumber *)socketNumber              /* SCTP reports the 'wire' has come up*/
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 
-- (UMM2PAState *)eventSctpDown
+- (UMM2PAState *)eventSctpDown:(NSNumber *)socketNumber             /* SCTP reports the conncetion is lost */
 {
-    return [super eventSctpDown];
+    return [super eventSctpDown:socketNumber];
 }
 
 - (UMM2PAState *)eventLinkstatusOutOfService:(NSNumber *)socketNumber

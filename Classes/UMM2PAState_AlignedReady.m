@@ -70,15 +70,15 @@
     return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
-- (UMM2PAState *)eventSctpUp                     /* SCTP reports the 'wire' has come up*/
+- (UMM2PAState *)eventSctpUp:(NSNumber *)socketNumber              /* SCTP reports the 'wire' has come up*/
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 
-- (UMM2PAState *)eventSctpDown                  /* SCTP reports the conncetion is lost */
+- (UMM2PAState *)eventSctpDown:(NSNumber *)socketNumber             /* SCTP reports the conncetion is lost */
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     /* link failure event according to Q:703 07/96 page 5 */
     /* we cant send OOS on a already dead link so we skip it */
     // [self sendLinkstateOutOfService:YES];

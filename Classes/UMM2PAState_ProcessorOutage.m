@@ -39,15 +39,16 @@
     return self;
 }
 
-- (UMM2PAState *)eventSctpUp
+- (UMM2PAState *)eventSctpUp:(NSNumber *)socketNumber              /* SCTP reports the 'wire' has come up*/
 {
-    [self logStatemachineEvent:__func__];
-    return [super eventSctpUp];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
+    return [super eventSctpUp:socketNumber];
 }
 
-- (UMM2PAState *)eventSctpDown
+- (UMM2PAState *)eventSctpDown:(NSNumber *)socketNumber
 {
-    return [super eventSctpDown];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
+    return [super eventSctpDown:socketNumber];
 }
 
 - (UMM2PAState *)eventLinkstatusOutOfService:(NSNumber *)socketNumber

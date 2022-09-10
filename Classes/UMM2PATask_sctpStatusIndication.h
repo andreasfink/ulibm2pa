@@ -18,17 +18,20 @@
     id              _userId;
     UMSocketStatus  _status;
     NSString        *_reason;
+    NSNumber        *_socketNumber;
 }
 
 @property(readwrite,strong) id              userId;
 @property(readwrite,assign) UMSocketStatus  status;
 @property(readwrite,strong) NSString        *reason;
+@property(readwrite,strong) NSNumber        *socketNumber;
 
 - (UMM2PATask_sctpStatusIndication *)initWithReceiver:(UMLayerM2PA *)rx
                                                sender:(id)tx
                                                userId:(id)uid
                                                status:(int)s
-                                               reason:(NSString *)reason;
+                                               reason:(NSString *)reason
+                                               socket:(NSNumber *)socketNumber;
 - (void)main;
 
 @end

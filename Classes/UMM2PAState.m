@@ -192,15 +192,15 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     return  [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
-- (UMM2PAState *)eventSctpUp
+- (UMM2PAState *)eventSctpUp:(NSNumber*)socketNumber
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 
-- (UMM2PAState *)eventSctpDown
+- (UMM2PAState *)eventSctpDown:(NSNumber*)socketNumber
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     [_link.startTimer stop];
     [_link startupInitialisation];
     [_link notifyMtp3Stop];

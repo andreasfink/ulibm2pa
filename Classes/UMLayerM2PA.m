@@ -239,13 +239,14 @@
                        userId:(id)uid
                        status:(UMSocketStatus)s
 {
-    return [self sctpStatusIndication:caller userId:uid status:s reason:NULL];
+    return [self sctpStatusIndication:caller userId:uid status:s reason:NULL socket:NULL];
 }
 
 - (void) sctpStatusIndication:(UMLayer *)caller
                        userId:(id)uid
                        status:(UMSocketStatus)s
                        reason:(NSString *)reason
+                       socket:(NSNumber *)socketNumber
 {
     @autoreleasepool
     {
@@ -277,7 +278,8 @@
                                                                                                   sender:caller
                                                                                                   userId:uid
                                                                                                   status:s
-                                                                                                  reason:reason];
+                                                                                                  reason:reason
+                                                                                                  socket:socketNumber];
         [self queueFromLowerWithPriority:task];
     }
 }
@@ -336,7 +338,7 @@
         [self queueFromLower:task];
     }
 }
-- (void)sctpReportsUp
+- (void)sctpReportsUp:(NSNumber *)socketNumber
 {
     UMMUTEX_LOCK(_controlLock);
     @try
@@ -345,7 +347,7 @@
         
         if([_state isKindOfClass:[UMM2PAState_Off class]])
         {
-            self.state = [_state eventSctpUp];
+            self.state = [_state eventSctpUp:(NSNumber *)socketNumber];
         }
         if([_state isKindOfClass:[UMM2PAState_OutOfService class]])
         {
@@ -363,13 +365,13 @@
     }
 }
 
-- (void)sctpReportsDown
+- (void)sctpReportsDown:(NSNumber *)socketNumber
 {
     UMMUTEX_LOCK(_controlLock);
     @try
     {
         _sctpDownReceived++;
-        self.state = [_state eventSctpDown];
+        self.state = [_state eventSctpDown:socketNumber];
     }
     @catch(NSException *e)
     {
@@ -383,7 +385,7 @@
 
 - (void) _sctpStatusIndicationTask:(UMM2PATask_sctpStatusIndication *)task
 {
-    [self setSctp_status:task.status reason:task.reason];
+    [self setSctp_status:task.status reason:task.reason socketNumber:task.socketNumber];
 }
 
 - (UMSocketStatus)sctp_status
@@ -397,6 +399,11 @@
 }
 
 - (void)setSctp_status:(UMSocketStatus )newStatus reason:(NSString *)reason
+{
+    [self setSctp_status:newStatus reason:reason socketNumber:NULL];
+}
+
+- (void)setSctp_status:(UMSocketStatus )newStatus reason:(NSString *)reason socketNumber:(NSNumber *)socketNumber
 {
     int old_sctp_status = _sctp_status;
     _sctp_status = newStatus;
@@ -420,7 +427,7 @@
             NSString *s = [NSString stringWithFormat:@"sctp-link-died %@",reason];
             [_state logStatemachineEvent:s.UTF8String];
         }
-        [self sctpReportsDown];
+        [self sctpReportsDown:socketNumber];
         /* this is the job of the state machine now */
         //[_sctpLink openFor:self sendAbortFirst:NO reason:@"sctp-link-died"];
     }
@@ -428,7 +435,7 @@
     && (_sctp_status == UMSOCKET_STATUS_IS))
     {
         /* SCTP link came up properly. Lets start M2PA now on it */
-        [self sctpReportsUp];
+        [self sctpReportsUp:socketNumber];
     }
 
     NSArray *usrs = [_users arrayCopy];

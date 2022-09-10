@@ -83,15 +83,15 @@
     return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
-- (UMM2PAState *)eventSctpUp    /* SCTP reports the 'wire' has come up*/
+- (UMM2PAState *)eventSctpUp:(NSNumber *)socketNumber              /* SCTP reports the 'wire' has come up*/
 {
-    [self logStatemachineEvent:__func__];
+    [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     return self;
 }
 
-- (UMM2PAState *)eventSctpDown   /* SCTP reports the conncetion is lost */
+- (UMM2PAState *)eventSctpDown:(NSNumber *)socketNumber             /* SCTP reports the conncetion is lost */
 {
-    return [super eventSctpDown];
+    return [super eventSctpDown:socketNumber];
 }
 
 - (UMM2PAState *)eventEmergency             /* MTP3 tells his is an emergency link */
