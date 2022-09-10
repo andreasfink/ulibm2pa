@@ -90,18 +90,23 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     {
         /* func name is something like "[UMM2PAState eventNew]" */
         NSString *functionName  = UMM2PAState_currentMethodName(func);
+        NSString *f = @"";
+        if(socketNumber)
+        {
+            f = [NSString stringWithFormat:@" RECEIVED ON SOCKET %@",socketNumber];
+        }
         if(_link.sctpLink.directSocket)
         {
-            s = [NSString stringWithFormat:@"EVENT(d=%d) %@ in STATE %@",_link.sctpLink.directSocket.sock,functionName,[self description]];
+            s = [NSString stringWithFormat:@"EVENT(d=%d) %@ in STATE %@%@",_link.sctpLink.directSocket.sock,functionName,[self description],f];
 
         }
         else if(_link.sctpLink.listener.umsocket)
         {
-            s = [NSString stringWithFormat:@"EVENT(l=%d) %@ in STATE %@",_link.sctpLink.listener.umsocket.sock,functionName,[self description]];
+            s = [NSString stringWithFormat:@"EVENT(l=%d) %@ in STATE %@%@",_link.sctpLink.listener.umsocket.sock,functionName,[self description],f];
         }
         else
         {
-            s = [NSString stringWithFormat:@"EVENT %@ in STATE %@",functionName,[self description]];
+            s = [NSString stringWithFormat:@"EVENT %@ in STATE %@%@",functionName,[self description],f];
         }
     }
     if((_link.logLevel <= UMLOG_DEBUG) && (s))
