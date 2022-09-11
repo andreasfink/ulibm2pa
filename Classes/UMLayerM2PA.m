@@ -238,13 +238,6 @@
 - (void) sctpStatusIndication:(UMLayer *)caller
                        userId:(id)uid
                        status:(UMSocketStatus)s
-{
-    return [self sctpStatusIndication:caller userId:uid status:s reason:NULL socket:NULL];
-}
-
-- (void) sctpStatusIndication:(UMLayer *)caller
-                       userId:(id)uid
-                       status:(UMSocketStatus)s
                        reason:(NSString *)reason
                        socket:(NSNumber *)socketNumber
 {
