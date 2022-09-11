@@ -1078,15 +1078,6 @@
 
 }
 
-- (void)sctpMonitorIndication:(UMLayer *)caller userId:(id)uid streamId:(uint16_t)sid protocolId:(uint32_t)pid data:(NSData *)d incoming:(BOOL)in { 
-    <#code#>
-}
-
-
-- (void)sctpStatusIndication:(UMLayer *)caller userId:(id)uid status:(UMSocketStatus)s reason:(NSString *)reason { 
-    <#code#>
-}
-
 #pragma mark -
 #pragma mark Timer Callbacks
 
