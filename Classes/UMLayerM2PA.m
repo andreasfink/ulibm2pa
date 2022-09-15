@@ -115,9 +115,6 @@
         if(self)
         {
             _users = [[UMSynchronizedArray alloc] init];
-            _seqNumLock = [[UMMutex alloc]initWithName:@"m2pa-seq-num-mutex"];
-            _dataLock = [[UMMutex alloc]initWithName:@"m2pa-data-mutex"];
-            _controlLock = [[UMMutex alloc]initWithName:@"m2pa-control-mutex"];
             _incomingDataBufferLock = [[UMMutex alloc]initWithName:@"m2pa-incoming-data-mutex"];
             _unackedMsu = [[UMSynchronizedDictionary alloc]init];
             _state = [[UMM2PAState_Off alloc]initWithLink:self status:M2PA_STATUS_OFF];
@@ -199,8 +196,7 @@
         [self backtraceException];
         UMAssert((state != NULL),@"state can not be null");
     }
-    UMMUTEX_LOCK(_controlLock);
-    @try
+        @try
     {
         if((_logLevel <=UMLOG_DEBUG) || (_stateMachineLogFeed))
         {
@@ -226,8 +222,7 @@
     }
     @finally
     {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
+            }
 }
 
 #pragma mark -
@@ -333,8 +328,7 @@
 }
 - (void)sctpReportsUp:(NSNumber *)socketNumber
 {
-    UMMUTEX_LOCK(_controlLock);
-    @try
+        @try
     {
         _sctpUpReceived++;
         
@@ -354,14 +348,12 @@
     }
     @finally
     {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
+            }
 }
 
 - (void)sctpReportsDown:(NSNumber *)socketNumber
 {
-    UMMUTEX_LOCK(_controlLock);
-    @try
+        @try
     {
         _sctpDownReceived++;
         self.state = [_state eventSctpDown:socketNumber];
@@ -372,8 +364,7 @@
     }
     @finally
     {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
+            }
 }
 
 - (void) _sctpStatusIndicationTask:(UMM2PATask_sctpStatusIndication *)task
@@ -596,9 +587,7 @@
                 {
                     if(_useAckTimer == YES)
                     {
-                        UMMUTEX_LOCK(_dataLock);
                         [_ackTimer start];
-                        UMMUTEX_UNLOCK(_dataLock);
                     }
                     else
                     {
@@ -606,8 +595,7 @@
                     }
                 }
                 NSData *userData = [NSData dataWithBytes:&dptr[16] length:userDataLen];
-                UMMUTEX_LOCK(_controlLock);
-                @try
+                                @try
                 {
                     self.state = [_state eventReceiveUserData:userData socketNumber:socketNumber];
                     if([self.state isKindOfClass: [UMM2PAState_InService class]])
@@ -621,8 +609,7 @@
                 }
                 @finally
                 {
-                    UMMUTEX_UNLOCK(_controlLock);
-                }
+                                    }
                 [_data_link_buffer replaceBytesInRange: NSMakeRange(0,len) withBytes:"" length:0];
             }
         }
@@ -706,8 +693,7 @@
         {
             [self logDebug:[NSString stringWithFormat:@" %d bytes of linkstatus data received",(int)data.length]];
         }
-        UMMUTEX_LOCK(_controlLock);
-        @try
+                @try
         {
             [_control_link_buffer appendData:data];
             if(_control_link_buffer.length < 20)
@@ -769,15 +755,13 @@
         }
         @finally
         {
-            UMMUTEX_UNLOCK(_controlLock);
-        }
+                    }
     }
 }
 
 - (void) _oos_received:(NSNumber *)socketNumber
 {
-    UMMUTEX_LOCK(_controlLock);
-    @try
+        @try
     {
         _linkstateOutOfServiceReceived++;
         if(_state == NULL)
@@ -788,14 +772,12 @@
     }
     @finally
     {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
+            }
 }
 
 - (void) _alignment_received:(NSNumber *)socketNumber
 {
-    UMMUTEX_LOCK(_controlLock);
-    @try
+        @try
     {
         self.state = [_state eventLinkstatusAlignment:socketNumber];
         _linkstateAlignmentReceived++;
@@ -808,14 +790,12 @@
     }
     @finally
     {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
+            }
 }
 
 - (void) _proving_normal_received:(NSNumber *)socketNumber
 {
-    UMMUTEX_LOCK(_controlLock);
-    @try
+        @try
     {
         _linkstateProvingReceived++;
         self.state = [_state eventLinkstatusProvingNormal:socketNumber];
@@ -826,14 +806,12 @@
     }
     @finally
     {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
+            }
 }
 
 - (void) _proving_emergency_received:(NSNumber *)socketNumber
 {
-    UMMUTEX_LOCK(_controlLock);
-    @try
+        @try
     {
         _linkstateProvingReceived++;
         if(_emergency == NO)
@@ -848,14 +826,12 @@
     }
     @finally
     {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
+            }
 }
 
 - (void) _linkstate_ready_received:(NSNumber *)socketNumber
 {
-    UMMUTEX_LOCK(_controlLock);
-    @try
+        @try
     {
         _linkstateReadyReceived++;
         self.state = [_state eventLinkstatusReady:socketNumber];
@@ -866,14 +842,12 @@
     }
     @finally
     {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
+            }
 }
 
 - (void) _linkstate_processor_outage_received:(NSNumber *)socketNumber
 {
-    UMMUTEX_LOCK(_controlLock);
-    @try
+        @try
     {
         _linkstateProcessorOutageReceived++;
         self.state = [_state eventLinkstatusProcessorOutage:socketNumber];
@@ -884,14 +858,12 @@
     }
     @finally
     {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
+            }
 }
 
 - (void) _linkstate_processor_recovered_received:(NSNumber *)socketNumber
 {
-    UMMUTEX_LOCK(_controlLock);
-    @try
+        @try
     {
         _linkstateProcessorRecoveredReceived++;
         self.state = [_state eventLinkstatusProcessorRecovered:socketNumber];
@@ -902,14 +874,12 @@
     }
     @finally
     {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
+            }
 }
 
 - (void) _linkstate_busy_received:(NSNumber *)socketNumber
 {
-    UMMUTEX_LOCK(_controlLock);
-    @try
+        @try
     {
         _linkstateBusyReceived++;
         self.state = [_state eventLinkstatusBusy:socketNumber];
@@ -920,14 +890,12 @@
     }
     @finally
     {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
+            }
 }
 
 - (void) _linkstate_busy_ended_received:(NSNumber *)socketNumber
 {
-    UMMUTEX_LOCK(_controlLock);
-    @try
+        @try
     {
         _linkstateBusyEndedReceived++;
 
@@ -943,8 +911,7 @@
     }
     @finally
     {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
+            }
     [self sendCongestionClearedIndication];
     if([_waitingMessages count]>0)
     {
@@ -954,8 +921,7 @@
 
 - (void) linktestTimerReportsFailure
 {
-    UMMUTEX_LOCK(_controlLock);
-    @try
+        @try
     {
         if(_state == NULL)
         {
@@ -972,8 +938,7 @@
     }
     @finally
     {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
+            }
 }
 
 - (void)startDequeuingMessages
@@ -1167,8 +1132,7 @@
 
 - (void)_timerFires1
 {
-    UMMUTEX_LOCK(_controlLock);
-    @try
+        @try
     {
         self.state = [_state eventTimer1];
     }
@@ -1178,14 +1142,12 @@
     }
     @finally
     {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
+            }
 }
 
 - (void)_timerFires1r
 {
-    UMMUTEX_LOCK(_controlLock);
-    @try
+        @try
     {
         self.state = [_state eventTimer1r];
     }
@@ -1195,14 +1157,12 @@
     }
     @finally
     {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
+            }
 }
 
 - (void)_timerFires2
 {
-    UMMUTEX_LOCK(_controlLock);
-    @try
+        @try
     {
         self.state = [_state eventTimer2];
     }
@@ -1212,14 +1172,12 @@
     }
     @finally
     {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
+            }
 }
 
 - (void)_timerFires3
 {
-    UMMUTEX_LOCK(_controlLock);
-    @try
+        @try
     {
         self.state = [_state eventTimer3];
     }
@@ -1229,14 +1187,12 @@
     }
     @finally
     {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
+            }
 }
 
 - (void)_timerFires4
 {
-    UMMUTEX_LOCK(_controlLock);
-    @try
+        @try
     {
         self.state = [_state eventTimer4];
     }
@@ -1246,14 +1202,12 @@
     }
     @finally
     {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
+            }
 }
 
 - (void)_repeatTimerFires
 {
-    UMMUTEX_LOCK(_controlLock);
-    @try
+        @try
     {
         self.state = [_state eventRepeatTimer];
     }
@@ -1263,14 +1217,12 @@
     }
     @finally
     {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
+            }
 }
 
 - (void)_timerFires5
 {
-    UMMUTEX_LOCK(_controlLock);
-    @try
+        @try
     {
         self.state = [_state eventTimer5];
     }
@@ -1280,15 +1232,13 @@
     }
     @finally
     {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
+            }
 }
 
 - (void)_timerFires6
 {
 	/* Figure 13/Q.703 (sheet 2 of 7) */
-    UMMUTEX_LOCK(_controlLock);
-    @try
+        @try
     {
         self.state = [_state eventTimer6];
         _linkstate_busy = NO;
@@ -1300,13 +1250,11 @@
     }
     @finally
     {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
+            }
 }
 - (void)_timerFires7
 {
-    UMMUTEX_LOCK(_controlLock);
-    @try
+        @try
     {
         self.state = [_state eventTimer7];
     }
@@ -1316,8 +1264,7 @@
     }
     @finally
     {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
+            }
 }
 
 
@@ -1932,8 +1879,7 @@
 
 - (void)_timerEventTask:(UMM2PATask_TimerEvent *)task
 {
-    UMMUTEX_LOCK(_controlLock);
-    @try
+        @try
     {
         NSString *timerName = task.timerName;
         if([timerName isEqualToString:@"t1"])
@@ -1984,8 +1930,7 @@
     }
     @finally
     {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
+            }
 }
 
 #pragma mark -
@@ -2018,8 +1963,7 @@
 
 - (void)powerOn
 {
-    UMMUTEX_LOCK(_controlLock);
-    @try
+        @try
     {
         _powerOnCounter++;
         self.state = [[UMM2PAState_Off alloc]initWithLink:self  status:M2PA_STATUS_OFF];
@@ -2032,8 +1976,7 @@
     }
     @finally
     {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
+            }
     /* we do additinoal stuff for power on in sctpReportsUp */
  }
 
@@ -2048,8 +1991,7 @@
     NSLog(@"powerOff called for m2pa %@. Queuing task",_layerName);
 #endif
     
-    UMMUTEX_LOCK(_controlLock);
-    @try
+        @try
     {
         _powerOffCounter++;
         self.state = [_state eventStop];
@@ -2068,8 +2010,7 @@
     }
     @finally
     {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
+            }
 }
 
 - (void)start
@@ -2078,8 +2019,7 @@
     NSLog(@"start called for m2pa %@. Queuing task",_layerName);
 #endif
 
-    UMMUTEX_LOCK(_controlLock);
-    @try
+        @try
     {
         _startCounter++;
         self.state = [_state eventStart];
@@ -2090,8 +2030,7 @@
     }
     @finally
     {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
+            }
 }
 
 - (void)stop
@@ -2100,8 +2039,7 @@
     NSLog(@"stop called for m2pa %@. Queuing task",_layerName);
 #endif
 
-    UMMUTEX_LOCK(_controlLock);
-    @try
+        @try
     {
         _stopCounter++;
         self.state = [_state eventStop];
@@ -2112,8 +2050,7 @@
     }
     @finally
     {
-        UMMUTEX_UNLOCK(_controlLock);
-    }
+            }
 }
 
 + (NSString *)linkStatusString:(M2PA_linkstate_message) linkstate
@@ -2190,8 +2127,7 @@
 - (int)sendLinkstatus:(M2PA_linkstate_message)linkstate synchronous:(BOOL)sync
 {
     /* we can not send linkstat messages while control is occuring as the state might change */
-    UMMUTEX_LOCK(_controlLock);
-    @autoreleasepool
+        @autoreleasepool
     {
         NSString *ls = [UMLayerM2PA linkStatusString:linkstate];
         switch(self.sctp_status)
@@ -2266,8 +2202,7 @@
                 ackRequest:NULL
                synchronous:sync];
     }
-    UMMUTEX_UNLOCK(_controlLock);
-    return 0;
+        return 0;
 }
 
 #pragma mark -
