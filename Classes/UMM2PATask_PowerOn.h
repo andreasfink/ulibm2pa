@@ -17,10 +17,11 @@
 @interface UMM2PATask_PowerOn : UMLayerTask
 {
     NSString *_reason;
+    BOOL _forced;
 }
 
 @property(readwrite,strong,atomic)  NSString *reason;
-
+@property(readwrite,assign,atomic) BOOL forced;
 - (UMM2PATask_PowerOn *)initWithReceiver:(UMLayerM2PA *)rx
                                   sender:(id<UMLayerM2PAUserProtocol>)tx;
 

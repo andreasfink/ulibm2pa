@@ -17,10 +17,12 @@
 {
     id<UMLayerM2PAUserProtocol> _user;
     NSString *_reason;
+    BOOL        _forced;
 }
 
 @property(readwrite,strong,atomic)     id<UMLayerM2PAUserProtocol> user;
 @property(readwrite,strong,atomic)     NSString *reason;
+@property(readwrite,assign,atomic)     BOOL forced;
 
 - (UMM2PATask_Start *)initWithReceiver:(UMLayerM2PA *)rx
                                 sender:(id<UMLayerM2PAUserProtocol>)tx;
