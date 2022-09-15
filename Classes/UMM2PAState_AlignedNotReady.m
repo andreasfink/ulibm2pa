@@ -19,6 +19,7 @@
         _link.linkstateProvingSent = 0;
         _statusCode = M2PA_STATUS_ALIGNED_NOT_READY;
         [_link.t2 stop];
+        [_link.t3 stop];
         [_link.t4 stop];
         _t4_expired = NO;
         double t = _link.t4r;
@@ -43,7 +44,6 @@
         [_link.t4 start];
         _link.repeatTimer.seconds = _link.t4r;
         [_link.repeatTimer start]; /* sending out status timer */
-        [_link.t3 start];
     }
     return self;
 }
@@ -250,22 +250,6 @@
 - (UMM2PAState *)eventTimer3                       /* timer 3 fired (waiting for first proving. alignment timer) */
 {
     [self logStatemachineEvent:__func__];
-    if(([_link.t4 isExpired]) || (_t4_expired))
-    {
-        [_link.t1 stop];
-        [_link.t2 stop];
-        [_link.t4 stop];
-        [self sendLinkstateReady:YES];
-        return [[UMM2PAState_AlignedReady alloc]initWithLink:_link status:M2PA_STATUS_ALIGNED_READY];
-    }
-    if(_link.emergency)
-    {
-        [self sendLinkstateProvingEmergency:YES];
-    }
-    else
-    {
-        [self sendLinkstateProvingNormal:YES];
-    }
     return self;
 }
 

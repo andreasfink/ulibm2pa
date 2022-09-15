@@ -168,7 +168,6 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 - (UMM2PAState *)eventPowerOff
 {
     [self logStatemachineEvent:__func__];
-    [self logStatemachineEvent:__func__];
     [_link.sctpLink closeFor:_link reason:@"eventPowerOff"];
     [_link notifyMtp3Off];
     return [[UMM2PAState_Off alloc]initWithLink:_link status:M2PA_STATUS_OFF];

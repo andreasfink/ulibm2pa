@@ -18,6 +18,7 @@
     {
         [_link.t1 stop];
         [_link.t2 stop];
+        [_link.t3 stop];
         [_link.t4 stop];
         _statusCode = M2PA_STATUS_ALIGNED_READY;
         /* we now send a READY signal every second

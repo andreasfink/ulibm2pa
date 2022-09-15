@@ -187,4 +187,13 @@
     return self;
 }
 
+- (UMM2PAState *)eventTimer3
+{
+    [self logStatemachineEvent:__func__];
+    [_link notifyMtp3Stop];
+    [self sendLinkstateOutOfService:YES];
+    [_link.sctpLink closeFor:_link reason:@"t3"];
+    [_link notifyMtp3Off];
+    return [[UMM2PAState_Off alloc]initWithLink:_link status:M2PA_STATUS_OFF];
+}
 @end
