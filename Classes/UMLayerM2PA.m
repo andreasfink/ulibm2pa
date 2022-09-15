@@ -115,9 +115,9 @@
         if(self)
         {
             _users = [[UMSynchronizedArray alloc] init];
-            _incomingDataBufferLock = [[UMMutex alloc]initWithName:@"m2pa-incoming-data-mutex"];
             _unackedMsu = [[UMSynchronizedDictionary alloc]init];
             _state = [[UMM2PAState_Off alloc]initWithLink:self status:M2PA_STATUS_OFF];
+            _seqNumLock = [[UMMutex alloc]initWithName:@"seq-num-lock"];
             _slc = 0;
             _emergency = NO;
             _congested = NO;
@@ -132,16 +132,6 @@
             _window_size = M2PA_DEFAULT_WINDOW_SIZE;
             _t1 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires1) object:NULL seconds:M2PA_DEFAULT_T1 name:@"t1" repeats:NO runInForeground:YES];
             _t1r = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires1r) object:NULL seconds:M2PA_DEFAULT_T1R name:@"t1r" repeats:NO runInForeground:YES];
-            
-            _repeatTimer = [[UMTimer alloc]initWithTarget:self
-                                        selector:@selector(repeatTimerFires)
-                                          object:NULL
-                                         seconds:M2PA_DEFAULT_REPEAT_OOS_TIMER
-                                            name:@"oos-repeat"
-                                         repeats:YES
-                                 runInForeground:YES];
-
-            
             _t2 = [[UMTimer alloc]initWithTarget:self
                                         selector:@selector(timerFires2)
                                           object:NULL
@@ -159,7 +149,7 @@
             _t18 = [[UMTimer alloc]initWithTarget:self selector:@selector(timerFires18) object:NULL seconds:M2PA_DEFAULT_T18 name:@"t18" repeats:NO runInForeground:YES];
             _ackTimer = [[UMTimer alloc]initWithTarget:self selector:@selector(ackTimerFires) object:NULL seconds:M2PA_DEFAULT_ACK_TIMER name:@"ack-timer" repeats:NO runInForeground:YES];
             _startTimer = [[UMTimer alloc]initWithTarget:self selector:@selector(startTimerFires) object:NULL seconds:M2PA_DEFAULT_START_TIMER name:@"start-timer" repeats:NO runInForeground:YES];
-            _repeatTimer = [[UMTimer alloc]initWithTarget:self selector:@selector(repeatTimerFires) object:NULL seconds:0.5 name:@"repeat-timer" repeats:NO runInForeground:YES];
+            _repeatTimer = [[UMTimer alloc]initWithTarget:self selector:@selector(repeatTimerFires) object:NULL seconds:M2PA_DEFAULT_REPEAT_OOS_TIMER name:@"repeat-timer" repeats:YES runInForeground:YES];
 
             _t4n = M2PA_DEFAULT_T4_N;
             _t4e = M2PA_DEFAULT_T4_E;
@@ -229,7 +219,6 @@
 #pragma mark SCTP Callbacks
 
 
-
 - (void) sctpStatusIndication:(UMLayer *)caller
                        userId:(id)uid
                        status:(UMSocketStatus)s
@@ -271,6 +260,7 @@
         [self queueFromLowerWithPriority:task];
     }
 }
+
 
 - (void) sctpDataIndication:(UMLayer *)caller
                      userId:(id)uid
@@ -543,79 +533,71 @@
         [_inboundThroughputBytes increaseBy:(uint32_t)data.length];
         u_int32_t len;
         const char *dptr;
-        [_incomingDataBufferLock lock];
-        @try
+        [_data_link_buffer appendData:data];
+        dptr = _data_link_buffer.bytes;
+        while([_data_link_buffer length] >= 16)
         {
-            [_data_link_buffer appendData:data];
-            dptr = _data_link_buffer.bytes;
-            while([_data_link_buffer length] >= 16)
+            len = ntohl(*(u_int32_t *)&dptr[4]);
+            if(_data_link_buffer.length < len)
             {
-                len = ntohl(*(u_int32_t *)&dptr[4]);
-                if(_data_link_buffer.length < len)
+                if(self.logLevel <=UMLOG_DEBUG)
                 {
-                    if(self.logLevel <=UMLOG_DEBUG)
-                    {
-                        [self logDebug:[NSString stringWithFormat:@"not enough data received yet %lu bytes in buffer, expecting %u",
-                                        _data_link_buffer.length,
-                                        len]];
-                    }
-                    break;
+                    [self logDebug:[NSString stringWithFormat:@"not enough data received yet %lu bytes in buffer, expecting %u",
+                                    _data_link_buffer.length,
+                                    len]];
+                }
+                break;
+            }
+            else
+            {
+                /* dumpHeader here */
+            }
+        
+            /* BSN in a packet is the last FSN received from the peer */
+            /* so we set _bsn for the next outgoing packet */
+            /* _bsn2 is the last received bsn from the other side */
+            u_int32_t currentRxBsn = ntohl(*(u_int32_t *)&dptr[8]) & FSN_BSN_MASK;
+            u_int32_t currentRxFsn = ntohl(*(u_int32_t *)&dptr[12]) & FSN_BSN_MASK;
+            [self bsnAckFrom:_lastRxBsn to:currentRxBsn];
+            _lastRxBsn = currentRxBsn;
+            _lastRxFsn = currentRxFsn;
+            [self checkSpeed];
+        
+            int userDataLen = len-16;
+            if(userDataLen < 0)
+            {
+                [self logMajorError:@"m2pa userDataLen is < 0"];
+                [self protocolViolation];
+                return;
+            }
+            if(userDataLen > 0)
+            {
+                if(_useAckTimer == YES)
+                {
+                    [_ackTimer start];
                 }
                 else
                 {
-                    /* dumpHeader here */
+                    [self ackTimerFires];
                 }
-            
-                /* BSN in a packet is the last FSN received from the peer */
-                /* so we set _bsn for the next outgoing packet */
-                /* _bsn2 is the last received bsn from the other side */
-                u_int32_t currentRxBsn = ntohl(*(u_int32_t *)&dptr[8]) & FSN_BSN_MASK;
-                u_int32_t currentRxFsn = ntohl(*(u_int32_t *)&dptr[12]) & FSN_BSN_MASK;
-                [self bsnAckFrom:_lastRxBsn to:currentRxBsn];
-                _lastRxBsn = currentRxBsn;
-                _lastRxFsn = currentRxFsn;
-                [self checkSpeed];
-            
-                int userDataLen = len-16;
-                if(userDataLen < 0)
-                {
-                    [self logMajorError:@"m2pa userDataLen is < 0"];
-                    [self protocolViolation];
-                    return;
-                }
-                if(userDataLen > 0)
-                {
-                    if(_useAckTimer == YES)
-                    {
-                        [_ackTimer start];
-                    }
-                    else
-                    {
-                        [self ackTimerFires];
-                    }
-                }
-                NSData *userData = [NSData dataWithBytes:&dptr[16] length:userDataLen];
-                                @try
-                {
-                    self.state = [_state eventReceiveUserData:userData socketNumber:socketNumber];
-                    if([self.state isKindOfClass: [UMM2PAState_InService class]])
-                    {
-                        [self notifyMtp3UserData:userData];
-                    }
-                }
-                @catch(NSException *e)
-                {
-                    [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
-                }
-                @finally
-                {
-                                    }
-                [_data_link_buffer replaceBytesInRange: NSMakeRange(0,len) withBytes:"" length:0];
             }
-        }
-        @finally
-        {
-            [_incomingDataBufferLock unlock];
+            NSData *userData = [NSData dataWithBytes:&dptr[16] length:userDataLen];
+                        @try
+            {
+                self.state = [_state eventReceiveUserData:userData socketNumber:socketNumber];
+                if([self.state isKindOfClass: [UMM2PAState_InService class]])
+                {
+                    [self notifyMtp3UserData:userData];
+                }
+            }
+            @catch(NSException *e)
+            {
+                [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+            }
+            @finally
+            {
+                            }
+            [_data_link_buffer replaceBytesInRange: NSMakeRange(0,len) withBytes:"" length:0];
         }
     }
 }
@@ -1070,45 +1052,39 @@
 {
     [self queueTimerEvent:NULL timerName:@"t3"];
 }
+
 - (void)timerFires4
 {
-    [_t4 stop];
 	[self queueTimerEvent:NULL timerName:@"t4"];
 }
 
 - (void)timerFires5
 {
-    [_t5 stop];
 	[self queueTimerEvent:NULL timerName:@"t5"];
 }
 - (void)timerFires6
 {
-    [_t6 stop];
 	[self queueTimerEvent:NULL timerName:@"t6"];
 }
 
 - (void)timerFires7
 {
-    [_t7 stop];
 	[self queueTimerEvent:NULL timerName:@"t7"];
 }
 
 - (void)timerFires16
 {
-    [_t16 stop];
     [self queueTimerEvent:NULL timerName:@"t16"];
 }
 
 - (void)timerFires17
 {
-    [_t17 stop];
     [self queueTimerEvent:NULL timerName:@"t17"];
 }
 
 
 - (void)timerFires18
 {
-    [_t18 stop];
     [self queueTimerEvent:NULL timerName:@"t18"];
 }
 
@@ -1122,6 +1098,11 @@
 }
 
 - (void)startTimerFires
+{
+    [self queueTimerEvent:NULL timerName:@"start-timer"];
+}
+
+- (void)_startTimer
 {
     if(_state.statusCode != M2PA_STATUS_OFF)
     {
@@ -1252,6 +1233,7 @@
     {
             }
 }
+
 - (void)_timerFires7
 {
         @try
@@ -1267,6 +1249,20 @@
             }
 }
 
+- (void)_timerFires16
+{
+    self.state = [_state eventTimer16];
+}
+
+- (void)_timerFires17
+{
+    self.state = [_state eventTimer17];
+}
+
+- (void)_timerFires18
+{
+    self.state = [_state eventTimer18];
+}
 
 
 #pragma mark -
@@ -1331,7 +1327,6 @@
 - (void)dataFor:(id<UMLayerM2PAUserProtocol>)caller
            data:(NSData *)sendingData
      ackRequest:(NSDictionary *)ack
-          async:(BOOL)async
             dpc:(int)dpc
 {
     @autoreleasepool
@@ -1343,27 +1338,17 @@
                                                            ackRequest:ack
                                                                   dpc:dpc];
         /* we can not queue this as otherwise the sequence might been destroyed */
-        if(async==NO)
-        {
-            [task main];
-        }
-        else
-        {
-            [self queueFromUpper:task];
-        }
+        [self queueFromUpper:task];
     }
 }
 
 - (void)powerOnFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced reason:(NSString *)reason
 {
-    if(forced)
-    {
-        _forcedOutOfService = NO;
-    }
     @autoreleasepool
     {
         UMM2PATask_PowerOn *task = [[UMM2PATask_PowerOn alloc]initWithReceiver:self sender:caller];
         task.reason = reason;
+        task.forced =forced;
         [self queueFromUpperWithPriority:task];
     }
 }
@@ -1371,7 +1356,6 @@
 
 - (void)powerOffFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced reason:(NSString *)reason
 {
-    _forcedOutOfService = forced;
     @autoreleasepool
     {
 #if defined(POWER_DEBUG)
@@ -1379,6 +1363,7 @@
 #endif
         UMM2PATask_PowerOff *task = [[UMM2PATask_PowerOff alloc]initWithReceiver:self sender:caller];
         task.reason = reason;
+        task.forced = forced;
         [self queueFromUpperWithPriority:task];
     }
 }
@@ -1386,10 +1371,6 @@
 - (void)startFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced reason:(NSString *)reason
 {
     
-    if(forced)
-    {
-        _forcedOutOfService = NO;
-    }
     @autoreleasepool
     {
 #if defined(POWER_DEBUG)
@@ -1397,6 +1378,10 @@
 #endif
         UMM2PATask_Start *task = [[UMM2PATask_Start alloc]initWithReceiver:self sender:caller];
         task.reason = reason;
+        if(forced)
+        {
+            task.forced = forced;
+        }
         [self queueFromUpperWithPriority:task];
     }
 }
@@ -1410,6 +1395,7 @@
 #endif
         UMM2PATask_Stop *task = [[UMM2PATask_Stop alloc]initWithReceiver:self sender:caller];
         task.reason = reason;
+        task.forced = forced;
         [self queueFromUpperWithPriority:task];
     }
 }
@@ -1429,13 +1415,13 @@
 
 - (void)setSlcFor:(id<UMLayerM2PAUserProtocol>)caller slc:(int)xslc
 {
-    UMLayerTask *task = [[UMM2PATask_SetSlc alloc]initWithReceiver:self sender:caller slc:xslc];
+    UMM2PATask_SetSlc *task = [[UMM2PATask_SetSlc alloc]initWithReceiver:self sender:caller slc:xslc];
     [self queueFromUpperWithPriority:task];
 }
 
 - (void)queueTimerEvent:(id)caller timerName:(NSString *)tname
 {
-    UMLayerTask *task = [[UMM2PATask_TimerEvent alloc]initWithReceiver:self sender:caller timerName:tname];
+    UMM2PATask_TimerEvent *task = [[UMM2PATask_TimerEvent alloc]initWithReceiver:self sender:caller timerName:tname];
     [self queueFromAdmin:task];
 }
 
@@ -1576,7 +1562,7 @@
     int last_speed_status;
     double	current_speed;
 
-    [_seqNumLock lock];
+    UMMUTEX_LOCK(_seqNumLock);
     if((_lastTxFsn == FSN_BSN_MASK) || (_lastRxFsn == FSN_BSN_MASK))
     {
         _outstanding = 0;
@@ -1586,7 +1572,7 @@
     {
         _outstanding = ((long)_lastTxFsn - (long)_lastRxBsn ) % FSN_BSN_SIZE;
     }
-    [_seqNumLock unlock];
+    UMMUTEX_UNLOCK(_seqNumLock);
 
     last_speed_status = _speed_status;
 
@@ -1633,8 +1619,6 @@
 {
     [_outboundThroughputPackets increaseBy:1];
     [_outboundThroughputBytes increaseBy:(uint32_t)data.length];
-    UMMUTEX_LOCK(_dataLock);
-    UMMUTEX_LOCK(_seqNumLock);
     @try
     {
         [_t1 stop]; /* alignment ready	*/
@@ -1692,17 +1676,11 @@
                       data:sctpData
                   streamId:streamId
                 protocolId:SCTP_PROTOCOL_IDENTIFIER_M2PA
-                ackRequest:ackRequest
-               synchronous:YES];
+                ackRequest:ackRequest];
     }
     @catch(NSException *e)
     {
         [self logMajorError:[NSString stringWithFormat:@"Exception: %@",e]];
-    }
-    @finally
-    {
-        UMMUTEX_UNLOCK(_seqNumLock);
-        UMMUTEX_UNLOCK(_dataLock);
     }
 }
 
@@ -1710,57 +1688,42 @@
 {
     uint16_t    streamId = M2PA_STREAM_USERDATA;
 
-    UMMUTEX_LOCK(_dataLock);
-    UMMUTEX_LOCK(_seqNumLock);
-    @try
+    _lastTxFsn = (_lastTxFsn+0) % FSN_BSN_SIZE; /* we do NOT increase the counter for empty packets */
+    /* The FSN and BSN values range from 0 to 16,777,215 */
+    if((_lastTxFsn == FSN_BSN_MASK) || (_lastRxFsn == FSN_BSN_MASK))
     {
-        _lastTxFsn = (_lastTxFsn+0) % FSN_BSN_SIZE; /* we do NOT increase the counter for empty packets */
-        /* The FSN and BSN values range from 0 to 16,777,215 */
-        if((_lastTxFsn == FSN_BSN_MASK) || (_lastRxFsn == FSN_BSN_MASK))
-        {
-            _outstanding = 0;
-            _lastRxFsn = _lastTxFsn;
-        }
-        else
-        {
-            _outstanding = ((long)_lastTxFsn - (long)_lastRxBsn ) % FSN_BSN_SIZE;
-        }
-        _lastTxBsn = _lastRxFsn;
-        uint8_t header[16];
-        size_t totallen =  sizeof(header) + 0;
-        header[0] = M2PA_VERSION1; /* version field */
-        header[1] = 0; /* spare field */
-        header[2] = M2PA_CLASS_RFC4165; /* m2pa_message_class = draft13;*/
-        header[3] = M2PA_TYPE_USER_DATA; /*m2pa_message_type;*/
-        header[4] = (totallen >> 24) & 0xFF;
-        header[5] = (totallen >> 16) & 0xFF;
-        header[6] = (totallen >> 8) & 0xFF;
-        header[7] = (totallen >> 0) & 0xFF;
-        header[8] = (_lastTxBsn >> 24) & 0xFF;
-        header[9] = (_lastTxBsn >> 16) & 0xFF;
-        header[10] = (_lastTxBsn >> 8) & 0xFF;
-        header[11] = (_lastTxBsn >> 0) & 0xFF;
-        header[12] = (_lastTxFsn >> 24) & 0xFF;
-        header[13] = (_lastTxFsn >> 16) & 0xFF;
-        header[14] = (_lastTxFsn >> 8) & 0xFF;
-        header[15] = (_lastTxFsn >> 0) & 0xFF;
-        NSMutableData *sctpData = [[NSMutableData alloc]initWithBytes:&header length:sizeof(header)];
-        [_sctpLink dataFor:self
-                      data:sctpData
-                  streamId:streamId
-                protocolId:SCTP_PROTOCOL_IDENTIFIER_M2PA
-                ackRequest:NULL
-               synchronous:YES];
+        _outstanding = 0;
+        _lastRxFsn = _lastTxFsn;
     }
-    @catch(NSException *e)
+    else
     {
-        [self logMajorError:[NSString stringWithFormat:@"Exception: %@",e]];
+        _outstanding = ((long)_lastTxFsn - (long)_lastRxBsn ) % FSN_BSN_SIZE;
     }
-    @finally
-    {
-        UMMUTEX_UNLOCK(_seqNumLock);
-        UMMUTEX_UNLOCK(_dataLock);
-    }
+    _lastTxBsn = _lastRxFsn;
+    uint8_t header[16];
+    size_t totallen =  sizeof(header) + 0;
+    header[0] = M2PA_VERSION1; /* version field */
+    header[1] = 0; /* spare field */
+    header[2] = M2PA_CLASS_RFC4165; /* m2pa_message_class = draft13;*/
+    header[3] = M2PA_TYPE_USER_DATA; /*m2pa_message_type;*/
+    header[4] = (totallen >> 24) & 0xFF;
+    header[5] = (totallen >> 16) & 0xFF;
+    header[6] = (totallen >> 8) & 0xFF;
+    header[7] = (totallen >> 0) & 0xFF;
+    header[8] = (_lastTxBsn >> 24) & 0xFF;
+    header[9] = (_lastTxBsn >> 16) & 0xFF;
+    header[10] = (_lastTxBsn >> 8) & 0xFF;
+    header[11] = (_lastTxBsn >> 0) & 0xFF;
+    header[12] = (_lastTxFsn >> 24) & 0xFF;
+    header[13] = (_lastTxFsn >> 16) & 0xFF;
+    header[14] = (_lastTxFsn >> 8) & 0xFF;
+    header[15] = (_lastTxFsn >> 0) & 0xFF;
+    NSMutableData *sctpData = [[NSMutableData alloc]initWithBytes:&header length:sizeof(header)];
+    [_sctpLink dataFor:self
+                  data:sctpData
+              streamId:streamId
+            protocolId:SCTP_PROTOCOL_IDENTIFIER_M2PA
+            ackRequest:NULL];
 }
 
 - (void)_dataTask:(UMM2PATask_Data *)task
@@ -1778,31 +1741,19 @@
     }
     else
     {
-        UMMUTEX_LOCK(_dataLock);
-        @try
-        {
-            [_state eventSendUserData:mtp3_data
-                           ackRequest:task.ackRequest
-                                  dpc:task.dpc];
-        }
-        @catch(NSException *e)
-        {
-            [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
-        }
-        @finally
-        {
-            UMMUTEX_UNLOCK(_dataLock);
-        }
+        [_state eventSendUserData:mtp3_data
+                       ackRequest:task.ackRequest
+                              dpc:task.dpc];
     }
 }
 
 - (void) resetSequenceNumbers
 {
-    [_seqNumLock lock];
+    UMMUTEX_LOCK(_seqNumLock);
     _lastTxFsn = 0x00FFFFFF; /* last sent FSN */
     _lastTxBsn = 0x00FFFFFF; /* last received FSN, next BSN to send. */
     _lastRxBsn = 0x00FFFFFF; /* last received bsn */
-    [_seqNumLock unlock];
+    UMMUTEX_UNLOCK(_seqNumLock);
 }
 
 - (void)_powerOnTask:(UMM2PATask_PowerOn *)task
@@ -1811,6 +1762,10 @@
     if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:@"powerOn"];
+    }
+    if(task.forced)
+    {
+        _forcedOutOfService = NO;
     }
     [self powerOn];
 
@@ -1824,6 +1779,10 @@
     }
     [_stateMachineLogFeed debugText:@"PowerOff requested from upper layer"];
 
+    if(task.forced)
+    {
+        _forcedOutOfService = YES;
+    }
     NSString *s = [NSString stringWithFormat:@"powerOff requested-from-mtp3 (%@)", task.reason ? task.reason : @""];
     [self powerOff:s];
 }
@@ -1833,6 +1792,10 @@
     if(self.logLevel <= UMLOG_DEBUG)
     {
         [self logDebug:@"start"];
+    }
+    if(task.forced)
+    {
+        _forcedOutOfService = NO;
     }
     [self addToLayerHistoryLog:[NSString stringWithFormat:@"start (%@)", task.reason ? task.reason : @""]];
     [self start];
@@ -1903,7 +1866,7 @@
         {
             [self _timerFires4];
         }
-        else 	if([timerName isEqualToString:@"repeat"])
+        else if([timerName isEqualToString:@"repeat"])
         {
             [self _repeatTimerFires];
         }
@@ -1918,6 +1881,22 @@
         else 	if([timerName isEqualToString:@"t7"])
         {
             [self _timerFires7];
+        }
+        else     if([timerName isEqualToString:@"t16"])
+        {
+            [self _timerFires16];
+        }
+        else     if([timerName isEqualToString:@"t17"])
+        {
+            [self _timerFires17];
+        }
+        else     if([timerName isEqualToString:@"t18"])
+        {
+            [self _timerFires18];
+        }
+        else     if([timerName isEqualToString:@"start-timer"])
+        {
+            [self _startTimer];
         }
         else
         {
@@ -2284,7 +2263,7 @@
     }
 }
 
-- (void)notifyMtp3:(M2PA_Status)status async:(BOOL)async;
+- (void)notifyMtp3:(M2PA_Status)status
 {
     @autoreleasepool
     {
@@ -2299,7 +2278,7 @@
                                              slc:_slc
                                           userId:u.linkName
                                           status:status
-                                           async:async];
+                                           async:YES];
                 }
             }
         }
@@ -2309,12 +2288,12 @@
 
 - (void)notifyMtp3OutOfService
 {
-    [self notifyMtp3:M2PA_STATUS_OOS async:YES];
+    [self notifyMtp3:M2PA_STATUS_OOS];
 }
 
 - (void)notifyMtp3Stop
 {
-    [self notifyMtp3:M2PA_STATUS_OFF async:NO];
+    [self notifyMtp3:M2PA_STATUS_OFF];
 }
 
 -(void)notifyMtp3RemoteProcessorOutage
@@ -2349,7 +2328,7 @@
 
 -(void) notifyMtp3InService
 {
-    [self notifyMtp3:M2PA_STATUS_IS async:YES];
+    [self notifyMtp3:M2PA_STATUS_IS];
 }
 
 #pragma mark -

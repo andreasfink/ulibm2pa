@@ -63,7 +63,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
         }
         _link = link;
         _statusCode = statusCode;
-        [_link notifyMtp3:_statusCode async:YES];
+        [_link notifyMtp3:_statusCode];
     }
     return self;
 }
@@ -370,6 +370,28 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [self logStatemachineEvent:__func__];
     return self;
 }
+
+
+- (UMM2PAState *)eventTimer16                            /* timer 16 fired  */
+{
+    [self logStatemachineEvent:__func__];
+    return self;
+}
+
+
+- (UMM2PAState *)eventTimer17                            /* timer 17 fired  */
+{
+    [self logStatemachineEvent:__func__];
+    return self;
+}
+
+
+- (UMM2PAState *)eventTimer18                            /* timer 18 fired  */
+{
+    [self logStatemachineEvent:__func__];
+    return self;
+}
+
 
 - (UMM2PAState *)eventRepeatTimer
 {

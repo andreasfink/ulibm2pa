@@ -171,9 +171,6 @@ typedef enum PocStatus
     UMM2PAState                         *_state;
     UMLogFeed                           *_stateMachineLogFeed;
     UMMutex 							*_seqNumLock;
-    UMMutex 							*_dataLock;
-    UMMutex 							*_controlLock;
-    UMMutex 							*_incomingDataBufferLock;
     int                                 _linkstateOutOfServiceReceived;
     int                                 _linkstateOutOfServiceSent;
     int                                 _linkstateAlignmentReceived;
@@ -485,7 +482,6 @@ typedef enum PocStatus
 - (void)dataFor:(id<UMLayerM2PAUserProtocol>)caller
            data:(NSData *)sendingData
      ackRequest:(NSDictionary *)ack
-          async:(BOOL)async
             dpc:(int)dpc;
 
 - (void)powerOnFor:(id<UMLayerM2PAUserProtocol>)caller forced:(BOOL)forced reason:(NSString *)reason;
@@ -496,7 +492,6 @@ typedef enum PocStatus
 - (void)emergencyFor:(id<UMLayerM2PAUserProtocol>)caller;
 - (void)emergencyCheasesFor:(id<UMLayerM2PAUserProtocol>)caller;
 
-//- (void)stopFoosFor:(id<UMLayerM2PAUserProtocol>)caller;
 
 /* LAYER API. The following methods are called by queued tasks */
 #pragma mark -
@@ -532,7 +527,7 @@ typedef enum PocStatus
 - (void)notifyMtp3Disconnected;
 - (void)notifyMtp3Off;
 - (void)notifyMtp3UserData:(NSData *)userData;
-- (void)notifyMtp3:(M2PA_Status)status async:(BOOL)async;
+- (void)notifyMtp3:(M2PA_Status)status;
 - (void)notifyMtp3OutOfService;
 - (void)notifyMtp3RemoteProcessorOutage;
 - (void)notifyMtp3RemoteProcessorRecovered;
@@ -550,11 +545,12 @@ typedef enum PocStatus
 - (void)stopDetachAndDestroy;
 - (void)queueTimerEvent:(id)caller timerName:(NSString *)tname;
 - (void)startupInitialisation;
+/* this is only to be used by internal M2PA objects */
 - (void)sendData:(NSData *)data
           stream:(uint16_t)streamId
       ackRequest:(NSDictionary *)ackRequest
              dpc:(int)dpc;
-//- (void)sendEmptyMSU;
+
 - (void) linktestTimerReportsFailure;
 - (UMSynchronizedSortedDictionary *)m2paStatusDict;
 

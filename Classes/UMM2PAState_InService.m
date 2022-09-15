@@ -96,28 +96,28 @@
 - (UMM2PAState *)eventLinkstatusOutOfService:(NSNumber *)socketNumber            /* other side sent us linkstatus out of service SIOS */
 {
     [self logStatemachineEvent:__func__ socketNumber:socketNumber];
-    [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:YES];
+    [self sendLinkstateOutOfService:NO];
     return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
 - (UMM2PAState *)eventLinkstatusAlignment:(NSNumber *)socketNumber               /* other side sent us linkstatus alignment SIO */
 {
     [self logStatemachineEvent:__func__ socketNumber:socketNumber];
-    [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:YES];
+    [self sendLinkstateOutOfService:NO];
     return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
 - (UMM2PAState *)eventLinkstatusProvingNormal:(NSNumber *)socketNumber            /* other side sent us linkstatus proving normal SIN */
 {
     [self logStatemachineEvent:__func__ socketNumber:socketNumber];
-    [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:YES];
+    [self sendLinkstateOutOfService:NO];
     return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
 - (UMM2PAState *)eventLinkstatusProvingEmergency:(NSNumber *)socketNumber        /* other side sent us linkstatus emergency SIE */
 {
     [self logStatemachineEvent:__func__ socketNumber:socketNumber];
-    [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:YES];
+    [self sendLinkstateOutOfService:NO];
     return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];
 }
 
@@ -221,6 +221,7 @@
     [_link sendLinkstatus:M2PA_LINKSTATE_OUT_OF_SERVICE synchronous:sync];
     _link.linkstateOutOfServiceSent++;
     [self logStatemachineEventString:@"sendLinkstateOutOfService"];
+    [_link notifyMtp3OutOfService];
 }
 
 - (UMM2PAState *)eventSendUserData:(NSData *)data

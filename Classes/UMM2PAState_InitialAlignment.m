@@ -183,7 +183,7 @@
 {
     [self logStatemachineEvent:__func__ forced:YES];
     /* we dont expect data pdus in linkstate initial alignment */
-    [_link notifyMtp3:M2PA_STATUS_INITIAL_ALIGNMENT async:YES];
+    [_link notifyMtp3:M2PA_STATUS_INITIAL_ALIGNMENT];
     return self;
 }
 
