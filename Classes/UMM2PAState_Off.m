@@ -255,6 +255,9 @@
 - (UMM2PAState *)eventRepeatTimer               /* timer OOS repeat fired */
 {
     [self logStatemachineEvent:__func__ forced:YES];
+    [_link.repeatTimer stop];
+    [_link powerOffFor:NULL forced:NO reason:@"state OFF with eventRepeatTimer running"];
+    [_link powerOnFor:NULL forced:NO reason:@"state OFF with eventRepeatTimer running"];
     return self;
 }
 @end

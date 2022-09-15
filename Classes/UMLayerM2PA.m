@@ -1113,62 +1113,22 @@
 
 - (void)_timerFires1
 {
-        @try
-    {
-        self.state = [_state eventTimer1];
-    }
-    @catch(NSException *e)
-    {
-        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
-    }
-    @finally
-    {
-            }
+    self.state = [_state eventTimer1];
 }
 
 - (void)_timerFires1r
 {
-        @try
-    {
-        self.state = [_state eventTimer1r];
-    }
-    @catch(NSException *e)
-    {
-        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
-    }
-    @finally
-    {
-            }
+    self.state = [_state eventTimer1r];
 }
 
 - (void)_timerFires2
 {
-        @try
-    {
-        self.state = [_state eventTimer2];
-    }
-    @catch(NSException *e)
-    {
-        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
-    }
-    @finally
-    {
-            }
+    self.state = [_state eventTimer2];
 }
 
 - (void)_timerFires3
 {
-        @try
-    {
-        self.state = [_state eventTimer3];
-    }
-    @catch(NSException *e)
-    {
-        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
-    }
-    @finally
-    {
-            }
+    self.state = [_state eventTimer3];
 }
 
 - (void)_timerFires4
@@ -1942,21 +1902,10 @@
 
 - (void)powerOn
 {
-        @try
-    {
-        _powerOnCounter++;
-        self.state = [[UMM2PAState_Off alloc]initWithLink:self  status:M2PA_STATUS_OFF];
-        [self.state sendLinkstateOutOfService:YES];
-        self.state = [_state eventPowerOn];
-    }
-    @catch(NSException *e)
-    {
-        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
-    }
-    @finally
-    {
-            }
-    /* we do additinoal stuff for power on in sctpReportsUp */
+    _powerOnCounter++;
+    self.state = [[UMM2PAState_Off alloc]initWithLink:self  status:M2PA_STATUS_OFF];
+    [self.state sendLinkstateOutOfService:YES];
+    self.state = [_state eventPowerOn];
  }
 
 - (void)powerOff
