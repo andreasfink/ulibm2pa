@@ -10,6 +10,8 @@
 
 
 @interface UMM2PAState_InitialAlignment : UMM2PAState
-
+{
+    int _alignmentReceived;
+}
 @end
 

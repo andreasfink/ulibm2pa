@@ -82,7 +82,12 @@
 - (UMM2PAState *)eventLinkstatusAlignment:(NSNumber *)socketNumber
 {
     [self logStatemachineEvent:__func__ socketNumber:socketNumber];
-    [self sendLinkstateAlignment:YES];
+    if(_alignmentReceived<1)
+    {
+        [self sendLinkstateAlignment:YES];
+        return self;
+    }
+    _alignmentReceived++;
     return [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link status:M2PA_STATUS_ALIGNED_NOT_READY];
 }
 
@@ -90,7 +95,6 @@
 {
     [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     _link.emergency = NO;
-    [self sendLinkstateAlignment:YES];
     return [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link status:M2PA_STATUS_ALIGNED_NOT_READY];
 }
 
@@ -98,7 +102,6 @@
 {
     [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     _link.emergency = YES;
-    [self sendLinkstateAlignment:YES];
     return [[UMM2PAState_AlignedNotReady alloc]initWithLink:_link status:M2PA_STATUS_ALIGNED_NOT_READY];
 }
 
