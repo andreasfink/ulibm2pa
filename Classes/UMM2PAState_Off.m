@@ -93,7 +93,6 @@
 - (UMM2PAState *)eventSctpUp:(NSNumber *)socketNumber              /* SCTP reports the 'wire' has come up*/
 {
     [self logStatemachineEvent:__func__ socketNumber:socketNumber];
-    [_link.startTimer stop];
     [_link startupInitialisation];
     [self sendLinkstateOutOfService:YES];
     return [[UMM2PAState_OutOfService alloc]initWithLink:_link status:M2PA_STATUS_OOS];

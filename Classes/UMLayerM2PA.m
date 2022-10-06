@@ -318,43 +318,23 @@
 }
 - (void)sctpReportsUp:(NSNumber *)socketNumber
 {
-        @try
+    _sctpUpReceived++;
+    
+    if([_state isKindOfClass:[UMM2PAState_Off class]])
     {
-        _sctpUpReceived++;
-        
-        if([_state isKindOfClass:[UMM2PAState_Off class]])
-        {
-            self.state = [_state eventSctpUp:(NSNumber *)socketNumber];
-        }
-        if([_state isKindOfClass:[UMM2PAState_OutOfService class]])
-        {
-            [_state sendLinkstateOutOfService:YES];
-            [self start];
-        }
+        self.state = [_state eventSctpUp:(NSNumber *)socketNumber];
     }
-    @catch(NSException *e)
+    if([_state isKindOfClass:[UMM2PAState_OutOfService class]])
     {
-        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+        [_state sendLinkstateOutOfService:YES];
+        [self start];
     }
-    @finally
-    {
-            }
 }
 
 - (void)sctpReportsDown:(NSNumber *)socketNumber
 {
-        @try
-    {
-        _sctpDownReceived++;
-        self.state = [_state eventSctpDown:socketNumber];
-    }
-    @catch(NSException *e)
-    {
-        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
-    }
-    @finally
-    {
-            }
+    _sctpDownReceived++;
+    self.state = [_state eventSctpDown:socketNumber];
 }
 
 - (void) _sctpStatusIndicationTask:(UMM2PATask_sctpStatusIndication *)task
