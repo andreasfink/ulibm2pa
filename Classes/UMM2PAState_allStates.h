@@ -7,7 +7,8 @@
 //
 
 
-#import "UMM2PAState_Off.h"
+#import "UMM2PAState_Disconnected.h"
+#import "UMM2PAState_Connecting.h"
 #import "UMM2PAState_OutOfService.h"
 #import "UMM2PAState_InitialAlignment.h"
 #import "UMM2PAState_AlignedNotReady.h"

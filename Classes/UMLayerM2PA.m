@@ -116,7 +116,7 @@
         {
             _users = [[UMSynchronizedArray alloc] init];
             _unackedMsu = [[UMSynchronizedDictionary alloc]init];
-            _state = [[UMM2PAState_Off alloc]initWithLink:self status:M2PA_STATUS_OFF];
+            _state = [[UMM2PAState_Disconnected alloc]initWithLink:self status:M2PA_STATUS_DISCONNECTED];
             _seqNumLock = [[UMMutex alloc]initWithName:@"seq-num-lock"];
             _slc = 0;
             _emergency = NO;
@@ -320,7 +320,7 @@
 {
     _sctpUpReceived++;
     
-    if([_state isKindOfClass:[UMM2PAState_Off class]])
+    if([_state isKindOfClass:[UMM2PAState_Disconnected class]])
     {
         self.state = [_state eventSctpUp:(NSNumber *)socketNumber];
     }
@@ -723,52 +723,26 @@
 
 - (void) _oos_received:(NSNumber *)socketNumber
 {
-        @try
+    _linkstateOutOfServiceReceived++;
+    if(_state == NULL)
     {
-        _linkstateOutOfServiceReceived++;
-        if(_state == NULL)
-        {
-            _state = [[UMM2PAState_Off alloc]initWithLink:self status:M2PA_STATUS_OFF];
-        }
-        self.state = [_state eventLinkstatusOutOfService:socketNumber];
+        _state = [[UMM2PAState_Disconnected alloc]initWithLink:self status:M2PA_STATUS_CONNECTING];
     }
-    @finally
-    {
-            }
+    self.state = [_state eventLinkstatusOutOfService:socketNumber];
 }
 
 - (void) _alignment_received:(NSNumber *)socketNumber
 {
-        @try
-    {
-        self.state = [_state eventLinkstatusAlignment:socketNumber];
-        _linkstateAlignmentReceived++;
-        _linkstateProvingReceived=0;
-        _linkstateProvingSent=0;
-    }
-    @catch(NSException *e)
-    {
-        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
-    }
-    @finally
-    {
-            }
+    self.state = [_state eventLinkstatusAlignment:socketNumber];
+    _linkstateAlignmentReceived++;
+    _linkstateProvingReceived=0;
+    _linkstateProvingSent=0;
 }
 
 - (void) _proving_normal_received:(NSNumber *)socketNumber
 {
-        @try
-    {
-        _linkstateProvingReceived++;
-        self.state = [_state eventLinkstatusProvingNormal:socketNumber];
-    }
-    @catch(NSException *e)
-    {
-        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
-    }
-    @finally
-    {
-            }
+    _linkstateProvingReceived++;
+    self.state = [_state eventLinkstatusProvingNormal:socketNumber];
 }
 
 - (void) _proving_emergency_received:(NSNumber *)socketNumber
@@ -883,24 +857,14 @@
 
 - (void) linktestTimerReportsFailure
 {
-        @try
+    if(_state == NULL)
     {
-        if(_state == NULL)
-        {
-            _state = [[UMM2PAState_Off alloc]initWithLink:self  status:M2PA_STATUS_OFF];
-        }
-        else
-        {
-            self.state = [_state eventLinkstatusOutOfService:NULL];
-        }
+        _state = [[UMM2PAState_Disconnected alloc]initWithLink:self  status:M2PA_STATUS_DISCONNECTED];
     }
-    @catch(NSException *e)
+    else
     {
-        [self logMajorError:[NSString stringWithFormat:@"Exception %@",e]];
+        self.state = [_state eventLinkstatusOutOfService:NULL];
     }
-    @finally
-    {
-            }
 }
 
 - (void)startDequeuingMessages
@@ -1084,11 +1048,10 @@
 
 - (void)_startTimer
 {
-    if(_state.statusCode != M2PA_STATUS_OFF)
+    if(_state.statusCode == M2PA_STATUS_DISCONNECTED)
     {
-        return;
+        [self powerOn];
     }
-    [self powerOn];
 }
 
 - (void)_timerFires1
@@ -1883,8 +1846,7 @@
 - (void)powerOn
 {
     _powerOnCounter++;
-    self.state = [[UMM2PAState_Off alloc]initWithLink:self  status:M2PA_STATUS_OFF];
-    [self.state sendLinkstateOutOfService:YES];
+    self.state = [[UMM2PAState_Disconnected alloc]initWithLink:self  status:M2PA_STATUS_DISCONNECTED];
     self.state = [_state eventPowerOn];
  }
 
@@ -2008,8 +1970,8 @@
         case M2PA_STATUS_DISCONNECTED:
             return @"DISCONNECTED";
             break;
-        case M2PA_STATUS_OFF:
-            return @"OFF";
+        case M2PA_STATUS_CONNECTING:
+            return @"CONNECTING";
             break;
         case M2PA_STATUS_OOS:
             return @"OOS";
@@ -2148,49 +2110,6 @@
     
 }
 
-- (void)notifyMtp3Disconnected
-{
-    @autoreleasepool
-    {
-        if(_lastNotifiedStatus!=M2PA_STATUS_DISCONNECTED)
-        {
-            NSArray *usrs = [_users arrayCopy];
-            for(UMLayerM2PAUser *u in usrs)
-            {
-                if([u.profile wantsM2PALinkstateMessages])
-                {
-                    [u.user m2paStatusIndication:self
-                                             slc:_slc
-                                          userId:u.linkName
-                                          status:M2PA_STATUS_DISCONNECTED];
-                }
-            }
-        }
-        _lastNotifiedStatus = M2PA_STATUS_DISCONNECTED;
-    }
-}
-
-- (void)notifyMtp3Off
-{
-    @autoreleasepool
-    {
-        if(_lastNotifiedStatus!=M2PA_STATUS_OFF)
-        {
-            NSArray *usrs = [_users arrayCopy];
-            for(UMLayerM2PAUser *u in usrs)
-            {
-                if([u.profile wantsM2PALinkstateMessages])
-                {
-                    [u.user m2paStatusIndication:self
-                                             slc:_slc
-                                          userId:u.linkName
-                                          status:M2PA_STATUS_OFF];
-                }
-            }
-            _lastNotifiedStatus=M2PA_STATUS_OFF;
-        }
-    }
-}
 
 - (void)notifyMtp3:(M2PA_Status)status
 {
@@ -2215,14 +2134,33 @@
     }
 }
 
+- (void)notifyMtp3Disconnected
+{
+    [self notifyMtp3:M2PA_STATUS_DISCONNECTED];
+}
+
+- (void)notifyMtp3Connecting
+{
+    [self notifyMtp3:M2PA_STATUS_CONNECTING];
+}
+
 - (void)notifyMtp3OutOfService
 {
     [self notifyMtp3:M2PA_STATUS_OOS];
 }
 
-- (void)notifyMtp3Stop
+-(void)notifyMtp3InitialAlignment
 {
-    [self notifyMtp3:M2PA_STATUS_OFF];
+    [self notifyMtp3:M2PA_STATUS_INITIAL_ALIGNMENT];
+}
+
+-(void)notifyMtp3AlignedNotReady
+{
+    [self notifyMtp3:M2PA_STATUS_ALIGNED_NOT_READY];
+}
+-(void)notifyMtp3AlignedReady
+{
+    [self notifyMtp3:M2PA_STATUS_ALIGNED_READY];
 }
 
 -(void)notifyMtp3RemoteProcessorOutage
@@ -2482,8 +2420,8 @@ static NSDateFormatter *dateFormatter = NULL;
         case M2PA_STATUS_DISCONNECTED:
             dict[@"state.description"] = @"M2PA_STATUS_DISCONNECTED";
             break;
-        case M2PA_STATUS_OFF:
-            dict[@"state.description"] = @"M2PA_STATUS_OFF";
+        case M2PA_STATUS_CONNECTING:
+            dict[@"state.description"] = @"M2PA_STATUS_CONNECTING";
             break;
         case M2PA_STATUS_OOS:
             dict[@"state.description"] = @"M2PA_STATUS_OOS";

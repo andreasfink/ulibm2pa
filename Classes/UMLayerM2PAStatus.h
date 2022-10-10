@@ -15,7 +15,7 @@ typedef	enum	M2PA_Status
 {
     M2PA_STATUS_FOOS                 = 998,  /* configured to stay off. Forced out of service */
     M2PA_STATUS_DISCONNECTED         = 999,  /* connection not yet requested */
-    M2PA_STATUS_OFF                  = 1000, /* connection requested but SCTP is not yet up */
+    M2PA_STATUS_CONNECTING           = 1000, /* connection requested but SCTP is not yet up */
     M2PA_STATUS_OOS					 = 1001, /* sctp up. waiting for MTP3 to start it*/
     M2PA_STATUS_INITIAL_ALIGNMENT    = 1002, /* alignment sent to remote. await alignment from remote */
     M2PA_STATUS_ALIGNED_NOT_READY	 = 1003, /* proving phase running. not enough proving received yet */

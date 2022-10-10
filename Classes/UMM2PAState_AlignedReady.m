@@ -83,7 +83,7 @@
     /* link failure event according to Q:703 07/96 page 5 */
     /* we cant send OOS on a already dead link so we skip it */
     // [self sendLinkstateOutOfService:YES];
-    return [[UMM2PAState_Off alloc]initWithLink:_link status:M2PA_STATUS_DISCONNECTED];
+    return [[UMM2PAState_Disconnected alloc]initWithLink:_link status:M2PA_STATUS_DISCONNECTED];
 }
 
 - (UMM2PAState *)eventEmergency             /* MTP3 tells his is an emergency link */

@@ -529,12 +529,14 @@ typedef enum PocStatus
 - (void)notifyMtp3UserData:(NSData *)userData;
 - (void)notifyMtp3:(M2PA_Status)status;
 - (void)notifyMtp3OutOfService;
+- (void)notifyMtp3InitialAlignment;
+- (void)notifyMtp3AlignedReady;
+- (void)notifyMtp3AlignedNotReady;
 - (void)notifyMtp3RemoteProcessorOutage;
 - (void)notifyMtp3RemoteProcessorRecovered;
 - (void)notifyMtp3Congestion;
 - (void)notifyMtp3CongestionCleared;
 - (void)notifyMtp3InService;
-- (void)notifyMtp3Stop;
 
 -(void)protocolViolation:(NSString *)reason;
 -(void)protocolViolation;

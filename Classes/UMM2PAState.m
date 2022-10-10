@@ -170,7 +170,7 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [self logStatemachineEvent:__func__];
     [_link.sctpLink closeFor:_link reason:@"eventPowerOff"];
     [_link notifyMtp3Off];
-    return [[UMM2PAState_Off alloc]initWithLink:_link status:M2PA_STATUS_OFF];
+    return [[UMM2PAState_Disconnected alloc]initWithLink:_link status:M2PA_STATUS_DISCONNECTED];
 }
 
 - (UMM2PAState *)eventStart
@@ -202,8 +202,8 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     [_link.startTimer stop];
     [_link startupInitialisation];
-    [_link notifyMtp3Stop];
-    return [[UMM2PAState_Off alloc]initWithLink:_link status:M2PA_STATUS_DISCONNECTED];
+    [_link notifyMtp3Disconnected];
+    return [[UMM2PAState_Disconnected alloc]initWithLink:_link status:M2PA_STATUS_DISCONNECTED];
 }
 
 - (UMM2PAState *)eventEmergency

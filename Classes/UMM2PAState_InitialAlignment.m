@@ -194,17 +194,18 @@
 {
     [self logStatemachineEvent:__func__ forced:YES];
     /* we dont expect data pdus in linkstate initial alignment */
-    [_link notifyMtp3:M2PA_STATUS_INITIAL_ALIGNMENT];
+    [_link notifyMtp3InitialAlignment];
     return self;
 }
 
 - (UMM2PAState *)eventTimer3
 {
     [self logStatemachineEvent:__func__];
-    [_link notifyMtp3Stop];
     [self sendLinkstateOutOfService:YES];
+    [_link notifyMtp3OutOfService];
     [_link.sctpLink closeFor:_link reason:@"t3"];
-    [_link notifyMtp3Off];
-    return [[UMM2PAState_Off alloc]initWithLink:_link status:M2PA_STATUS_OFF];
+    [_link notifyMtp3Disconnected];
+    return [[UMM2PAState_Disconnected alloc]initWithLink:_link status:M2PA_STATUS_DISCONNECTED];
 }
+
 @end

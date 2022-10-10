@@ -6,18 +6,20 @@
 //  Copyright © 2020 Andreas Fink (andreas@fink.org). All rights reserved.
 //
 
-#import "UMM2PAState_Off.h"
+#import "UMM2PAState_Disconnected.h"
 #import "UMM2PAState_allStates.h"
 #import "UMLayerM2PA.h"
 
 
-@implementation UMM2PAState_Off
+@implementation UMM2PAState_Disconnected
 
 - (UMM2PAState *)initWithLink:(UMLayerM2PA *)link status:(M2PA_Status)statusCode
 {
-    self =[super initWithLink:link status:M2PA_STATUS_OFF];
+    M2PA_Status oldStatus = _statusCode;
+    
+    self = [super initWithLink:link status:M2PA_STATUS_DISCONNECTED];
     {
-        _statusCode = M2PA_STATUS_OFF;
+        _statusCode = M2PA_STATUS_DISCONNECTED;
         if(_link.sctpLink.status != UMSOCKET_STATUS_OFF)
         {
             [self eventPowerOff];
@@ -25,7 +27,6 @@
     }
     return self;
 }
-
 
 - (NSString *)description
 {
@@ -42,7 +43,7 @@
     [_link.startTimer start];
     [_link.sctpLink openFor:_link sendAbortFirst:NO reason:@"eventPowerOn"];
     [_link notifyMtp3Off];
-    return self;
+    return [[UMM2PAState_Connecting alloc]initWithLink:_link status:M2PA_STATUS_CONNECTING];
 }
 
 - (UMM2PAState *)eventPowerOff          /* switch off the wire */
@@ -103,8 +104,8 @@
     [self logStatemachineEvent:__func__ socketNumber:socketNumber];
     [_link.startTimer stop];
     [_link startupInitialisation];
-    [_link notifyMtp3Stop];
-    return self;
+    [_link notifyMtp3Disconnected];
+    return [[UMM2PAState_Disconnected alloc]initWithLink:_link status:M2PA_STATUS_DISCONNECTED];
 }
 
 - (UMM2PAState *)eventEmergency                     /* MTP3 tells his is an emergency link */
