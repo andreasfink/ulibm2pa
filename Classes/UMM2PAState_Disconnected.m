@@ -42,7 +42,7 @@
     [_link startupInitialisation];
     [_link.startTimer start];
     [_link.sctpLink openFor:_link sendAbortFirst:NO reason:@"eventPowerOn"];
-    [_link notifyMtp3Off];
+    [_link notifyMtp3Connecting];
     return [[UMM2PAState_Connecting alloc]initWithLink:_link status:M2PA_STATUS_CONNECTING];
 }
 
@@ -63,7 +63,7 @@
         [_link startupInitialisation];
         [_link.startTimer start];
         [_link.sctpLink openFor:_link sendAbortFirst:NO reason:@"eventStart"];
-        [_link notifyMtp3Off];
+        [_link notifyMtp3Connecting];
     }
     else if(_link.sctpLink.status == UMSOCKET_STATUS_FOOS)
     {

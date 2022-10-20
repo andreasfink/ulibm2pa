@@ -525,7 +525,7 @@ typedef enum PocStatus
 -(void)cancelLocalProcessorOutage;
 
 - (void)notifyMtp3Disconnected;
-- (void)notifyMtp3Off;
+- (void)notifyMtp3Connecting;
 - (void)notifyMtp3UserData:(NSData *)userData;
 - (void)notifyMtp3:(M2PA_Status)status;
 - (void)notifyMtp3OutOfService;
