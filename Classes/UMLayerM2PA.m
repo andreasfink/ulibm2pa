@@ -364,7 +364,7 @@
 
     if(_logLevel <=UMLOG_DEBUG)
     {
-        NSString *s = [NSString stringWithFormat:@"SCTP Status change %@->%@ (%@)",[UMSocket statusDescription:old_sctp_status],    [UMSocket statusDescription:newStatus],reason];
+        NSString *s = [NSString stringWithFormat:@"M2PA: SCTP Status change %@->%@ (%@)",[UMSocket statusDescription:old_sctp_status],    [UMSocket statusDescription:newStatus],reason];
         [self logDebug:s];
     }
 
@@ -378,6 +378,10 @@
        && (_sctp_status == UMSOCKET_STATUS_OFF))
     {
         /* SCTP Link has died */
+        if(_logLevel <=UMLOG_DEBUG)
+        {
+            [self logDebug:@"**LINK_HAS_DIED**"];
+        }
         if(reason==NULL)
         {
             [_state logStatemachineEvent:"sctp-link-died"];
@@ -394,6 +398,10 @@
     if( (old_sctp_status != UMSOCKET_STATUS_IS)
     && (_sctp_status == UMSOCKET_STATUS_IS))
     {
+        if(_logLevel <=UMLOG_DEBUG)
+        {
+            [self logDebug:@"**LINK_HAS_ESTABLISHED**"];
+        }
         /* SCTP link came up properly. Lets start M2PA now on it */
         [self sctpReportsUp:socketNumber];
     }
