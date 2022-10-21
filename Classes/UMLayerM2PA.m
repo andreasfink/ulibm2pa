@@ -361,7 +361,13 @@
 {
     int old_sctp_status = _sctp_status;
     _sctp_status = newStatus;
-    
+
+    if(_logLevel <=UMLOG_DEBUG)
+    {
+        NSString *s = [NSString stringWithFormat:@"SCTP Status change %@->%@ (%@)",[UMSocket statusDescription:old_sctp_status],    [UMSocket statusDescription:newStatus],reason];
+        [self logDebug:s];
+    }
+
     if(old_sctp_status == _sctp_status)
     {
         /* nothing has changed we can ignore */
