@@ -320,7 +320,8 @@
 {
     _sctpUpReceived++;
     
-    if([_state isKindOfClass:[UMM2PAState_Disconnected class]])
+    if(([_state isKindOfClass:[UMM2PAState_Disconnected class]])
+        ||([_state isKindOfClass:[UMM2PAState_Connecting class]]))
     {
         self.state = [_state eventSctpUp:(NSNumber *)socketNumber];
     }
