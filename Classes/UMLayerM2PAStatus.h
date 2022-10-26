@@ -24,6 +24,7 @@ typedef	enum	M2PA_Status
     M2PA_STATUS_PROCESSOR_OUTAGE     = 1006,
 } M2PA_Status;
 
+#define M2PA_STATUS_OFF M2PA_STATUS_CONNECTING  /* backwards compatibility */
 
 typedef enum M2PA_linkstate_message
 {
