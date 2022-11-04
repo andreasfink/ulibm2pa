@@ -15,14 +15,13 @@
 
 - (UMM2PAState *)initWithLink:(UMLayerM2PA *)link status:(M2PA_Status)statusCode
 {
-    M2PA_Status oldStatus = _statusCode;
-    
     self = [super initWithLink:link status:M2PA_STATUS_DISCONNECTED];
     {
         _statusCode = M2PA_STATUS_DISCONNECTED;
         if(_link.sctpLink.status != UMSOCKET_STATUS_OFF)
         {
-            [self eventPowerOff];
+            [_link.sctpLink closeFor:_link reason:@"eventPowerOff"];
+            [link notifyMtp3Disconnected];
         }
     }
     return self;
