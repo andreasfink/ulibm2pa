@@ -21,8 +21,8 @@
         if(_link.sctpLink.status != UMSOCKET_STATUS_OFF)
         {
             [_link.sctpLink closeFor:_link reason:@"eventPowerOff"];
-            [link notifyMtp3Disconnected];
         }
+        [link notifyMtp3Disconnected];
     }
     return self;
 }
@@ -48,7 +48,10 @@
 - (UMM2PAState *)eventPowerOff          /* switch off the wire */
 {
     [self logStatemachineEvent:__func__];
-    [_link.sctpLink closeFor:_link reason:@"eventPowerOff"];
+    if(_link.sctpLink.status != UMSOCKET_STATUS_OFF)
+    {
+        [_link.sctpLink closeFor:_link reason:@"eventPowerOff"];
+    }
     [_link notifyMtp3Disconnected];
     return self;
 }
@@ -63,22 +66,28 @@
         [_link.startTimer start];
         [_link.sctpLink openFor:_link sendAbortFirst:NO reason:@"eventStart"];
         [_link notifyMtp3Connecting];
+        return [[UMM2PAState_Connecting alloc]initWithLink:_link status:M2PA_STATUS_CONNECTING];
     }
     else if(_link.sctpLink.status == UMSOCKET_STATUS_FOOS)
     {
         [_link addToLayerHistoryLog:@"start with _link.sctpLink.status FOOS"];
+        return self;
     }
     else if(_link.sctpLink.status == UMSOCKET_STATUS_OOS)
     {
         [_link addToLayerHistoryLog:@"start with _link.sctpLink.status OOS"];
+        return [[UMM2PAState_Connecting alloc]initWithLink:_link status:M2PA_STATUS_CONNECTING];
     }
     else if(_link.sctpLink.status == UMSOCKET_STATUS_IS)
     {
         [_link addToLayerHistoryLog:@"start with _link.sctpLink.status IS"];
+        return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link status:M2PA_STATUS_INITIAL_ALIGNMENT];
+
     }
     else if(_link.sctpLink.status == UMSOCKET_STATUS_LISTENING)
     {
         [_link addToLayerHistoryLog:@"start with _link.sctpLink.status UMSOCKET_STATUS_LISTENING"];
+        return [[UMM2PAState_Connecting alloc]initWithLink:_link status:M2PA_STATUS_CONNECTING];
     }
     return self;
 }
