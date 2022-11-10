@@ -694,7 +694,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INSTALL_PATH = "/Library/Application Support/FinkTelecomServices/frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "";
 				SDKROOT = macosx;
@@ -755,7 +755,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INSTALL_PATH = "/Library/Application Support/FinkTelecomServices/frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "";
 				SDKROOT = macosx;
@@ -783,7 +783,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SupportingFiles/ulibm2pa-Prefix.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/SupportingFiles/ulibm2pa-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.16.3;
 				PRODUCT_BUNDLE_IDENTIFIER = me.fink.ulibm2pa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -811,7 +811,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SupportingFiles/ulibm2pa-Prefix.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/SupportingFiles/ulibm2pa-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.16.3;
 				PRODUCT_BUNDLE_IDENTIFIER = me.fink.ulibm2pa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -840,6 +840,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "ulibm2paTests/ulibm2paTests-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "me.fink.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -864,6 +865,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ulibm2pa/ulibm2pa-Prefix.pch";
 				INFOPLIST_FILE = "ulibm2paTests/ulibm2paTests-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "me.fink.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
