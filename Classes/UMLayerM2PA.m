@@ -2017,7 +2017,6 @@
         NSString *ls = [UMLayerM2PA linkStatusString:linkstate];
         switch(self.sctp_status)
         {
-
             case UMSOCKET_STATUS_OFF:
                 [self logDebug:[NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_OFF",ls ]];
                 usleep(100000); /* sleep 0.1 sec */
@@ -2085,7 +2084,21 @@
                   streamId:M2PA_STREAM_LINKSTATE
                 protocolId:SCTP_PROTOCOL_IDENTIFIER_M2PA
                 ackRequest:NULL
-               synchronous:sync];
+               synchronous:NO];
+        
+        if(_logLevel<=UMLOG_DEBUG)
+        {
+            UMSocketSCTP *s = _sctpLink.directSocket;
+            if(s==NULL)
+            {
+                [self addToLayerHistoryLog:@"_sctpLink.directSocket is NULL"];
+            }
+            else
+            {
+                [self addToLayerHistoryLog:[NSString stringWithFormat:@"_sctpLink.directSocket.sock is %d",s.sock]];
+                [self addToLayerHistoryLog:[NSString stringWithFormat:@"_sctpLink.directSocket.status is %d",s.status]];
+            }
+        }
     }
     return 0;
 }
