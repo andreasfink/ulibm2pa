@@ -29,7 +29,7 @@
 
 - (NSString *)description
 {
-    return @"off";
+    return @"disconnected";
 }
 
 #pragma mark -
