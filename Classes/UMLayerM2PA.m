@@ -227,7 +227,7 @@
 {
     @autoreleasepool
     {
-#if defined(POWER_DEBUG)
+//#if defined(POWER_DEBUG)
         NSString *str;
         switch(s)
         {
@@ -250,7 +250,7 @@
                 str = [NSString stringWithFormat:@"UNKNOWN(%d)",s];
         }
         NSLog(@"sctpStatusIndication in m2pa %@ from %@ status:%@",_layerName,caller.layerName,str);        
-#endif
+//#endif
         UMM2PATask_sctpStatusIndication *task = [[UMM2PATask_sctpStatusIndication alloc]initWithReceiver:self
                                                                                                   sender:caller
                                                                                                   userId:uid
