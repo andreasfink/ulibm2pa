@@ -500,6 +500,7 @@
         NSString *e = [NSString stringWithFormat:@"PROTOCOL VIOLATION: %@",reason];
         [self logMajorError:e];
         [_stateMachineLogFeed debugText:e];
+        [self addToLayerHistoryLog:e];
 #if defined(POWER_DEBUG)
         NSLog(@"protocol violation for m2pa %@: %@",_layerName,reason);
 #endif
@@ -509,15 +510,7 @@
 
 -(void) protocolViolation
 {
-    @autoreleasepool
-    {
-        [self logMajorError:@"PROTOCOL VIOLATION"];
-        [_stateMachineLogFeed debugText:@"PROTOCOL VIOLATION"];
-#if defined(POWER_DEBUG)
-        NSLog(@"protocol violation for m2pa %@",_layerName);
-#endif
-        [self powerOff:@"PROTOCOL VIOLATION"];
-    }
+    [self protocolViolation:@"PROTOCOL VIOLATION"];
 }
 
 - (void) sctpIncomingDataMessage:(NSData *)data socketNumber:(NSNumber *)socketNumber

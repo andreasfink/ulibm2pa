@@ -260,6 +260,7 @@
     [self logStatemachineEvent:__func__ forced:YES];
     return self;
 }
+
 - (UMM2PAState *)eventRepeatTimer               /* timer OOS repeat fired */
 {
     [self logStatemachineEvent:__func__ forced:YES];
