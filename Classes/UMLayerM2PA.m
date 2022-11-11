@@ -1767,11 +1767,10 @@
         {
             [self _timerFires1];
         }
-        if([timerName isEqualToString:@"t1r"])
+        else if([timerName isEqualToString:@"t1r"])
         {
             [self _timerFires1r];
         }
-
         else 	if([timerName isEqualToString:@"t2"])
         {
             [self _timerFires2];
