@@ -2006,30 +2006,44 @@
 - (int)sendLinkstatus:(M2PA_linkstate_message)linkstate synchronous:(BOOL)sync
 {
     /* we can not send linkstat messages while control is occuring as the state might change */
-        @autoreleasepool
+    @autoreleasepool
     {
         NSString *ls = [UMLayerM2PA linkStatusString:linkstate];
         NSLog(@"sendLinkstatus:%@ sync:%@",ls,sync ? @"YES" : @"NO");
-
         switch(self.sctp_status)
         {
             case UMSOCKET_STATUS_OFF:
-                [self logDebug:[NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_OFF",ls ]];
+            {
+                NSString *s = [NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_OFF",ls];
+                [self logDebug:s];
+                [self addToLayerHistoryLog:s];
                 usleep(100000); /* sleep 0.1 sec */
                 return -1;
+            }
             case UMSOCKET_STATUS_OOS:
-                [self logDebug:[NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_OOS",ls ]];
-                usleep(0.1);
+            {
+                NSString *s = [NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_OOS",ls ];
+                [self logDebug:s];
+                [self addToLayerHistoryLog:s];
+                usleep(100000);
                 return -2;
+            }
             case UMSOCKET_STATUS_FOOS:
-                [self logDebug:[NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_FOOS",ls ]];
-                usleep(0.1);
+            {
+                NSString *s = [NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_FOOS",ls ];
+                [self logDebug:s];
+                [self addToLayerHistoryLog:s];
+                usleep(100000);
                 return -3;
-            
+            }
             case UMSOCKET_STATUS_LISTENING:
-                [self logDebug:[NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_LISTENING",ls ]];
-                usleep(0.1);
+            {
+                NSString *s = [NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_LISTENING",ls ];
+                [self logDebug:s];
+                [self addToLayerHistoryLog:s];
+                usleep(100000);
                 return -4;
+            }
             case UMSOCKET_STATUS_IS:
             default:
                 break;
@@ -2045,7 +2059,6 @@
             _ready_sent++;
         }
         unsigned char m2pa_header[M2PA_LINKSTATE_PACKETLEN];
-        
         m2pa_header[0]  = M2PA_VERSION1; /* version field */
         m2pa_header[1]  = 0; /* spare field */
         m2pa_header[2]  = M2PA_CLASS_RFC4165; /* m2pa_message_class;*/
@@ -2071,9 +2084,10 @@
         
         if(self.logLevel <= UMLOG_DEBUG)
         {
-            [self logDebug:[NSString stringWithFormat:@"Sending %@",ls]];
-            //mm_m2pa_header_dump13(link,data);
+            [self logDebug:[NSString stringWithFormat:@"Sending %@ (%@)",ls,data.hexString]];
         }
+        NSAssert(_sctpLink !=NULL,@"SCTP Link is NULL?!?");
+
         [_sctpLink dataFor:self
                       data:data
                   streamId:M2PA_STREAM_LINKSTATE

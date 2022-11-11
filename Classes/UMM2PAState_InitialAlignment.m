@@ -20,7 +20,7 @@
         [_link.t2 stop];
         [_link.t4 stop];
         // the timer will send it. we first have to return the correct state to the caller
-        [self sendLinkstateAlignment:YES];
+        [self sendLinkstateAlignment:NO];
         [_link.t2 start];
     }
     return self;
@@ -59,7 +59,7 @@
 - (UMM2PAState *)eventLinkstatusOutOfService:(NSNumber *)socketNumber
 {
     [self logStatemachineEvent:__func__ socketNumber:socketNumber];
-    [self sendLinkstateAlignment:YES];
+    [self sendLinkstateAlignment:NO];
     [_link.t2 stop];
     [_link.t2 start];
     return self;
@@ -85,7 +85,7 @@
     _alignmentReceived++;
     if(_alignmentReceived<=1)
     {
-        [self sendLinkstateAlignment:YES];
+        [self sendLinkstateAlignment:NO];
         return self;
     }
     if(_link.emergency)
@@ -175,7 +175,7 @@
     [self logStatemachineEvent:__func__];
     _link.emergency = NO;
     _link.alignmentNotPossible = YES;
-    [self sendLinkstateAlignment:YES];
+    [self sendLinkstateAlignment:NO];
     return self;
 }
 
@@ -184,7 +184,7 @@
     [self logStatemachineEvent:__func__];
     _link.emergency = NO;
     _link.alignmentNotPossible = YES;
-    [self sendLinkstateAlignment:YES];
+    [self sendLinkstateAlignment:NO];
     return self;
 }
 
