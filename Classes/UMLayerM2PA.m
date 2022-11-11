@@ -2083,7 +2083,7 @@
                   streamId:M2PA_STREAM_LINKSTATE
                 protocolId:SCTP_PROTOCOL_IDENTIFIER_M2PA
                 ackRequest:NULL
-               synchronous:NO];
+               synchronous:sync];
         
         if(_logLevel<=UMLOG_DEBUG)
         {
