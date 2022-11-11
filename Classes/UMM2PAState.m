@@ -404,7 +404,11 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
 
 - (void) sendLinkstateAlignment:(BOOL)sync
 {
-    [_link sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT synchronous:sync];
+    int e = [_link sendLinkstatus:M2PA_LINKSTATE_ALIGNMENT synchronous:sync];
+    if(e!=0)
+    {
+        [_link addToLayerHistoryLog:[NSString stringWithFormat:@"sendLinkstatus returns %d",e]];
+    }
     _link.linkstateAlignmentSent++;
     [self logStatemachineEventString:@"sendLinkstateAlignment"];
     [_link addToLayerHistoryLog:@"sendLinkstateAlignment"];
