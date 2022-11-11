@@ -654,11 +654,13 @@
 {
     @autoreleasepool
     {
-
+        
         M2PA_linkstate_message linkstatus;
         uint32_t len;
         const char *dptr;
         
+        [self logDebug:[NSString stringWithFormat:@" sctpIncomingLinkstateMessage %@",data.hexString]];
+
         if(self.logLevel <= UMLOG_DEBUG)
         {
             [self logDebug:[NSString stringWithFormat:@" %d bytes of linkstatus data received",(int)data.length]];
@@ -2027,7 +2029,7 @@
             case UMSOCKET_STATUS_LISTENING:
                 [self logDebug:[NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_LISTENING",ls ]];
                 usleep(0.1);
-                return -4;     
+                return -4;
             case UMSOCKET_STATUS_IS:
             default:
                 break;
