@@ -2007,6 +2007,8 @@
         @autoreleasepool
     {
         NSString *ls = [UMLayerM2PA linkStatusString:linkstate];
+        NSLog(@"sendLinkstatus:%@ sync:%@",ls,sync ? @"YES" : @"NO");
+
         switch(self.sctp_status)
         {
             case UMSOCKET_STATUS_OFF:
@@ -2025,8 +2027,7 @@
             case UMSOCKET_STATUS_LISTENING:
                 [self logDebug:[NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_LISTENING",ls ]];
                 usleep(0.1);
-                return -4;
-
+                return -4;     
             case UMSOCKET_STATUS_IS:
             default:
                 break;
