@@ -665,7 +665,7 @@
         {
             [self logDebug:[NSString stringWithFormat:@" %d bytes of linkstatus data received",(int)data.length]];
         }
-                @try
+        @try
         {
             [_control_link_buffer appendData:data];
             if(_control_link_buffer.length < 20)
