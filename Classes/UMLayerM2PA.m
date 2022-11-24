@@ -227,7 +227,7 @@
 {
     @autoreleasepool
     {
-#if defined(POWER_DEBUG)
+//#if defined(POWER_DEBUG)
         NSString *str;
         switch(s)
         {
@@ -250,7 +250,7 @@
                 str = [NSString stringWithFormat:@"UNKNOWN(%d)",s];
         }
         NSLog(@"sctpStatusIndication in m2pa %@ from %@ status:%@",_layerName,caller.layerName,str);        
-#endif
+//#endif
         UMM2PATask_sctpStatusIndication *task = [[UMM2PATask_sctpStatusIndication alloc]initWithReceiver:self
                                                                                                   sender:caller
                                                                                                   userId:uid
@@ -492,6 +492,7 @@
         NSString *e = [NSString stringWithFormat:@"PROTOCOL VIOLATION: %@",reason];
         [self logMajorError:e];
         [_stateMachineLogFeed debugText:e];
+        [self addToLayerHistoryLog:e];
 #if defined(POWER_DEBUG)
         NSLog(@"protocol violation for m2pa %@: %@",_layerName,reason);
 #endif
@@ -501,15 +502,7 @@
 
 -(void) protocolViolation
 {
-    @autoreleasepool
-    {
-        [self logMajorError:@"PROTOCOL VIOLATION"];
-        [_stateMachineLogFeed debugText:@"PROTOCOL VIOLATION"];
-#if defined(POWER_DEBUG)
-        NSLog(@"protocol violation for m2pa %@",_layerName);
-#endif
-        [self powerOff:@"PROTOCOL VIOLATION"];
-    }
+    [self protocolViolation:@"PROTOCOL VIOLATION"];
 }
 
 - (void) sctpIncomingDataMessage:(NSData *)data socketNumber:(NSNumber *)socketNumber
@@ -653,16 +646,18 @@
 {
     @autoreleasepool
     {
-
+        
         M2PA_linkstate_message linkstatus;
         uint32_t len;
         const char *dptr;
         
+        [self logDebug:[NSString stringWithFormat:@" sctpIncomingLinkstateMessage %@",data.hexString]];
+
         if(self.logLevel <= UMLOG_DEBUG)
         {
             [self logDebug:[NSString stringWithFormat:@" %d bytes of linkstatus data received",(int)data.length]];
         }
-                @try
+        @try
         {
             [_control_link_buffer appendData:data];
             if(_control_link_buffer.length < 20)
@@ -1759,11 +1754,10 @@
         {
             [self _timerFires1];
         }
-        if([timerName isEqualToString:@"t1r"])
+        else if([timerName isEqualToString:@"t1r"])
         {
             [self _timerFires1r];
         }
-
         else 	if([timerName isEqualToString:@"t2"])
         {
             [self _timerFires2];
@@ -2004,30 +1998,44 @@
 - (int)sendLinkstatus:(M2PA_linkstate_message)linkstate synchronous:(BOOL)sync
 {
     /* we can not send linkstat messages while control is occuring as the state might change */
-        @autoreleasepool
+    @autoreleasepool
     {
         NSString *ls = [UMLayerM2PA linkStatusString:linkstate];
+        NSLog(@"sendLinkstatus:%@ sync:%@",ls,sync ? @"YES" : @"NO");
         switch(self.sctp_status)
         {
-
             case UMSOCKET_STATUS_OFF:
-                [self logDebug:[NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_OFF",ls ]];
+            {
+                NSString *s = [NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_OFF",ls];
+                [self logDebug:s];
+                [self addToLayerHistoryLog:s];
                 usleep(100000); /* sleep 0.1 sec */
                 return -1;
+            }
             case UMSOCKET_STATUS_OOS:
-                [self logDebug:[NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_OOS",ls ]];
-                usleep(0.1);
+            {
+                NSString *s = [NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_OOS",ls ];
+                [self logDebug:s];
+                [self addToLayerHistoryLog:s];
+                usleep(100000);
                 return -2;
+            }
             case UMSOCKET_STATUS_FOOS:
-                [self logDebug:[NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_FOOS",ls ]];
-                usleep(0.1);
+            {
+                NSString *s = [NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_FOOS",ls ];
+                [self logDebug:s];
+                [self addToLayerHistoryLog:s];
+                usleep(100000);
                 return -3;
-            
+            }
             case UMSOCKET_STATUS_LISTENING:
-                [self logDebug:[NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_LISTENING",ls ]];
-                usleep(0.1);
+            {
+                NSString *s = [NSString stringWithFormat:@"Can not send %@ due to UMSOCKET_STATUS_LISTENING",ls ];
+                [self logDebug:s];
+                [self addToLayerHistoryLog:s];
+                usleep(100000);
                 return -4;
-
+            }
             case UMSOCKET_STATUS_IS:
             default:
                 break;
@@ -2043,7 +2051,6 @@
             _ready_sent++;
         }
         unsigned char m2pa_header[M2PA_LINKSTATE_PACKETLEN];
-        
         m2pa_header[0]  = M2PA_VERSION1; /* version field */
         m2pa_header[1]  = 0; /* spare field */
         m2pa_header[2]  = M2PA_CLASS_RFC4165; /* m2pa_message_class;*/
@@ -2069,17 +2076,32 @@
         
         if(self.logLevel <= UMLOG_DEBUG)
         {
-            [self logDebug:[NSString stringWithFormat:@"Sending %@",ls]];
-            //mm_m2pa_header_dump13(link,data);
+            [self logDebug:[NSString stringWithFormat:@"Sending %@ (%@)",ls,data.hexString]];
         }
+        NSAssert(_sctpLink !=NULL,@"SCTP Link is NULL?!?");
+
         [_sctpLink dataFor:self
                       data:data
                   streamId:M2PA_STREAM_LINKSTATE
                 protocolId:SCTP_PROTOCOL_IDENTIFIER_M2PA
                 ackRequest:NULL
                synchronous:sync];
+        
+        if(_logLevel<=UMLOG_DEBUG)
+        {
+            UMSocketSCTP *s = _sctpLink.directSocket;
+            if(s==NULL)
+            {
+                [self addToLayerHistoryLog:@"_sctpLink.directSocket is NULL"];
+            }
+            else
+            {
+                [self addToLayerHistoryLog:[NSString stringWithFormat:@"_sctpLink.directSocket.sock is %d",s.sock]];
+                [self addToLayerHistoryLog:[NSString stringWithFormat:@"_sctpLink.directSocket.status is %d",s.status]];
+            }
+        }
     }
-        return 0;
+    return 0;
 }
 
 #pragma mark -

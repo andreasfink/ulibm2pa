@@ -57,7 +57,7 @@
         return self;
     }
     [_link.repeatTimer stop];
-    [self sendLinkstateAlignment:YES];
+    [self sendLinkstateAlignment:NO];
     return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link status:M2PA_STATUS_INITIAL_ALIGNMENT];
 }
 
@@ -114,7 +114,7 @@
         [self sendLinkstateOutOfService:YES];
         return self;
     }
-    [self sendLinkstateAlignment:YES];
+    [self sendLinkstateAlignment:NO];
     [_link.repeatTimer stop];
     return [[UMM2PAState_InitialAlignment alloc]initWithLink:_link status:M2PA_STATUS_INITIAL_ALIGNMENT];
 }
