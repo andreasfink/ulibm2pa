@@ -650,12 +650,10 @@
         M2PA_linkstate_message linkstatus;
         uint32_t len;
         const char *dptr;
-        
-        [self logDebug:[NSString stringWithFormat:@" sctpIncomingLinkstateMessage %@",data.hexString]];
 
         if(self.logLevel <= UMLOG_DEBUG)
         {
-            [self logDebug:[NSString stringWithFormat:@" %d bytes of linkstatus data received",(int)data.length]];
+            [self logDebug:[NSString stringWithFormat:@" sctpIncomingLinkstateMessage %@",data.hexString]];
         }
         @try
         {
