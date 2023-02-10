@@ -459,7 +459,6 @@ static inline NSString *UMM2PAState_currentMethodName(const char *funcName)
     _link.linkstateReadySent++;
     [self logStatemachineEventString:@"sendLinkstateReady"];
     [_link addToLayerHistoryLog:@"sendLinkstateReady"];
-
 }
 
 
