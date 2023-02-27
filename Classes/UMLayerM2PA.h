@@ -131,7 +131,7 @@
 #define    M2PA_DEFAULT_T18    1.0 /* 200s */
 
 /* how many outstanding unacknowledgedpackets are allowed */
-#define    M2PA_DEFAULT_WINDOW_SIZE     128
+#define    M2PA_DEFAULT_WINDOW_SIZE     512
 
 // RFC4165
 
