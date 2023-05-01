@@ -16,7 +16,7 @@
 @interface UMM2PATask_Start : UMLayerTask
 {
     id<UMLayerM2PAUserProtocol> _user;
-    NSString *_reason;
+    NSString    *_reason;
     BOOL        _forced;
 }
 
