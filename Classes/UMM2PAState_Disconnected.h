@@ -6,7 +6,7 @@
 //  Copyright © 2020 Andreas Fink (andreas@fink.org). All rights reserved.
 //
 
-#import "UMM2PAState.h"
+#import <ulibm2pa/UMM2PAState.h>
 
 
 /*

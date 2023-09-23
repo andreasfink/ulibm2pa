@@ -10,7 +10,7 @@
 // the author.
 
 #import <ulib/ulib.h>
-#import "UMLayerM2PAUserProtocol.h"
+#import <ulibm2pa/UMLayerM2PAUserProtocol.h>
 
 @class UMLayerM2PA;
 

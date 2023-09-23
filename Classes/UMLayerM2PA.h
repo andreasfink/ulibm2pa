@@ -11,8 +11,8 @@
 
 #import <ulib/ulib.h>
 #import <ulibsctp/ulibsctp.h>
-#import "UMLayerM2PAUserProtocol.h"
-#import "UMLayerM2PAApplicationContextProtocol.h"
+#import <ulibm2pa/UMLayerM2PAUserProtocol.h>
+#import <ulibm2pa/UMLayerM2PAApplicationContextProtocol.h>
 
 @class UMM2PATask_sctpStatusIndication;
 @class UMM2PATask_sctpDataIndication;

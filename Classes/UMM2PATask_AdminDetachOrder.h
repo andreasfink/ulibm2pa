@@ -11,7 +11,7 @@
 
 #import <ulib/ulib.h>
 @class UMLayerM2PA;
-#import "UMLayerM2PAUserProtocol.h"
+#import <ulibm2pa/UMLayerM2PAUserProtocol.h>
 
 @interface UMM2PATask_AdminDetachOrder : UMLayerTask
 {

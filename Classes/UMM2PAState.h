@@ -8,7 +8,7 @@
 
 #import <ulib/ulib.h>
 
-#import "UMLayerM2PAStatus.h"
+#import <ulibm2pa/UMLayerM2PAStatus.h>
 
 @class UMLayerM2PA;
 

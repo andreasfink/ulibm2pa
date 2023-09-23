@@ -11,7 +11,7 @@
 
 #import <ulib/ulib.h>
 #import <ulibsctp/ulibsctp.h>
-#import "UMLayerM2PAStatus.h"
+#import <ulibm2pa/UMLayerM2PAStatus.h>
 
 @protocol UMLayerM2PAUserProtocol<UMLayerUserProtocol>
 

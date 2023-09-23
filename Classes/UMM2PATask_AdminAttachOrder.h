@@ -11,8 +11,8 @@
 
 #import <ulib/ulib.h>
 #import <ulibsctp/ulibsctp.h>
-#import "UMLayerM2PA.h"
-#import "UMLayerM2PAUserProtocol.h"
+#import <ulibm2pa/UMLayerM2PA.h>
+#import <ulibm2pa/UMLayerM2PAUserProtocol.h>
 
 
 @interface UMM2PATask_AdminAttachOrder : UMLayerTask
