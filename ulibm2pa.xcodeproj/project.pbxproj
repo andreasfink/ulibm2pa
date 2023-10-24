@@ -243,7 +243,7 @@
 				A6F6942E1B4E86230090FC94 /* Makefile.osx.in */,
 				A6F6942F1B4E86230090FC94 /* ulibm2pa.pc.in */,
 				A604D05B19B999400090FC94 /* SupportingFiles */,
-				A604D05A19B999400090FC94 /* Classes */,
+				A604D05A19B999400090FC94 /* ulibm2pa */,
 				A604D06F19B999400090FC94 /* ulibm2paTests */,
 				A604D05219B999400090FC94 /* Products */,
 				A604D05319B999400090FC94 /* Frameworks */,
@@ -269,7 +269,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		A604D05A19B999400090FC94 /* Classes */ = {
+		A604D05A19B999400090FC94 /* ulibm2pa */ = {
 			isa = PBXGroup;
 			children = (
 				A604D06119B999400090FC94 /* ulibm2pa.h */,
@@ -338,7 +338,7 @@
 				A6DA2B891A2E02F00090FC94 /* UMM2PATask_TimerEvent.h */,
 				A6DA2B8A1A2E02F00090FC94 /* UMM2PATask_TimerEvent.m */,
 			);
-			path = Classes;
+			path = ulibm2pa;
 			sourceTree = "<group>";
 		};
 		A604D05B19B999400090FC94 /* SupportingFiles */ = {
