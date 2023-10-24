@@ -11,7 +11,7 @@
 
 #import <ulibsctp/ulibsctp.h>
 
-#import <ulibm2pa/UMLayerM2PAApplicationContextProtocol.h"
+#import <ulibm2pa/UMLayerM2PAApplicationContextProtocol.h>
 
 #import <ulibm2pa/UMLayerM2PA.h>
 #import <ulibm2pa/UMLayerM2PAStatus.h>
