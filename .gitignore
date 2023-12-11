@@ -16,6 +16,8 @@ BUILDNR
 make_buildnr.sh
 buildnumber.c
 buildnumber.h
+ulibm2pa/ulibm2pa_config.h
+ulibm2pa.pc
 
 
 #########################
